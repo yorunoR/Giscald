@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,8 +79,15 @@ WSGI_APPLICATION = "app.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "bench_dev",
+        "USER": "developer",
+        "PASSWORD": os.getenv("USER_PASSWORD", "password"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": 5432,
+        "TEST": {
+            "NAME": "bench_test",
+        },
     }
 }
 

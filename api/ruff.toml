@@ -11,3 +11,9 @@ unfixable = []
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]
+"libs/migrations/*" = ["E501"]
+
+[format]
+exclude = [
+  "libs/migrations/*"
+]

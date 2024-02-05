@@ -12,6 +12,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
   },
+  ignorePatterns: ['src/gql/*'],
   rules: {
     '@typescript-eslint/no-unused-vars': [
       'warn',

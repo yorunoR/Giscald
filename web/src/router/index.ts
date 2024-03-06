@@ -15,6 +15,15 @@ const router = createRouter({
             title: 'ping'
           },
           component: async () => await import(/* webpackChunkName: "ping" */ '@/views/PingView.vue')
+        },
+        {
+          path: 'signin',
+          name: 'signin',
+          meta: {
+            title: 'signin'
+          },
+          component: async () =>
+            await import(/* webpackChunkName: "signin" */ '@/views/SigninView.vue')
         }
       ]
     },

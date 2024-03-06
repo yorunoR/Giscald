@@ -20,6 +20,11 @@ export type Scalars = {
   Float: { input: number; output: number }
 }
 
+export type Mutation = {
+  __typename?: 'Mutation'
+  signin: UserType
+}
+
 export type Query = {
   __typename?: 'Query'
   ping: Scalars['String']['output']
@@ -36,10 +41,44 @@ export type UserType = {
   role: Scalars['Int']['output']
 }
 
+export type SigninMutationVariables = Exact<{ [key: string]: never }>
+
+export type SigninMutation = {
+  __typename?: 'Mutation'
+  signin: { __typename?: 'UserType'; id: string; name: string; email: string }
+}
+
 export type PingQueryVariables = Exact<{ [key: string]: never }>
 
 export type PingQuery = { __typename?: 'Query'; ping: string }
 
+export const SigninDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'Signin' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'signin' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<SigninMutation, SigninMutationVariables>
 export const PingDocument = {
   kind: 'Document',
   definitions: [

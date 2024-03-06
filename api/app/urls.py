@@ -16,13 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from strawberry.django.views import GraphQLView
 
+from app.graphql.context import CustomContextGraphQLView
 from app.graphql.schema import schema
 from app.views import top
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", top, name="top"),
-    path("graphql/", GraphQLView.as_view(schema=schema)),
+    path("graphql/", CustomContextGraphQLView.as_view(schema=schema)),
 ]

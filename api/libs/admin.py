@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AdminUser, User
+from .models import AdminUser, Answer, GenerationTask, User
 
 
 @admin.register(AdminUser)
@@ -66,3 +66,13 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
+
+
+@admin.register(GenerationTask)
+class GenerationTaskAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    pass

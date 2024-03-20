@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AdminUser, Answer, GenerationTask, User
+from .models import AdminUser, Answer, EvaluationTask, GenerationTask, Rate, User
 
 
 @admin.register(AdminUser)
@@ -77,4 +77,14 @@ class GenerationTaskAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(EvaluationTask)
+class EvaluationTaskAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Rate)
+class RateAdmin(admin.ModelAdmin):
     pass

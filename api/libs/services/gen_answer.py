@@ -16,4 +16,4 @@ async def chat(messages, model, host, api_key, temperature=0, max_tokens=512, to
         frequency_penalty=frequency_penalty,
     )
 
-    return response.choices[0].message.content
+    return {"answer": response.choices[0].message.content, "question": messages}

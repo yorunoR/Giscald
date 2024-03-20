@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 
 from libs.models import Answer, GenerationTask, User
 from libs.models.generation_task import Status
-from libs.services.gen_answer import chat
+from libs.services.gen_answer import chat_with_job_info
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class Command(BaseCommand):
 async def run(name):
     print(f"GenerationTask name: {name}")
     user = await User.objects.aget(id=1)
-    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model, status=Status.CREATED)
+    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model, status=Status.STARTED)
 
     try:
         worker_count = 10
@@ -49,7 +49,7 @@ async def run(name):
             for line in file:
                 data = json.loads(line)
                 messages = [{"role": "user", "content": data["turns"][0]}]
-                jobs.append(chat(messages, model, host, api_key=api_key, temperature=0.4, max_tokens=400))
+                jobs.append(chat_with_job_info(data["category"], messages, model, host, api_key=api_key, temperature=0.4, max_tokens=400))
                 if len(jobs) == worker_count:
                     results = await asyncio.gather(*(asyncio.wait_for(job, timeout=100) for job in jobs), return_exceptions=True)
                     jobs = []
@@ -59,13 +59,15 @@ async def run(name):
                         await Answer.objects.acreate(
                             user=user,
                             generation_task=generation_task,
-                            messages=result["question"],
-                            text=result["answer"],
-                            usage={},
-                            finish_reason="",
-                            processing_time=1.11,
-                            category="test",
+                            messages=result["response"]["question"],
+                            text=result["response"]["answer"],
+                            usage=result["response"]["usage"],
+                            finish_reason=result["response"]["finish_reason"],
+                            processing_time=result["processing_time"],
+                            category=result["info"],
                         )
+        generation_task.status = Status.COMPLETED
+        generation_task.save()
     except Exception as e:
         await generation_task.adelete()
         raise e

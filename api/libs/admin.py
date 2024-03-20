@@ -49,6 +49,7 @@ class UserAdmin(admin.ModelAdmin):
     ]
 
     fields = [
+        "id",
         "email",
         "name",
         "uid",
@@ -61,6 +62,7 @@ class UserAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
+        "id",
         "uid",
         "anonymous",
         "created_at",

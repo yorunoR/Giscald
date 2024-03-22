@@ -4,3 +4,4 @@ from .generation_task import GenerationTask
 from .answer import Answer
 from .evaluation_task import EvaluationTask
 from .rate import Rate
+from .generation_setting import GenerationSetting

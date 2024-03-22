@@ -2,6 +2,11 @@ from django.contrib import admin
 
 from .models import AdminUser, Answer, EvaluationTask, GenerationTask, Rate, User
 
+DEFAULT_READONLY_FIELDS = [
+    "created_at",
+    "updated_at",
+]
+
 
 @admin.register(AdminUser)
 class AdminUserAdmin(admin.ModelAdmin):
@@ -72,19 +77,19 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(GenerationTask)
 class GenerationTaskAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = DEFAULT_READONLY_FIELDS
 
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = DEFAULT_READONLY_FIELDS
 
 
 @admin.register(EvaluationTask)
 class EvaluationTaskAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = DEFAULT_READONLY_FIELDS
 
 
 @admin.register(Rate)
 class RateAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = DEFAULT_READONLY_FIELDS

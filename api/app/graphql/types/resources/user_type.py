@@ -1,6 +1,7 @@
 import strawberry
 from strawberry import auto
 
+from app.graphql.types.resources.generation_task_type import GenerationTaskType
 from libs.models import User
 
 
@@ -12,3 +13,4 @@ class UserType:
     activated: auto
     profile_image: auto
     role: auto
+    generation_tasks: list[GenerationTaskType]

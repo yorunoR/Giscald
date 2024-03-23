@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import BoardLayout from '@/layouts/BoardLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      redirect: '/board/generationTasks'
+    },
     {
       path: '/',
       component: DefaultLayout,
@@ -24,6 +29,23 @@ const router = createRouter({
           },
           component: async () =>
             await import(/* webpackChunkName: "signin" */ '@/views/SigninView.vue')
+        }
+      ]
+    },
+    {
+      path: '/board',
+      component: BoardLayout,
+      children: [
+        {
+          path: 'generationTasks',
+          name: 'generationTasks',
+          meta: {
+            title: 'generationTasks'
+          },
+          component: async () =>
+            await import(
+              /* webpackChunkName: "generationTasks" */ '@/views/board/GenerationTasksView.vue'
+            )
         }
       ]
     },

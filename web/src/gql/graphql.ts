@@ -18,6 +18,18 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  /** Date with time (isoformat) */
+  DateTime: { input: string; output: string }
+}
+
+export type GenerationTaskType = {
+  __typename?: 'GenerationTaskType'
+  createdAt: Scalars['DateTime']['output']
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  modelName: Scalars['String']['output']
+  name: Scalars['String']['output']
+  status: StatusType
 }
 
 export type Mutation = {
@@ -27,14 +39,22 @@ export type Mutation = {
 
 export type Query = {
   __typename?: 'Query'
+  currentUser: UserType
   ping: Scalars['String']['output']
-  users: Array<UserType>
+}
+
+export enum StatusType {
+  Completed = 'Completed',
+  Created = 'Created',
+  Failed = 'Failed',
+  Started = 'Started'
 }
 
 export type UserType = {
   __typename?: 'UserType'
   activated: Scalars['Boolean']['output']
   email: Scalars['String']['output']
+  generationTasks: Array<GenerationTaskType>
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   profileImage?: Maybe<Scalars['String']['output']>
@@ -46,6 +66,31 @@ export type SigninMutationVariables = Exact<{ [key: string]: never }>
 export type SigninMutation = {
   __typename?: 'Mutation'
   signin: { __typename?: 'UserType'; id: string; name: string; email: string }
+}
+
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
+
+export type CurrentUserQuery = {
+  __typename?: 'Query'
+  currentUser: { __typename?: 'UserType'; email: string }
+}
+
+export type GenerationTasksQueryVariables = Exact<{ [key: string]: never }>
+
+export type GenerationTasksQuery = {
+  __typename?: 'Query'
+  currentUser: {
+    __typename?: 'UserType'
+    generationTasks: Array<{
+      __typename?: 'GenerationTaskType'
+      id: string
+      name: string
+      modelName: string
+      description?: string | null
+      status: StatusType
+      createdAt: string
+    }>
+  }
 }
 
 export type PingQueryVariables = Exact<{ [key: string]: never }>
@@ -79,6 +124,68 @@ export const SigninDocument = {
     }
   ]
 } as unknown as DocumentNode<SigninMutation, SigninMutationVariables>
+export const CurrentUserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'CurrentUser' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'currentUser' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'email' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>
+export const GenerationTasksDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GenerationTasks' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'currentUser' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'generationTasks' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'modelName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GenerationTasksQuery, GenerationTasksQueryVariables>
 export const PingDocument = {
   kind: 'Document',
   definitions: [

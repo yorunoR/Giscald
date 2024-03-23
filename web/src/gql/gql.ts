@@ -15,6 +15,10 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
 const documents = {
   '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n':
     types.SigninDocument,
+  '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n':
+    types.CurrentUserDocument,
+  '\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n      }\n    }\n  }\n':
+    types.GenerationTasksDocument,
   '\n  query Ping {\n    ping\n  }\n': types.PingDocument
 }
 
@@ -38,6 +42,18 @@ export function graphql(source: string): unknown
 export function graphql(
   source: '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n'
 ): (typeof documents)['\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n'
+): (typeof documents)['\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

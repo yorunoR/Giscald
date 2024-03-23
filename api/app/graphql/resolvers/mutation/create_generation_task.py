@@ -7,7 +7,7 @@ from django.conf import settings
 from strawberry.types import Info
 
 from libs.models import Answer, GenerationSetting, GenerationTask
-from libs.models.generation_task import Status
+from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
 api_key = os.getenv("API_KEY", "EMPTY")
@@ -26,7 +26,7 @@ async def resolve(
     parameters = parse_params_str(param_str)
 
     user = info.context.user
-    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model_name, status=Status.STARTED)
+    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED)
     _generation_setting = await GenerationSetting.objects.acreate(
         user=user, generation_task=generation_task, host=host, worker_count=worker_count, parameters=parameters
     )
@@ -72,11 +72,11 @@ async def resolve(
                             processing_time=result["processing_time"],
                             category=result["info"],
                         )
-        generation_task.status = Status.COMPLETED
+        generation_task.status = GenerationTaskStatus.COMPLETED
         await sync_to_async(lambda: generation_task.save())()
         return generation_task
     except Exception as e:
         print(e)
-        generation_task.status = Status.FAILED
+        generation_task.status = GenerationTaskStatus.FAILED
         await sync_to_async(lambda: generation_task.save())()
         return generation_task

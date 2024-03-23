@@ -34,7 +34,17 @@ export type GenerationTaskType = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createGenerationTask: GenerationTaskType
   signin: UserType
+}
+
+export type MutationCreateGenerationTaskArgs = {
+  description?: InputMaybe<Scalars['String']['input']>
+  host: Scalars['String']['input']
+  modelName: Scalars['String']['input']
+  name: Scalars['String']['input']
+  paramStr?: InputMaybe<Scalars['String']['input']>
+  workerCount: Scalars['Int']['input']
 }
 
 export type Query = {
@@ -59,6 +69,20 @@ export type UserType = {
   name: Scalars['String']['output']
   profileImage?: Maybe<Scalars['String']['output']>
   role: Scalars['Int']['output']
+}
+
+export type CreateGenerationTaskMutationVariables = Exact<{
+  name: Scalars['String']['input']
+  modelName: Scalars['String']['input']
+  host: Scalars['String']['input']
+  workerCount: Scalars['Int']['input']
+  paramStr?: InputMaybe<Scalars['String']['input']>
+  description?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type CreateGenerationTaskMutation = {
+  __typename?: 'Mutation'
+  createGenerationTask: { __typename?: 'GenerationTaskType'; id: string }
 }
 
 export type SigninMutationVariables = Exact<{ [key: string]: never }>
@@ -97,6 +121,105 @@ export type PingQueryVariables = Exact<{ [key: string]: never }>
 
 export type PingQuery = { __typename?: 'Query'; ping: string }
 
+export const CreateGenerationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateGenerationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'modelName' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'host' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'workerCount' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paramStr' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'description' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createGenerationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'modelName' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'modelName' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'host' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'host' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'workerCount' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'workerCount' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paramStr' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paramStr' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'description' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'description' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CreateGenerationTaskMutation, CreateGenerationTaskMutationVariables>
 export const SigninDocument = {
   kind: 'Document',
   definitions: [

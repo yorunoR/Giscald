@@ -29,6 +29,7 @@
     "primevue": "^3.48.0",
     "sweetalert": "^2.1.2",
     "vue": "^3.4.15",
+    "vue-json-pretty": "^2.4.0",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

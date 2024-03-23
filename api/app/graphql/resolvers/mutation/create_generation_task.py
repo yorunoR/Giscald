@@ -29,6 +29,9 @@ async def resolve(info: Info, name: str, model_name: str, host: str, worker_coun
         user=user, generation_task=generation_task, host=host, worker_count=worker_count, parameters=parameters
     )
 
+    if not model_name.startswith("openai/"):
+        host = None
+
     try:
         path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")
         with open(path, "r", encoding="utf-8") as file:

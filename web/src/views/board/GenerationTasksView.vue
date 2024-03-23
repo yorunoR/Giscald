@@ -58,25 +58,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useQuery } from '@urql/vue'
 import { graphql } from '@/gql'
 import GenerationTasks from '@/doc/query/GenerationTasks'
 import dayjs from 'dayjs'
 
-const sortKey = ref('')
-const sortAsc = ref(true)
+const sortKey = ref('createdAt')
+const sortAsc = ref(false)
 
 const query = graphql(GenerationTasks)
 
-const { fetching, error, data } = useQuery({ query })
+const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
 
 const setKey = (key) => {
   if (sortKey.value == key) {
     if (sortAsc.value == true) {
       sortAsc.value = false
     } else {
-      sortKey.value = ''
+      sortKey.value = 'createdAt'
     }
   } else {
     sortKey.value = key
@@ -101,6 +101,21 @@ const sortedGenerationTasks = computed(() => {
 const timeFormat = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
 }
+
+const interval = 60_000 // 60秒
+let timeoutId
+
+const executeAndDoubleInterval = () => {
+  executeQuery({ requestPolicy: 'network-only' })
+
+  timeoutId = setTimeout(executeAndDoubleInterval, interval)
+}
+
+timeoutId = setTimeout(executeAndDoubleInterval, interval)
+
+onBeforeUnmount(() => {
+  clearInterval(timeoutId)
+})
 </script>
 
 <style scoped>

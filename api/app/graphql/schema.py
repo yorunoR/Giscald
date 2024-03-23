@@ -1,9 +1,11 @@
 import strawberry
 from strawberry_django.optimizer import DjangoOptimizerExtension
 
+from app.graphql.resolvers.mutation.create_generation_task import resolve as create_generation_task
 from app.graphql.resolvers.mutation.signin import resolve as signin
 from app.graphql.resolvers.query.current_user import resolve as current_user
 from app.graphql.resolvers.query.ping import resolve as ping
+from app.graphql.types.resources.generation_task_type import GenerationTaskType
 from app.graphql.types.resources.user_type import UserType
 
 
@@ -16,6 +18,7 @@ class Query:
 @strawberry.type
 class Mutation:
     signin: UserType = strawberry.field(resolver=signin)
+    createGenerationTask: GenerationTaskType = strawberry.field(resolver=create_generation_task)
 
 
 schema = strawberry.Schema(

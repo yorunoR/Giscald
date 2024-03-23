@@ -4,6 +4,9 @@
       <section>
         <ul>
           <li style="border: none; padding: 20px">
+            <router-link to="/board/createGenerationTask"> 回答生成 </router-link>
+          </li>
+          <li style="border: none; padding: 20px">
             <router-link to="/board/generationTasks"> 回答生成タスク一覧 </router-link>
           </li>
         </ul>

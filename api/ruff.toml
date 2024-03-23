@@ -1,4 +1,4 @@
-line-length = 160
+line-length = 140
 indent-width = 4
 
 [lint]

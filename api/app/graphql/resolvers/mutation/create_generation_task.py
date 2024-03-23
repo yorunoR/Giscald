@@ -20,7 +20,9 @@ def parse_params_str(param_str):
         return {}
 
 
-async def resolve(info: Info, name: str, model_name: str, host: str, worker_count: int, param_str: str | None = None, description: str | None = None):
+async def resolve(
+    info: Info, name: str, model_name: str, host: str, worker_count: int, param_str: str | None = None, description: str | None = None
+):
     parameters = parse_params_str(param_str)
 
     user = info.context.user

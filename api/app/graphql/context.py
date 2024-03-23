@@ -5,7 +5,7 @@ from typing import (
 
 from django.http import HttpRequest
 from django.http.response import HttpResponse
-from strawberry.django.views import GraphQLView
+from strawberry.django.views import AsyncGraphQLView
 
 from app.auth import decode_jwt
 from libs.models import User
@@ -29,8 +29,8 @@ class Context:
         return super().__getattribute__(key)
 
 
-class CustomContextGraphQLView(GraphQLView):
-    def get_context(self, request: HttpRequest, response: HttpResponse) -> Any:
+class CustomContextGraphQLView(AsyncGraphQLView):
+    async def get_context(self, request: HttpRequest, response: HttpResponse) -> Any:
         user = None
         uid = None
         email = None
@@ -39,7 +39,7 @@ class CustomContextGraphQLView(GraphQLView):
         if token:
             payload = decode_jwt(token)
             if payload is not None:
-                user = User.objects.filter(uid=payload["uid"]).first()
+                user = await User.objects.filter(uid=payload["uid"]).afirst()
                 if user is None:
                     uid = payload["uid"]
                     email = payload["email"]

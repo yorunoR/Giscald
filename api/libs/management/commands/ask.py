@@ -3,6 +3,7 @@ import json
 import logging
 import os
 
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -67,7 +68,7 @@ async def run(name):
                             category=result["info"],
                         )
         generation_task.status = Status.COMPLETED
-        generation_task.save()
+        await sync_to_async(lambda: generation_task.save())()
     except Exception as e:
         await generation_task.adelete()
         raise e

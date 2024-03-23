@@ -78,4 +78,4 @@ async def run(name, eval_name):
                     model=model,
                 )
     evaluation_task.status = Status.COMPLETED
-    evaluation_task.save()
+    await sync_to_async(lambda: evaluation_task.save())()

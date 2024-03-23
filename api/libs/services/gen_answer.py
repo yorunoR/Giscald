@@ -26,7 +26,7 @@ async def chat(messages, model, host, api_key, temperature, max_tokens, top_p, s
     }
 
 
-async def chat_with_job_info(info, messages, model, host, api_key, temperature=0, max_tokens=512, top_p=None, stop=None, frequency_penalty=2):
+async def chat_with_job_info(info, messages, model, host, api_key, temperature=0, max_tokens=512, top_p=None, stop=None, frequency_penalty=1.2):
     start = time.perf_counter()
     response = await chat(messages, model, host, api_key, temperature, max_tokens, top_p, stop, frequency_penalty)
     end = time.perf_counter()

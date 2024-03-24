@@ -120,7 +120,14 @@ let timeoutId
 const executeAndDoubleInterval = () => {
   executeQuery({ requestPolicy: 'network-only' })
 
-  timeoutId = setTimeout(executeAndDoubleInterval, interval)
+  if (
+    !data.value ||
+    data.value.currentUser.generationTasks.some(
+      (generationTask) => generationTask.status == 'Started'
+    )
+  ) {
+    timeoutId = setTimeout(executeAndDoubleInterval, interval)
+  }
 }
 
 timeoutId = setTimeout(executeAndDoubleInterval, interval)

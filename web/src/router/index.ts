@@ -7,7 +7,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/board/generationTasks'
+      redirect: '/board/createGenerationTask'
     },
     {
       path: '/',

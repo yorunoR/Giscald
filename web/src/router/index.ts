@@ -37,6 +37,17 @@ const router = createRouter({
       component: BoardLayout,
       children: [
         {
+          path: 'createGenerationTask',
+          name: 'createGenerationTask',
+          meta: {
+            title: 'createGenerationTasks'
+          },
+          component: async () =>
+            await import(
+              /* webpackChunkName: "craeteGenerationTask" */ '@/views/board/CreateGenerationTaskView.vue'
+            )
+        },
+        {
           path: 'generationTasks',
           name: 'generationTasks',
           meta: {
@@ -51,7 +62,7 @@ const router = createRouter({
     },
     {
       path: '/:catchAll(.*)',
-      redirect: '/ping'
+      redirect: '/board/generationTasks'
     }
   ]
 })

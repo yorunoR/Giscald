@@ -1,7 +1,7 @@
 <template>
   <main style="max-width: 1200px; margin: auto">
-    <h2>回答生成タスク一覧</h2>
-    <section class="mt-8">
+    <h1 class="mt-2">回答生成タスク一覧</h1>
+    <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
@@ -9,15 +9,27 @@
           <thead>
             <tr>
               <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
-                <u> 名前 </u>
+                <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
               </th>
-              <th class="cursor-pointer w-3" @click="setKey('modelName')">
+              <th
+                class="cursor-pointer w-3"
+                :class="{ 'text-primary': sortKey === 'modelName' }"
+                @click="setKey('modelName')"
+              >
                 <u> モデル名 </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('createdAt')">
+              <th
+                class="cursor-pointer w-1"
+                :class="{ 'text-primary': sortKey === 'createdAt' }"
+                @click="setKey('createdAt')"
+              >
                 <u> 作成日時 </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('status')">
+              <th
+                class="cursor-pointer w-1"
+                :class="{ 'text-primary': sortKey === 'status' }"
+                @click="setKey('status')"
+              >
                 <u> ステータス </u>
               </th>
               <th>メモ</th>
@@ -45,9 +57,9 @@
                 <div v-if="generationTask.status === 'Completed'" class="p-1">
                   <u class="cursor-pointer"> 評価する </u>
                 </div>
-                <div class="p-1">
+                <!--div class="p-1">
                   <u class="cursor-pointer"> 編集 </u>
-                </div>
+                </div-->
               </td>
             </tr>
           </tbody>
@@ -58,29 +70,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useQuery } from '@urql/vue'
 import { graphql } from '@/gql'
 import GenerationTasks from '@/doc/query/GenerationTasks'
 import dayjs from 'dayjs'
 
-const sortKey = ref('')
-const sortAsc = ref(true)
+const sortKey = ref('createdAt')
+const sortAsc = ref(false)
 
 const query = graphql(GenerationTasks)
 
-const { fetching, error, data } = useQuery({ query })
+const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
 
 const setKey = (key) => {
   if (sortKey.value == key) {
-    if (sortAsc.value == true) {
+    if (sortAsc.value) {
       sortAsc.value = false
     } else {
-      sortKey.value = ''
+      sortAsc.value = true
     }
   } else {
     sortKey.value = key
-    sortAsc.value = true
+    sortAsc.value = false
   }
 }
 
@@ -92,7 +104,7 @@ const sortedGenerationTasks = computed(() => {
     generationTasks.sort((a, b) => {
       if (a[column] < b[column]) return sortAsc.value ? -1 : 1
       if (a[column] > b[column]) return sortAsc.value ? 1 : -1
-      return 0
+      return a.id < b.id ? 1 : -1
     })
   }
   return generationTasks
@@ -101,6 +113,21 @@ const sortedGenerationTasks = computed(() => {
 const timeFormat = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
 }
+
+const interval = 60_000 // 60秒
+let timeoutId
+
+const executeAndDoubleInterval = () => {
+  executeQuery({ requestPolicy: 'network-only' })
+
+  timeoutId = setTimeout(executeAndDoubleInterval, interval)
+}
+
+timeoutId = setTimeout(executeAndDoubleInterval, interval)
+
+onBeforeUnmount(() => {
+  clearInterval(timeoutId)
+})
 </script>
 
 <style scoped>

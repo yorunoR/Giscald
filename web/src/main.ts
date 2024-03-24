@@ -13,6 +13,8 @@ import 'primevue/resources/primevue.css'
 import 'primevue/resources/themes/aura-light-green/theme.css'
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
+import Chart from 'primevue/chart'
+import Checkbox from 'primevue/checkbox'
 import Chip from 'primevue/chip'
 import Dialog from 'primevue/dialog'
 import Dropdown from 'primevue/dropdown'
@@ -36,6 +38,8 @@ app
   .use(ToastService)
   .component('Avatar', Avatar)
   .component('Button', Button)
+  .component('Chart', Chart)
+  .component('Checkbox', Checkbox)
   .component('Chip', Chip)
   .component('Dialog', Dialog)
   .component('Dropdown', Dropdown)

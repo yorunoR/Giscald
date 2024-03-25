@@ -39,7 +39,8 @@ async def resolve(info: Info, name: str, eval_name: str, model: str, worker_coun
                 {"role": "system", "content": "評価の点数は必ず[[評価]]の形式で示す。説明は簡潔にする。"},
                 {"role": "user", "content": content},
             ]
-            jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, temperature=0, max_tokens=1024))
+            params = {"temperature": 0, "max_tokens": 1024}
+            jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=120) for job in jobs), return_exceptions=True)
                 jobs = []

@@ -42,20 +42,9 @@ async def resolve(
                 data = json.loads(line)
                 messages = [{"role": "user", "content": data["turns"][0]}]
 
-                param = parameters.get(data["category"]) or parameters.get("default") or {}
+                params = parameters.get(data["category"]) or parameters.get("default") or {}
 
-                jobs.append(
-                    chat_with_job_info(
-                        data["category"],
-                        messages,
-                        model_name,
-                        host,
-                        api_key=api_key,
-                        temperature=param.get("temperature"),
-                        max_tokens=param.get("max_tokens"),
-                        frequency_penalty=param.get("frequency_penalty"),
-                    )
-                )
+                jobs.append(chat_with_job_info(data["category"], messages, model_name, host, api_key=api_key, params=params))
                 if len(jobs) == worker_count:
                     results = await asyncio.gather(*(asyncio.wait_for(job, timeout=120) for job in jobs), return_exceptions=True)
                     jobs = []

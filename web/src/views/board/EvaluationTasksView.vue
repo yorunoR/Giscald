@@ -178,16 +178,15 @@ const chartOptions = ref()
 
 const setChartData = (dataSources) => {
   if (dataSources.length > 0) {
+    const labels = Object.keys(dataSources[0].points).sort()
     const datasets = dataSources.map((dataSource) => {
+      const data = labels.map((label) => dataSource.points[label])
       return {
         label: dataSource.name,
-        data: Object.values(dataSource.points)
+        data
       }
     })
-    return {
-      datasets,
-      labels: Object.keys(dataSources[0].points)
-    }
+    return { labels, datasets }
   } else {
     return { labels: [], datasets: [] }
   }

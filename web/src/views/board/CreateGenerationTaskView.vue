@@ -74,10 +74,27 @@ const toast = useToast()
 
 const loading = ref(false)
 const parameters = ref({
-  max_tokens: 512,
-  temperature: 0.1,
-  frequency_penalty: 0,
-  presence_penalty: -0.8
+  default: {
+    max_tokens: 1000,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
+  },
+  reasoning: {
+    max_tokens: 400,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
+  },
+  humanities: {
+    max_tokens: 1600,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
+  }
 })
 const count = ref(0)
 
@@ -90,7 +107,7 @@ const clickCreateGenerationTask = async () => {
   count.value = 0
 
   await countDisplay()
-  const paramStr = JSON.stringify({ default: parameters.value })
+  const paramStr = JSON.stringify(parameters.value)
   try {
     const result = await createGenerationTask({ ...values, paramStr })
     if (result.error) {
@@ -113,7 +130,7 @@ const { meta, values } = useForm({
     name: 'mt-bench-01',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
-    workerCount: 5
+    workerCount: 10
   }
 })
 const isRequired = (value) => (value ? true : 'This field is required')

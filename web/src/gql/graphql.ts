@@ -20,8 +20,21 @@ export type Scalars = {
   Float: { input: number; output: number }
   /** Date with time (isoformat) */
   DateTime: { input: string; output: string }
+  /** Decimal (fixed-point) */
+  Decimal: { input: any; output: any }
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any }
+}
+
+export type AnswerType = {
+  __typename?: 'AnswerType'
+  category: Scalars['String']['output']
+  finishReason: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  messages: Scalars['JSON']['output']
+  processingTime: Scalars['Decimal']['output']
+  text: Scalars['String']['output']
+  usage: Scalars['JSON']['output']
 }
 
 export enum EvaluationTaskStatusType {
@@ -37,6 +50,7 @@ export type EvaluationTaskType = {
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   points: Scalars['JSON']['output']
+  rates: Array<RateType>
   status: EvaluationTaskStatusType
 }
 
@@ -49,6 +63,7 @@ export enum GenerationTaskStatusType {
 
 export type GenerationTaskType = {
   __typename?: 'GenerationTaskType'
+  answers: Array<AnswerType>
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
@@ -67,8 +82,8 @@ export type Mutation = {
 
 export type MutationCreateEvaluationTaskArgs = {
   evalName: Scalars['String']['input']
+  generationTaskId: Scalars['ID']['input']
   model: Scalars['String']['input']
-  name: Scalars['String']['input']
   workerCount: Scalars['Int']['input']
 }
 
@@ -88,7 +103,28 @@ export type MutationUpdateEvaluationTaskArgs = {
 export type Query = {
   __typename?: 'Query'
   currentUser: UserType
+  evaluationTask: EvaluationTaskType
+  generationTask: GenerationTaskType
   ping: Scalars['String']['output']
+}
+
+export type QueryEvaluationTaskArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryGenerationTaskArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type RateType = {
+  __typename?: 'RateType'
+  finishReason: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  model: Scalars['String']['output']
+  point: Scalars['Int']['output']
+  processingTime: Scalars['Decimal']['output']
+  text: Scalars['String']['output']
+  usage: Scalars['JSON']['output']
 }
 
 export type UserType = {
@@ -140,6 +176,32 @@ export type CurrentUserQuery = {
   currentUser: { __typename?: 'UserType'; email: string }
 }
 
+export type EvaluationTaskQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type EvaluationTaskQuery = {
+  __typename?: 'Query'
+  evaluationTask: {
+    __typename?: 'EvaluationTaskType'
+    id: string
+    name: string
+    status: EvaluationTaskStatusType
+    points: any
+    createdAt: string
+    rates: Array<{
+      __typename?: 'RateType'
+      id: string
+      model: string
+      point: number
+      text: string
+      finishReason: string
+      usage: any
+      processingTime: any
+    }>
+  }
+}
+
 export type EvaluationTasksQueryVariables = Exact<{ [key: string]: never }>
 
 export type EvaluationTasksQuery = {
@@ -153,6 +215,33 @@ export type EvaluationTasksQuery = {
       status: EvaluationTaskStatusType
       points: any
       createdAt: string
+    }>
+  }
+}
+
+export type GenerationTaskQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type GenerationTaskQuery = {
+  __typename?: 'Query'
+  generationTask: {
+    __typename?: 'GenerationTaskType'
+    id: string
+    name: string
+    modelName: string
+    description?: string | null
+    status: GenerationTaskStatusType
+    createdAt: string
+    answers: Array<{
+      __typename?: 'AnswerType'
+      id: string
+      messages: any
+      category: string
+      text: string
+      finishReason: string
+      usage: any
+      processingTime: any
     }>
   }
 }
@@ -368,6 +457,68 @@ export const CurrentUserDocument = {
     }
   ]
 } as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>
+export const EvaluationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'EvaluationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'evaluationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'points' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'rates' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'point' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<EvaluationTaskQuery, EvaluationTaskQueryVariables>
 export const EvaluationTasksDocument = {
   kind: 'Document',
   definitions: [
@@ -406,6 +557,69 @@ export const EvaluationTasksDocument = {
     }
   ]
 } as unknown as DocumentNode<EvaluationTasksQuery, EvaluationTasksQueryVariables>
+export const GenerationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GenerationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'generationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'modelName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'answers' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'messages' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GenerationTaskQuery, GenerationTaskQueryVariables>
 export const GenerationTasksDocument = {
   kind: 'Document',
   definitions: [

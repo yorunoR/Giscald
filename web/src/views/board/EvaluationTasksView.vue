@@ -55,7 +55,8 @@
                 {{ evaluationTask.status }}
               </td>
               <td class="py-2">
-                {{ evaluationTask.points }}
+                <div>{{ evaluationTask.points }}</div>
+                <div class="mt-2">AVG: {{ avg(evaluationTask.points) }}</div>
               </td>
               <td>
                 <div
@@ -218,6 +219,11 @@ const setChartOptions = () => {
 
 const isEmpty = (obj) => {
   return Object.keys(obj).length === 0
+}
+const avg = (obj) => {
+  const len = Object.keys(obj).length
+  if (len < 1) return 0
+  return Object.values(obj).reduce((sum, element) => sum + element, 0) / len
 }
 </script>
 

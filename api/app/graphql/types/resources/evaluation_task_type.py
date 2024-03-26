@@ -5,6 +5,8 @@ from strawberry import auto
 
 from libs.models import EvaluationTask
 
+from .rate_type import RateType
+
 
 @strawberry.enum
 class EvaluationTaskStatusType(Enum):
@@ -21,3 +23,4 @@ class EvaluationTaskType:
     points: auto
     status: EvaluationTaskStatusType
     created_at: auto
+    rates: list[RateType]

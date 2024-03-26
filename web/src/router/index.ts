@@ -80,6 +80,18 @@ const router = createRouter({
             await import(
               /* webpackChunkName: "generationTask" */ '@/views/board/GenerationTaskView.vue'
             )
+        },
+        {
+          path: 'evaluationTask/:id(\\d+)',
+          props: (route) => ({ id: route.params.id }),
+          name: 'evaluationTask',
+          meta: {
+            title: 'evaluationTask'
+          },
+          component: async () =>
+            await import(
+              /* webpackChunkName: "evaluationTask" */ '@/views/board/EvaluationTaskView.vue'
+            )
         }
       ]
     },

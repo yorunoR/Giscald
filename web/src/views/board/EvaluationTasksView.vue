@@ -46,7 +46,12 @@
                 </div>
               </th>
               <td class="py-2">
-                {{ evaluationTask.name }}
+                <span>{{ evaluationTask.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
+                  >></router-link
+                >
               </td>
               <td class="py-2">
                 {{ timeFormat(evaluationTask.createdAt) }}

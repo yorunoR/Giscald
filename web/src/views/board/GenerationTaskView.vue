@@ -8,36 +8,46 @@
         <table v-if="data" class="w-full">
           <thead>
             <tr>
-              <th class="cursor-pointer w-1 py-2" @click="setKey('category')">
+              <th class="cursor-pointer py-2" @click="setKey('id')">
+                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              </th>
+              <th class="cursor-pointer py-2" @click="setKey('category')">
                 <u :class="{ 'text-primary': sortKey === 'category' }"> カテゴリー </u>
               </th>
-              <th class="w-3">質問</th>
-              <th>回答</th>
-              <th class="cursor-pointer w-1" @click="setKey('finishReason')">
+              <th class="">質問</th>
+              <th class="">回答</th>
+              <th class="cursor-pointer" @click="setKey('finishReason')">
                 <u :class="{ 'text-primary': sortKey === 'finishReason' }"> 終了理由 </u>
               </th>
-              <th class="w-1">消費</th>
-              <th class="w-1">処理時間</th>
+              <th class="cursor-pointer" @click="setKey('usage')">
+                <u :class="{ 'text-primary': sortKey === 'usage' }"> 消費 </u>
+              </th>
+              <th class="cursor-pointer" @click="setKey('processingTime')">
+                <u :class="{ 'text-primary': sortKey === 'processingTime' }"> 処理時間 </u>
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="answer in sortedAnswers" :key="answer.id">
-              <td class="py-2">
+              <td class="p-2">
+                {{ answer.id }}
+              </td>
+              <td class="p-2">
                 {{ answer.category }}
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ answer.messages[0].content }}
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ answer.text }}
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ answer.finishReason }}
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ answer.usage }}
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ answer.processingTime }}
               </td>
             </tr>
@@ -88,8 +98,19 @@ const sortedAnswers = computed(() => {
   const column = sortKey.value
   if (column != '') {
     answers.sort((a, b) => {
-      if (a[column] < b[column]) return sortAsc.value ? -1 : 1
-      if (a[column] > b[column]) return sortAsc.value ? 1 : -1
+      let a_column, b_column
+      if (column === 'usage') {
+        a_column = a[column].total_tokens
+        b_column = b[column].total_tokens
+      } else if (column === 'processingTime') {
+        a_column = parseFloat(a[column])
+        b_column = parseFloat(b[column])
+      } else {
+        a_column = a[column]
+        b_column = b[column]
+      }
+      if (a_column < b_column) return sortAsc.value ? -1 : 1
+      if (a_column > b_column) return sortAsc.value ? 1 : -1
       return a.id < b.id ? 1 : -1
     })
   }

@@ -26,7 +26,9 @@ async def resolve(
     parameters = parse_params_str(param_str)
 
     user = info.context.user
-    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED)
+    generation_task = await GenerationTask.objects.acreate(
+        user=user, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED, description=description
+    )
     _generation_setting = await GenerationSetting.objects.acreate(
         user=user, generation_task=generation_task, host=host, worker_count=worker_count, parameters=parameters
     )

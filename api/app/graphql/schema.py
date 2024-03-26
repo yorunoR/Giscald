@@ -6,6 +6,8 @@ from app.graphql.resolvers.mutation.create_generation_task import resolve as cre
 from app.graphql.resolvers.mutation.signin import resolve as signin
 from app.graphql.resolvers.mutation.update_evaluation_task import resolve as update_evaluation_task
 from app.graphql.resolvers.query.current_user import resolve as current_user
+from app.graphql.resolvers.query.evaluation_task import resolve as evaluation_task
+from app.graphql.resolvers.query.generation_task import resolve as generation_task
 from app.graphql.resolvers.query.ping import resolve as ping
 from app.graphql.types.resources.evaluation_task_type import EvaluationTaskType
 from app.graphql.types.resources.generation_task_type import GenerationTaskType
@@ -16,6 +18,8 @@ from app.graphql.types.resources.user_type import UserType
 class Query:
     ping: str = strawberry.field(resolver=ping)
     current_user: UserType = strawberry.field(resolver=current_user)
+    generation_task: GenerationTaskType = strawberry.field(resolver=generation_task)
+    evaluation_task: EvaluationTaskType = strawberry.field(resolver=evaluation_task)
 
 
 @strawberry.type

@@ -5,6 +5,7 @@ import re
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
+from strawberry import ID
 from strawberry.types import Info
 
 from libs.models import EvaluationTask, GenerationTask, Rate
@@ -15,9 +16,9 @@ from libs.services.gen_answer import chat_with_job_info
 api_key = os.getenv("API_KEY", "EMPTY")
 
 
-async def resolve(info: Info, name: str, eval_name: str, model: str, worker_count: int):
+async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str, worker_count: int):
     user = info.context.user
-    generation_task = await GenerationTask.objects.aget(user=user, name=name, status=GenerationTaskStatus.COMPLETED)
+    generation_task = await GenerationTask.objects.aget(id=generation_task_id, user=user, status=GenerationTaskStatus.COMPLETED)
     evaluation_task = await EvaluationTask.objects.acreate(
         user=user, generation_task=generation_task, name=eval_name, points={}, status=EvaluationTaskStatus.STARTED
     )
@@ -42,7 +43,7 @@ async def resolve(info: Info, name: str, eval_name: str, model: str, worker_coun
             params = {"temperature": 0, "max_tokens": 1024}
             jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, params=params))
             if len(jobs) == worker_count:
-                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=120) for job in jobs), return_exceptions=True)
+                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
                 jobs = []
                 for result in results:
                     if isinstance(result, asyncio.exceptions.CancelledError):

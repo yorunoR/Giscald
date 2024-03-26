@@ -26,7 +26,9 @@ async def resolve(
     parameters = parse_params_str(param_str)
 
     user = info.context.user
-    generation_task = await GenerationTask.objects.acreate(user=user, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED)
+    generation_task = await GenerationTask.objects.acreate(
+        user=user, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED, description=description
+    )
     _generation_setting = await GenerationSetting.objects.acreate(
         user=user, generation_task=generation_task, host=host, worker_count=worker_count, parameters=parameters
     )
@@ -46,7 +48,7 @@ async def resolve(
 
                 jobs.append(chat_with_job_info(data["category"], messages, model_name, host, api_key=api_key, params=params))
                 if len(jobs) == worker_count:
-                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=120) for job in jobs), return_exceptions=True)
+                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=200) for job in jobs), return_exceptions=True)
                     jobs = []
                     for result in results:
                         if isinstance(result, asyncio.exceptions.CancelledError):
@@ -66,6 +68,7 @@ async def resolve(
         return generation_task
     except Exception as e:
         print(e)
+        print(line)
         generation_task.status = GenerationTaskStatus.FAILED
         await sync_to_async(lambda: generation_task.save())()
-        return generation_task
+        raise e

@@ -5,6 +5,8 @@ from strawberry import auto
 
 from libs.models import GenerationTask
 
+from .answer_type import AnswerType
+
 
 @strawberry.enum
 class GenerationTaskStatusType(Enum):
@@ -22,3 +24,4 @@ class GenerationTaskType:
     description: auto
     status: GenerationTaskStatusType
     created_at: auto
+    answers: list[AnswerType]

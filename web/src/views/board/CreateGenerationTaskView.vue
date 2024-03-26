@@ -2,8 +2,8 @@
   <main class="h-full">
     <h1 style="mt-2">Generate Answers</h1>
     <div v-if="loading">
-      <h2>loading...</h2>
-      <h2>{{ Math.floor(count / 60) }}:{{ ('00' + (count % 60)).slice(-2) }}</h2>
+      <h2 class="p-2">running...</h2>
+      <h1 class="p-2">{{ Math.floor(count / 60) }}:{{ ('00' + (count % 60)).slice(-2) }}</h1>
     </div>
     <div v-else>
       <section>
@@ -27,7 +27,7 @@
         <InputNumber v-model="workerCount" class="mt-4 w-6" placeholder="同時リクエスト数: 5" />
         <div class="mt-2 p-error">{{ workerCountErrors.join(' ') }}</div>
 
-        <InputText v-model="description" class="mt-4 w-6" placeholder="メモ" />
+        <Textarea v-model="description" class="mt-4 w-6" placeholder="GPU 情報等" />
         <div class="mt-2 p-error">{{ descriptionErrors.join(' ') }}</div>
 
         <div class="flex justify-content-center mt-4">
@@ -74,15 +74,16 @@ const toast = useToast()
 
 const loading = ref(false)
 const parameters = ref({
-  temperature: 0.4,
   max_tokens: 512,
-  frequency_penalty: 1.2
+  temperature: 0.1,
+  frequency_penalty: 0,
+  presence_penalty: -0.8
 })
 const count = ref(0)
 
 const { executeMutation: createGenerationTask } = useMutation(graphql(CreateGenerationTask))
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+// const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const clickCreateGenerationTask = async () => {
   loading.value = true

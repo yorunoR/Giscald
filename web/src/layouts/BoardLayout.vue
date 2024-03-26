@@ -9,6 +9,9 @@
           <li style="border: none; padding: 20px">
             <router-link to="/board/generationTasks"> 回答生成タスク一覧 </router-link>
           </li>
+          <li style="border: none; padding: 20px">
+            <router-link to="/board/evaluationTasks"> 評価タスク一覧 </router-link>
+          </li>
         </ul>
       </section>
       <Button class="p-button-secondary" @click="signOut"> サインアウト </Button>

@@ -20,6 +20,31 @@ export type Scalars = {
   Float: { input: number; output: number }
   /** Date with time (isoformat) */
   DateTime: { input: string; output: string }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: any; output: any }
+}
+
+export enum EvaluationTaskStatusType {
+  Completed = 'Completed',
+  Created = 'Created',
+  Failed = 'Failed',
+  Started = 'Started'
+}
+
+export type EvaluationTaskType = {
+  __typename?: 'EvaluationTaskType'
+  createdAt: Scalars['DateTime']['output']
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+  points: Scalars['JSON']['output']
+  status: EvaluationTaskStatusType
+}
+
+export enum GenerationTaskStatusType {
+  Completed = 'Completed',
+  Created = 'Created',
+  Failed = 'Failed',
+  Started = 'Started'
 }
 
 export type GenerationTaskType = {
@@ -29,13 +54,22 @@ export type GenerationTaskType = {
   id: Scalars['ID']['output']
   modelName: Scalars['String']['output']
   name: Scalars['String']['output']
-  status: StatusType
+  status: GenerationTaskStatusType
 }
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createEvaluationTask: EvaluationTaskType
   createGenerationTask: GenerationTaskType
   signin: UserType
+  updateEvaluationTask: EvaluationTaskType
+}
+
+export type MutationCreateEvaluationTaskArgs = {
+  evalName: Scalars['String']['input']
+  model: Scalars['String']['input']
+  name: Scalars['String']['input']
+  workerCount: Scalars['Int']['input']
 }
 
 export type MutationCreateGenerationTaskArgs = {
@@ -47,23 +81,21 @@ export type MutationCreateGenerationTaskArgs = {
   workerCount: Scalars['Int']['input']
 }
 
+export type MutationUpdateEvaluationTaskArgs = {
+  id: Scalars['ID']['input']
+}
+
 export type Query = {
   __typename?: 'Query'
   currentUser: UserType
   ping: Scalars['String']['output']
 }
 
-export enum StatusType {
-  Completed = 'Completed',
-  Created = 'Created',
-  Failed = 'Failed',
-  Started = 'Started'
-}
-
 export type UserType = {
   __typename?: 'UserType'
   activated: Scalars['Boolean']['output']
   email: Scalars['String']['output']
+  evaluationTasks: Array<EvaluationTaskType>
   generationTasks: Array<GenerationTaskType>
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
@@ -92,11 +124,37 @@ export type SigninMutation = {
   signin: { __typename?: 'UserType'; id: string; name: string; email: string }
 }
 
+export type UpdateEvaluationTaskMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type UpdateEvaluationTaskMutation = {
+  __typename?: 'Mutation'
+  updateEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
+}
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
 
 export type CurrentUserQuery = {
   __typename?: 'Query'
   currentUser: { __typename?: 'UserType'; email: string }
+}
+
+export type EvaluationTasksQueryVariables = Exact<{ [key: string]: never }>
+
+export type EvaluationTasksQuery = {
+  __typename?: 'Query'
+  currentUser: {
+    __typename?: 'UserType'
+    evaluationTasks: Array<{
+      __typename?: 'EvaluationTaskType'
+      id: string
+      name: string
+      status: EvaluationTaskStatusType
+      points: any
+      createdAt: string
+    }>
+  }
 }
 
 export type GenerationTasksQueryVariables = Exact<{ [key: string]: never }>
@@ -111,7 +169,7 @@ export type GenerationTasksQuery = {
       name: string
       modelName: string
       description?: string | null
-      status: StatusType
+      status: GenerationTaskStatusType
       createdAt: string
     }>
   }
@@ -247,6 +305,46 @@ export const SigninDocument = {
     }
   ]
 } as unknown as DocumentNode<SigninMutation, SigninMutationVariables>
+export const UpdateEvaluationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateEvaluationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateEvaluationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateEvaluationTaskMutation, UpdateEvaluationTaskMutationVariables>
 export const CurrentUserDocument = {
   kind: 'Document',
   definitions: [
@@ -270,6 +368,44 @@ export const CurrentUserDocument = {
     }
   ]
 } as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>
+export const EvaluationTasksDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'EvaluationTasks' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'currentUser' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'evaluationTasks' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'points' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<EvaluationTasksQuery, EvaluationTasksQueryVariables>
 export const GenerationTasksDocument = {
   kind: 'Document',
   definitions: [

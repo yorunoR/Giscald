@@ -28,7 +28,7 @@ const signIn = async () => {
     })
   } else {
     console.log('signin')
-    router.push({ name: 'generationTasks' })
+    router.push({ name: 'createGenerationTask' })
   }
 }
 </script>

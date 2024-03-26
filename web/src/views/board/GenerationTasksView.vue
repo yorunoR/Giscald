@@ -11,26 +11,14 @@
               <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
               </th>
-              <th
-                class="cursor-pointer w-3"
-                :class="{ 'text-primary': sortKey === 'modelName' }"
-                @click="setKey('modelName')"
-              >
-                <u> モデル名 </u>
+              <th class="cursor-pointer w-3" @click="setKey('modelName')">
+                <u :class="{ 'text-primary': sortKey === 'modelName' }"> モデル名 </u>
               </th>
-              <th
-                class="cursor-pointer w-1"
-                :class="{ 'text-primary': sortKey === 'createdAt' }"
-                @click="setKey('createdAt')"
-              >
-                <u> 作成日時 </u>
+              <th class="cursor-pointer w-1" @click="setKey('createdAt')">
+                <u :class="{ 'text-primary': sortKey === 'createdAt' }"> 作成日時 </u>
               </th>
-              <th
-                class="cursor-pointer w-1"
-                :class="{ 'text-primary': sortKey === 'status' }"
-                @click="setKey('status')"
-              >
-                <u> ステータス </u>
+              <th class="cursor-pointer w-1" @click="setKey('status')">
+                <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
               <th>メモ</th>
               <th class="w-1">操作</th>
@@ -120,7 +108,14 @@ let timeoutId
 const executeAndDoubleInterval = () => {
   executeQuery({ requestPolicy: 'network-only' })
 
-  timeoutId = setTimeout(executeAndDoubleInterval, interval)
+  if (
+    !data.value ||
+    data.value.currentUser.generationTasks.some(
+      (generationTask) => generationTask.status == 'Started'
+    )
+  ) {
+    timeoutId = setTimeout(executeAndDoubleInterval, interval)
+  }
 }
 
 timeoutId = setTimeout(executeAndDoubleInterval, interval)

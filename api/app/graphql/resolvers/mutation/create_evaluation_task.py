@@ -43,7 +43,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
             params = {"temperature": 0, "max_tokens": 1024}
             jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, params=params))
             if len(jobs) == worker_count:
-                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=120) for job in jobs), return_exceptions=True)
+                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
                 jobs = []
                 for result in results:
                     if isinstance(result, asyncio.exceptions.CancelledError):

@@ -13,6 +13,8 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+  '\n  mutation CreateEvaluationTask(\n    $generationTaskId: ID!\n    $evalName: String!\n    $model: String!\n    $workerCount: Int!\n  ) {\n    createEvaluationTask(\n      generationTaskId: $generationTaskId\n      evalName: $evalName\n      model: $model\n      workerCount: $workerCount\n    ) {\n      id\n    }\n  }\n':
+    types.CreateEvaluationTaskDocument,
   '\n  mutation CreateGenerationTask(\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n':
     types.CreateGenerationTaskDocument,
   '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n':
@@ -46,6 +48,12 @@ const documents = {
  */
 export function graphql(source: string): unknown
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation CreateEvaluationTask(\n    $generationTaskId: ID!\n    $evalName: String!\n    $model: String!\n    $workerCount: Int!\n  ) {\n    createEvaluationTask(\n      generationTaskId: $generationTaskId\n      evalName: $evalName\n      model: $model\n      workerCount: $workerCount\n    ) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation CreateEvaluationTask(\n    $generationTaskId: ID!\n    $evalName: String!\n    $model: String!\n    $workerCount: Int!\n  ) {\n    createEvaluationTask(\n      generationTaskId: $generationTaskId\n      evalName: $evalName\n      model: $model\n      workerCount: $workerCount\n    ) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -139,6 +139,18 @@ export type UserType = {
   role: Scalars['Int']['output']
 }
 
+export type CreateEvaluationTaskMutationVariables = Exact<{
+  generationTaskId: Scalars['ID']['input']
+  evalName: Scalars['String']['input']
+  model: Scalars['String']['input']
+  workerCount: Scalars['Int']['input']
+}>
+
+export type CreateEvaluationTaskMutation = {
+  __typename?: 'Mutation'
+  createEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
+}
+
 export type CreateGenerationTaskMutationVariables = Exact<{
   name: Scalars['String']['input']
   modelName: Scalars['String']['input']
@@ -268,6 +280,85 @@ export type PingQueryVariables = Exact<{ [key: string]: never }>
 
 export type PingQuery = { __typename?: 'Query'; ping: string }
 
+export const CreateEvaluationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateEvaluationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'generationTaskId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'evalName' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'model' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'workerCount' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createEvaluationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'generationTaskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'generationTaskId' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'evalName' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'evalName' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'model' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'model' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'workerCount' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'workerCount' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CreateEvaluationTaskMutation, CreateEvaluationTaskMutationVariables>
 export const CreateGenerationTaskDocument = {
   kind: 'Document',
   definitions: [

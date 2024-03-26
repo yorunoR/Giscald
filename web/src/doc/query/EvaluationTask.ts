@@ -14,6 +14,9 @@ const QUERY = /* GraphQL */ `
         finishReason
         usage
         processingTime
+        answer {
+          category
+        }
       }
     }
   }

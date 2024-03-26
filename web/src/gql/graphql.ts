@@ -118,6 +118,7 @@ export type QueryGenerationTaskArgs = {
 
 export type RateType = {
   __typename?: 'RateType'
+  answer: AnswerType
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
   model: Scalars['String']['output']
@@ -210,6 +211,7 @@ export type EvaluationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
+      answer: { __typename?: 'AnswerType'; category: string }
     }>
   }
 }
@@ -598,7 +600,15 @@ export const EvaluationTaskDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'answer' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                        }
+                      }
                     ]
                   }
                 }

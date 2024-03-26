@@ -3,6 +3,8 @@ from strawberry import auto
 
 from libs.models import Rate
 
+from .answer_type import AnswerType
+
 
 @strawberry.django.type(Rate)
 class RateType:
@@ -13,3 +15,4 @@ class RateType:
     finish_reason: auto
     usage: auto
     processing_time: auto
+    answer: AnswerType

@@ -27,7 +27,12 @@
           <tbody>
             <tr v-for="generationTask in sortedGenerationTasks" :key="generationTask.id">
               <td class="py-2">
-                {{ generationTask.name }}
+                <span>{{ generationTask.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'generationTask', params: { id: generationTask.id } }"
+                  >></router-link
+                >
               </td>
               <td class="py-2">
                 {{ generationTask.modelName }}

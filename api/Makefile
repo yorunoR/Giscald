@@ -16,11 +16,11 @@ test:
 shell:
 	poetry run python manage.py shell_plus
 
+show:
+	poetry run python manage.py showmigrations
+
 migrations:
 	poetry run python manage.py makemigrations
-
-showmigrations:
-	poetry run python manage.py showmigrations
 
 migrate:
 	poetry run python manage.py migrate

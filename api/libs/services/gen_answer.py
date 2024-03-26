@@ -5,18 +5,8 @@ import litellm
 # litellm.set_verbose = True
 
 
-async def chat(messages, model, host, api_key, temperature, max_tokens, top_p, stop, frequency_penalty):
-    response = await litellm.acompletion(
-        messages=messages,
-        model=model,
-        api_base=host,
-        api_key=api_key,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        top_p=top_p,
-        stop=stop,
-        frequency_penalty=frequency_penalty,
-    )
+async def chat(messages, model, host, api_key, params):
+    response = await litellm.acompletion(messages=messages, model=model, api_base=host, api_key=api_key, **params)
 
     return {
         "answer": response.choices[0].message.content,
@@ -26,16 +16,19 @@ async def chat(messages, model, host, api_key, temperature, max_tokens, top_p, s
     }
 
 
-async def chat_with_job_info(info, messages, model, host, api_key, temperature=0, max_tokens=512, top_p=None, stop=None, frequency_penalty=1.2):
+async def chat_with_job_info(info, messages, model, host, api_key, params):
     start = time.perf_counter()
-    response = await chat(messages, model, host, api_key, temperature, max_tokens, top_p, stop, frequency_penalty)
+    response = await chat(messages, model, host, api_key, params)
     end = time.perf_counter()
 
     if response["finish_reason"] == "length":
         print("ALERT: Rerun due to insufficient max_tokens.")
         print(info)
         start = time.perf_counter()
-        response = await chat(messages, model, host, api_key, temperature, max_tokens + 512, top_p, stop, frequency_penalty)
+        max_tokens = params.get("max_tokens", 1024)
+        new_params = dict(**params)
+        new_params["max_tokens"] = max_tokens + 512
+        response = await chat(messages, model, host, api_key, new_params)
         end = time.perf_counter()
 
     processing_time = end - start

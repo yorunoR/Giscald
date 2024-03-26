@@ -43,7 +43,9 @@ async def run(name, eval_name):
     print(f"GenerationTask name: {name}")
     generation_task = await GenerationTask.objects.aget(name=name)
     user = await sync_to_async(lambda: generation_task.user)()
-    evaluation_task = await EvaluationTask.objects.acreate(user=user, generation_task=generation_task, name=eval_name, points={}, status=Status.STARTED)
+    evaluation_task = await EvaluationTask.objects.acreate(
+        user=user, generation_task=generation_task, name=eval_name, points={}, status=Status.STARTED
+    )
 
     templates = {}
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "judge_ja_prompts.jsonl")
@@ -58,7 +60,10 @@ async def run(name, eval_name):
     async for answer in generation_task.answers.order_by("id").all():
         question = answer.messages[0]["content"]
         content = template.format(question=question, answer=answer.text)
-        messages = [{"role": "system", "content": "評価の点数は必ず[[評価]]の形式で示す。説明は簡潔にする。"}, {"role": "user", "content": content}]
+        messages = [
+            {"role": "system", "content": "評価の点数は必ず[[評価]]の形式で示す。説明は簡潔にする。"},
+            {"role": "user", "content": content},
+        ]
         jobs.append(chat_with_job_info(answer, messages, model, host, api_key=api_key, temperature=0, max_tokens=1024))
         if len(jobs) == worker_count:
             results = await asyncio.gather(*jobs)

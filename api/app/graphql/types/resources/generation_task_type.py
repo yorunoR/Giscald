@@ -7,7 +7,7 @@ from libs.models import GenerationTask
 
 
 @strawberry.enum
-class StatusType(Enum):
+class GenerationTaskStatusType(Enum):
     Created = 0
     Started = 10
     Completed = 20
@@ -20,5 +20,5 @@ class GenerationTaskType:
     name: auto
     model_name: auto
     description: auto
-    status: StatusType
+    status: GenerationTaskStatusType
     created_at: auto

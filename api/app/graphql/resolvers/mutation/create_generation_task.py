@@ -68,6 +68,7 @@ async def resolve(
         return generation_task
     except Exception as e:
         print(e)
+        print(line)
         generation_task.status = GenerationTaskStatus.FAILED
         await sync_to_async(lambda: generation_task.save())()
-        return generation_task
+        raise e

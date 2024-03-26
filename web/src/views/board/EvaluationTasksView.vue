@@ -59,7 +59,7 @@
               </td>
               <td>
                 <div
-                  v-if="evaluationTask.status === 'Completed' && evaluationTask.points === {}"
+                  v-if="evaluationTask.status === 'Completed' && isEmpty(evaluationTask.points)"
                   class="p-1"
                 >
                   <u
@@ -214,6 +214,10 @@ const setChartOptions = () => {
       }
     }
   }
+}
+
+const isEmpty = (obj) => {
+  return Object.keys(obj).length === 0
 }
 </script>
 

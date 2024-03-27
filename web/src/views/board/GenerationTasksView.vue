@@ -27,7 +27,12 @@
           <tbody>
             <tr v-for="generationTask in sortedGenerationTasks" :key="generationTask.id">
               <td class="py-2">
-                {{ generationTask.name }}
+                <span>{{ generationTask.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'generationTask', params: { id: generationTask.id } }"
+                  >></router-link
+                >
               </td>
               <td class="py-2">
                 {{ generationTask.modelName }}
@@ -43,7 +48,9 @@
               </td>
               <td>
                 <div v-if="generationTask.status === 'Completed'" class="p-1">
-                  <u class="cursor-pointer"> 評価する </u>
+                  <u class="cursor-pointer" @click="openCreateEvaluationTask(generationTask.id)">
+                    評価する
+                  </u>
                 </div>
                 <!--div class="p-1">
                   <u class="cursor-pointer"> 編集 </u>
@@ -55,21 +62,73 @@
       </div>
     </section>
   </main>
+  <section>
+    <Dialog v-model:visible="visible" modal header="評価" class="w-5">
+      <div v-if="loading">
+        <h2 class="p-2">running...</h2>
+        <h1 class="p-2">{{ Math.floor(count / 60) }}:{{ ('00' + (count % 60)).slice(-2) }}</h1>
+      </div>
+      <div v-else>
+        <div class="flex align-items-center gap-3 mb-5">
+          <label for="evalName" class="font-semibold w-8rem">評価名</label>
+          <InputText
+            id="evalName"
+            v-model="evalName"
+            class="flex-auto"
+            autocomplete="off"
+            placeholder="一意な名前"
+          />
+        </div>
+        <div class="flex align-items-center gap-3 mb-5">
+          <label for="model" class="font-semibold w-8rem">評価モデル</label>
+          <span>gpt-4-turbo-preview</span>
+        </div>
+        <div class="flex align-items-center gap-3 mb-5">
+          <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
+          <span>10</span>
+        </div>
+        <div class="flex justify-content-end gap-2">
+          <Button
+            type="button"
+            label="Cancel"
+            severity="secondary"
+            @click="visible = false"
+          ></Button>
+          <Button
+            type="button"
+            label="Run"
+            :disabled="!evalName"
+            @click="() => clickEvaluationTask()"
+          ></Button>
+        </div>
+      </div>
+    </Dialog>
+  </section>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount } from 'vue'
-import { useQuery } from '@urql/vue'
+import router from '@/router'
+import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
 import GenerationTasks from '@/doc/query/GenerationTasks'
+import CreateEvaluationTask from '@/doc/mutation/CreateEvaluationTask'
 import dayjs from 'dayjs'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
 
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
+const selectedId = ref(null)
+const visible = ref(false)
+const evalName = ref(null)
+const count = ref(0)
+const loading = ref(false)
 
 const query = graphql(GenerationTasks)
-
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
+const { executeMutation: createEvaluationTask } = useMutation(graphql(CreateEvaluationTask))
 
 const setKey = (key) => {
   if (sortKey.value == key) {
@@ -122,7 +181,46 @@ timeoutId = setTimeout(executeAndDoubleInterval, interval)
 
 onBeforeUnmount(() => {
   clearInterval(timeoutId)
+  clearInterval(countId)
 })
+
+const openCreateEvaluationTask = (id) => {
+  selectedId.value = id
+  visible.value = true
+}
+const clickEvaluationTask = async () => {
+  loading.value = true
+  count.value = 0
+
+  await countDisplay()
+  try {
+    const result = await createEvaluationTask({
+      generationTaskId: selectedId.value,
+      evalName: evalName.value,
+      model: 'gpt-4-turbo-preview',
+      workerCount: 10
+    })
+    if (result.error) {
+      loading.value = false
+      toast.add({
+        severity: 'error',
+        summary: 'Evaluate answers',
+        detail: result.error.message
+      })
+    } else {
+      router.push({ name: 'evaluationTasks' })
+    }
+  } finally {
+    clearInterval(countId)
+  }
+}
+
+let countId
+const countDisplay = async () => {
+  countId = setInterval(() => {
+    ++count.value
+  }, 1000)
+}
 </script>
 
 <style scoped>

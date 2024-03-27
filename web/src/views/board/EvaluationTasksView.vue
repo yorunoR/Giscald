@@ -46,7 +46,12 @@
                 </div>
               </th>
               <td class="py-2">
-                {{ evaluationTask.name }}
+                <span>{{ evaluationTask.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
+                  >></router-link
+                >
               </td>
               <td class="py-2">
                 {{ timeFormat(evaluationTask.createdAt) }}
@@ -55,11 +60,12 @@
                 {{ evaluationTask.status }}
               </td>
               <td class="py-2">
-                {{ evaluationTask.points }}
+                <div>{{ evaluationTask.points }}</div>
+                <div class="mt-2">AVG: {{ avg(evaluationTask.points) }}</div>
               </td>
               <td>
                 <div
-                  v-if="evaluationTask.status === 'Completed' && evaluationTask.points === {}"
+                  v-if="evaluationTask.status === 'Completed' && isEmpty(evaluationTask.points)"
                   class="p-1"
                 >
                   <u
@@ -172,16 +178,15 @@ const chartOptions = ref()
 
 const setChartData = (dataSources) => {
   if (dataSources.length > 0) {
+    const labels = Object.keys(dataSources[0].points).sort()
     const datasets = dataSources.map((dataSource) => {
+      const data = labels.map((label) => dataSource.points[label])
       return {
         label: dataSource.name,
-        data: Object.values(dataSource.points)
+        data
       }
     })
-    return {
-      datasets,
-      labels: Object.keys(dataSources[0].points)
-    }
+    return { labels, datasets }
   } else {
     return { labels: [], datasets: [] }
   }
@@ -214,6 +219,15 @@ const setChartOptions = () => {
       }
     }
   }
+}
+
+const isEmpty = (obj) => {
+  return Object.keys(obj).length === 0
+}
+const avg = (obj) => {
+  const len = Object.keys(obj).length
+  if (len < 1) return 0
+  return Object.values(obj).reduce((sum, element) => sum + element, 0) / len
 }
 </script>
 

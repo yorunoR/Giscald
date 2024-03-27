@@ -3,6 +3,11 @@
 * docker を使用しています
 * 操作画面の認証に Firebase を使用しています（ https://firebase.google.com/ で登録してください ）
 
+## 事前準備
+TGI や vllm で、OpenAI 互換の LLM サーバーを起動してください
+
+※ 参考 https://github.com/yorunoR/infer-with
+
 ## 環境設定
 
 `.env.local.sample` と `web/.env.development.sample` を参考に環境変数の設定ファイルを作成してください

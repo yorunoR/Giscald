@@ -105,6 +105,9 @@ const sortedAnswers = computed(() => {
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])
+      } else if (column === 'id') {
+        a_column = parseInt(a[column])
+        b_column = parseInt(b[column])
       } else {
         a_column = a[column]
         b_column = b[column]

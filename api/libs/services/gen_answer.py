@@ -6,6 +6,8 @@ import litellm
 
 
 async def chat(messages, model, host, api_key, params):
+    print(params)
+
     response = await litellm.acompletion(messages=messages, model=model, api_base=host, api_key=api_key, **params)
 
     return {
@@ -17,6 +19,8 @@ async def chat(messages, model, host, api_key, params):
 
 
 async def chat_with_job_info(info, messages, model, host, api_key, params):
+    print(info)
+
     start = time.perf_counter()
     response = await chat(messages, model, host, api_key, params)
     end = time.perf_counter()

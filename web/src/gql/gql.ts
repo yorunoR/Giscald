@@ -17,6 +17,10 @@ const documents = {
     types.CreateEvaluationTaskDocument,
   '\n  mutation CreateGenerationTask(\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n':
     types.CreateGenerationTaskDocument,
+  '\n  mutation DeleteEvaluationTask($id: ID!) {\n    deleteEvaluationTask(id: $id) {\n      id\n    }\n  }\n':
+    types.DeleteEvaluationTaskDocument,
+  '\n  mutation DeleteGenerationTask($id: ID!) {\n    deleteGenerationTask(id: $id) {\n      id\n    }\n  }\n':
+    types.DeleteGenerationTaskDocument,
   '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n':
     types.SigninDocument,
   '\n  mutation UpdateEvaluationTask($id: ID!) {\n    updateEvaluationTask(id: $id) {\n      id\n    }\n  }\n':
@@ -60,6 +64,18 @@ export function graphql(
 export function graphql(
   source: '\n  mutation CreateGenerationTask(\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n'
 ): (typeof documents)['\n  mutation CreateGenerationTask(\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation DeleteEvaluationTask($id: ID!) {\n    deleteEvaluationTask(id: $id) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation DeleteEvaluationTask($id: ID!) {\n    deleteEvaluationTask(id: $id) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation DeleteGenerationTask($id: ID!) {\n    deleteGenerationTask(id: $id) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation DeleteGenerationTask($id: ID!) {\n    deleteGenerationTask(id: $id) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

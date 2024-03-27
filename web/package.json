@@ -20,6 +20,8 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/exchange-auth": "^2.1.6",
     "@urql/vue": "^1.1.2",
+    "chart.js": "^4.4.2",
+    "dayjs": "^1.11.10",
     "firebase": "^10.8.0",
     "graphql": "^16.8.1",
     "pinia": "^2.1.7",
@@ -27,7 +29,9 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.48.0",
     "sweetalert": "^2.1.2",
+    "vee-validate": "^4.12.6",
     "vue": "^3.4.15",
+    "vue-json-pretty": "^2.4.0",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

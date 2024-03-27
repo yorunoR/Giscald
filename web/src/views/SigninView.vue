@@ -1,6 +1,6 @@
 <template>
   <main class="h-full">
-    <h1 style="margin: 100px">Giscald</h1>
+    <h1 style="margin: 100px">MT Bench Docker Front</h1>
     <Button class="top-50" @click="signIn">Google Sign in</Button>
   </main>
 </template>
@@ -27,8 +27,8 @@ const signIn = async () => {
       detail: result.error.message
     })
   } else {
-    // router.push({ name: 'users' })
     console.log('signin')
+    router.push({ name: 'createGenerationTask' })
   }
 }
 </script>

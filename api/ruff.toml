@@ -1,4 +1,4 @@
-line-length = 160
+line-length = 140
 indent-width = 4
 
 [lint]
@@ -12,6 +12,7 @@ unfixable = []
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "libs/migrations/*" = ["E501"]
+"libs/models/__init__.py" = ["I001"]
 
 [format]
 exclude = [

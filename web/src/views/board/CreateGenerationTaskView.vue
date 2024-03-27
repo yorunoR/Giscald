@@ -94,6 +94,13 @@ const parameters = ref({
     frequency_penalty: 0,
     presence_penalty: -1.0,
     top_p: 0.99
+  },
+  writing: {
+    max_tokens: 1000,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
   }
 })
 const count = ref(0)

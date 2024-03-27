@@ -31,7 +31,7 @@ async def chat_with_job_info(info, messages, model, host, api_key, params):
         start = time.perf_counter()
         max_tokens = params.get("max_tokens", 1000)
         new_params = dict(**params)
-        new_params["max_tokens"] = max_tokens + 500
+        new_params["max_tokens"] = max_tokens + 300
         response = await chat(messages, model, host, api_key, new_params)
         end = time.perf_counter()
 

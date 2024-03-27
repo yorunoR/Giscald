@@ -82,14 +82,14 @@ const parameters = ref({
     top_p: 0.99
   },
   reasoning: {
-    max_tokens: 400,
+    max_tokens: 500,
     temperature: 0.1,
     frequency_penalty: 0,
     presence_penalty: -1.0,
     top_p: 0.99
   },
   humanities: {
-    max_tokens: 1600,
+    max_tokens: 1500,
     temperature: 0.1,
     frequency_penalty: 0,
     presence_penalty: -1.0,

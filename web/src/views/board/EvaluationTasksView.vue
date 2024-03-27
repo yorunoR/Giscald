@@ -76,9 +76,14 @@
                     集計する
                   </u>
                 </div>
-                <!--div class="p-1">
-                  <u class="cursor-pointer"> 編集 </u>
-                </div-->
+                <div class="p-1">
+                  <u
+                    class="cursor-pointer"
+                    @click="() => clickDeleteEvaluationTask(evaluationTask.id)"
+                  >
+                    削除
+                  </u>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -94,7 +99,9 @@ import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
 import EvaluationTasks from '@/doc/query/EvaluationTasks'
 import UpdateEvaluationTask from '@/doc/mutation/UpdateEvaluationTask'
+import DeleteEvaluationTask from '@/doc/mutation/DeleteEvaluationTask'
 import dayjs from 'dayjs'
+import swal from 'sweetalert'
 
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
@@ -105,6 +112,7 @@ const dataSources2 = ref([])
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
 const { executeMutation: updateEvaluationTask } = useMutation(graphql(UpdateEvaluationTask))
+const { executeMutation: deleteEvaluationTask } = useMutation(graphql(DeleteEvaluationTask))
 
 const setKey = (key) => {
   if (sortKey.value == key) {
@@ -228,6 +236,22 @@ const avg = (obj) => {
   const len = Object.keys(obj).length
   if (len < 1) return 0
   return Object.values(obj).reduce((sum, element) => sum + element, 0) / len
+}
+
+const clickDeleteEvaluationTask = async (id) => {
+  const value = await swal({
+    title: '評価タスク削除',
+    text: '戻せません',
+    icon: 'warning',
+    buttons: {
+      cancelbutton: { text: 'キャンセル', value: 'cancel' },
+      yesbutton: { text: 'OK', value: 'ok' }
+    }
+  })
+
+  if (value === 'ok') {
+    await deleteEvaluationTask({ id })
+  }
 }
 </script>
 

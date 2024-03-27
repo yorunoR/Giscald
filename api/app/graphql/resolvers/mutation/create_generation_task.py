@@ -51,18 +51,22 @@ async def resolve(
                     results = await asyncio.gather(*(asyncio.wait_for(job, timeout=200) for job in jobs), return_exceptions=True)
                     jobs = []
                     for result in results:
-                        if isinstance(result, asyncio.exceptions.CancelledError):
-                            raise Exception("Timeout")
-                        await Answer.objects.acreate(
-                            user=user,
-                            generation_task=generation_task,
-                            messages=result["response"]["question"],
-                            text=result["response"]["answer"],
-                            usage=result["response"]["usage"],
-                            finish_reason=result["response"]["finish_reason"],
-                            processing_time=result["processing_time"],
-                            category=result["info"],
-                        )
+                        try:
+                            if isinstance(result, asyncio.exceptions.CancelledError):
+                                raise Exception("Timeout")
+                            await Answer.objects.acreate(
+                                user=user,
+                                generation_task=generation_task,
+                                messages=result["response"]["question"],
+                                text=result["response"]["answer"],
+                                usage=result["response"]["usage"],
+                                finish_reason=result["response"]["finish_reason"],
+                                processing_time=result["processing_time"],
+                                category=result["info"],
+                            )
+                        except Exception as e:
+                            print(result)
+                            raise e
         generation_task.status = GenerationTaskStatus.COMPLETED
         await sync_to_async(lambda: generation_task.save())()
         return generation_task

@@ -39,7 +39,7 @@
                 {{ answer.messages[0].content }}
               </td>
               <td class="p-2">
-                <div class="text-left">
+                <div class="text-left" style="max-width: 720px">
                   {{ answer.text }}
                 </div>
               </td>

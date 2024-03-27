@@ -52,9 +52,14 @@
                     評価する
                   </u>
                 </div>
-                <!--div class="p-1">
-                  <u class="cursor-pointer"> 編集 </u>
-                </div-->
+                <div class="p-1">
+                  <u
+                    class="cursor-pointer"
+                    @click="() => clickDeleteGenerationTask(generationTask.id)"
+                  >
+                    削除
+                  </u>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -113,7 +118,9 @@ import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
 import GenerationTasks from '@/doc/query/GenerationTasks'
 import CreateEvaluationTask from '@/doc/mutation/CreateEvaluationTask'
+import DeleteGenerationTask from '@/doc/mutation/DeleteGenerationTask'
 import dayjs from 'dayjs'
+import swal from 'sweetalert'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
@@ -129,6 +136,7 @@ const loading = ref(false)
 const query = graphql(GenerationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
 const { executeMutation: createEvaluationTask } = useMutation(graphql(CreateEvaluationTask))
+const { executeMutation: deleteGenerationTask } = useMutation(graphql(DeleteGenerationTask))
 
 const setKey = (key) => {
   if (sortKey.value == key) {
@@ -220,6 +228,22 @@ const countDisplay = async () => {
   countId = setInterval(() => {
     ++count.value
   }, 1000)
+}
+
+const clickDeleteGenerationTask = async (id) => {
+  const value = await swal({
+    title: '評価タスク削除',
+    text: '戻せません',
+    icon: 'warning',
+    buttons: {
+      cancelbutton: { text: 'キャンセル', value: 'cancel' },
+      yesbutton: { text: 'OK', value: 'ok' }
+    }
+  })
+
+  if (value === 'ok') {
+    await deleteGenerationTask({ id })
+  }
 }
 </script>
 

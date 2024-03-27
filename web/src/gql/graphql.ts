@@ -76,6 +76,8 @@ export type Mutation = {
   __typename?: 'Mutation'
   createEvaluationTask: EvaluationTaskType
   createGenerationTask: GenerationTaskType
+  deleteEvaluationTask: EvaluationTaskType
+  deleteGenerationTask: GenerationTaskType
   signin: UserType
   updateEvaluationTask: EvaluationTaskType
 }
@@ -94,6 +96,14 @@ export type MutationCreateGenerationTaskArgs = {
   name: Scalars['String']['input']
   paramStr?: InputMaybe<Scalars['String']['input']>
   workerCount: Scalars['Int']['input']
+}
+
+export type MutationDeleteEvaluationTaskArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteGenerationTaskArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type MutationUpdateEvaluationTaskArgs = {
@@ -164,6 +174,24 @@ export type CreateGenerationTaskMutationVariables = Exact<{
 export type CreateGenerationTaskMutation = {
   __typename?: 'Mutation'
   createGenerationTask: { __typename?: 'GenerationTaskType'; id: string }
+}
+
+export type DeleteEvaluationTaskMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type DeleteEvaluationTaskMutation = {
+  __typename?: 'Mutation'
+  deleteEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
+}
+
+export type DeleteGenerationTaskMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type DeleteGenerationTaskMutation = {
+  __typename?: 'Mutation'
+  deleteGenerationTask: { __typename?: 'GenerationTaskType'; id: string }
 }
 
 export type SigninMutationVariables = Exact<{ [key: string]: never }>
@@ -460,6 +488,86 @@ export const CreateGenerationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<CreateGenerationTaskMutation, CreateGenerationTaskMutationVariables>
+export const DeleteEvaluationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteEvaluationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteEvaluationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DeleteEvaluationTaskMutation, DeleteEvaluationTaskMutationVariables>
+export const DeleteGenerationTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteGenerationTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteGenerationTask' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DeleteGenerationTaskMutation, DeleteGenerationTaskMutationVariables>
 export const SigninDocument = {
   kind: 'Document',
   definitions: [

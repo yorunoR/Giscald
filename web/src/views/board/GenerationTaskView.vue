@@ -39,7 +39,9 @@
                 {{ answer.messages[0].content }}
               </td>
               <td class="p-2">
-                {{ answer.text }}
+                <div class="text-left">
+                  {{ answer.text }}
+                </div>
               </td>
               <td class="p-2">
                 {{ answer.finishReason }}

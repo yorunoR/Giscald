@@ -13,7 +13,7 @@ from libs.models.evaluation_task import Status as EvaluationTaskStatus
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
-api_key = os.getenv("API_KEY", "EMPTY")
+api_key = os.getenv("OPENAI_API_KEY", "EMPTY")
 
 
 async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str, worker_count: int):

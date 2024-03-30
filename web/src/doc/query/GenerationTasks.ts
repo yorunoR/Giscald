@@ -8,6 +8,11 @@ const QUERY = /* GraphQL */ `
         description
         status
         createdAt
+        generationSetting {
+          host
+          workerCount
+          parameters
+        }
       }
     }
   }

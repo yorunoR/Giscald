@@ -1,6 +1,6 @@
 from django.db import models
 
-from libs.models import User
+from libs.models import Bench, User
 
 from .base import BaseModel
 
@@ -14,6 +14,7 @@ class Status(models.IntegerChoices):
 
 class GenerationTask(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="generation_tasks")
+    bench = models.ForeignKey(Bench, on_delete=models.CASCADE, related_name="generation_tasks", null=True)
     name = models.CharField(max_length=512, unique=True)
     model_name = models.CharField(max_length=256)
     description = models.TextField(max_length=1024, null=True, blank=True)

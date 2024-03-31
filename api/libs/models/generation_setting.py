@@ -7,7 +7,7 @@ from .base import BaseModel
 
 class GenerationSetting(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="generation_settings")
-    generation_task = models.OneToOneField(GenerationTask, on_delete=models.CASCADE, related_name='generation_setting')
+    generation_task = models.OneToOneField(GenerationTask, on_delete=models.CASCADE, related_name="generation_setting")
     host = models.CharField(max_length=256)
     worker_count = models.IntegerField()
     parameters = models.JSONField()

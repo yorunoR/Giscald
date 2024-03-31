@@ -100,8 +100,8 @@
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
-          <label for="model" class="font-semibold w-8rem">評価モデル</label>
-          <span>gpt-4-turbo-preview</span>
+          <label for="evaluator" class="font-semibold w-8rem">評価者</label>
+          <Dropdown v-model="evaluator" :options="['gpt-4-turbo-preview', 'gemini/gemini-pro']" />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
@@ -149,6 +149,7 @@ const visibleDetail = ref(false)
 const evalName = ref(null)
 const count = ref(0)
 const loading = ref(false)
+const evaluator = ref('gpt-4-turbo-preview')
 
 const query = graphql(GenerationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -230,7 +231,7 @@ const clickEvaluationTask = async () => {
     const result = await createEvaluationTask({
       generationTaskId: selectedId.value,
       evalName: evalName.value,
-      model: 'gpt-4-turbo-preview',
+      model: evaluator.value,
       workerCount: 10
     })
     if (result.error) {

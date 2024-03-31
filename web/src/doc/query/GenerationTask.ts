@@ -10,11 +10,13 @@ const QUERY = /* GraphQL */ `
       answers {
         id
         messages
-        category
         text
         finishReason
         usage
         processingTime
+        question {
+          category
+        }
       }
     }
   }

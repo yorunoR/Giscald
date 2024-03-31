@@ -8,12 +8,15 @@ from libs.models.evaluation_task import Status as EvaluationTaskStatus
 
 
 def convert_list_to_dict(input_list):
-    result_dict = {item["answer__category"]: item["point"] for item in input_list}
+    result_dict = {item["answer__question__category"]: item["point"] for item in input_list}
     return result_dict
 
 
 def avg_points(evaluation_task):
-    category_points_avg = Rate.objects.filter(evaluation_task=evaluation_task).values("answer__category").annotate(point=Avg("point"))
+    category_points_avg = (
+        Rate.objects.filter(evaluation_task=evaluation_task).values("answer__question__category").annotate(point=Avg("point"))
+    )
+
     return convert_list_to_dict(category_points_avg)
 
 

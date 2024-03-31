@@ -54,6 +54,14 @@ export type EvaluationTaskType = {
   status: EvaluationTaskStatusType
 }
 
+export type GenerationSettingType = {
+  __typename?: 'GenerationSettingType'
+  host: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  parameters: Scalars['JSON']['output']
+  workerCount: Scalars['Int']['output']
+}
+
 export enum GenerationTaskStatusType {
   Completed = 'Completed',
   Created = 'Created',
@@ -66,6 +74,7 @@ export type GenerationTaskType = {
   answers: Array<AnswerType>
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
+  generationSetting: GenerationSettingType
   id: Scalars['ID']['output']
   modelName: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -302,6 +311,12 @@ export type GenerationTasksQuery = {
       description?: string | null
       status: GenerationTaskStatusType
       createdAt: string
+      generationSetting: {
+        __typename?: 'GenerationSettingType'
+        host: string
+        workerCount: number
+        parameters: any
+      }
     }>
   }
 }
@@ -856,7 +871,19 @@ export const GenerationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'modelName' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'generationSetting' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'host' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'workerCount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'parameters' } }
+                          ]
+                        }
+                      }
                     ]
                   }
                 }

@@ -10,7 +10,7 @@ from libs.models import Answer, GenerationSetting, GenerationTask
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
-api_key = os.getenv("API_KEY", "EMPTY")
+api_key = os.getenv("OPENAI_API_KEY", "EMPTY")
 
 
 def parse_params_str(param_str):

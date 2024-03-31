@@ -36,7 +36,9 @@
                 {{ answer.category }}
               </td>
               <td class="p-2">
-                {{ answer.messages[0].content }}
+                <div class="text-left" style="max-width: 720px">
+                  {{ answer.messages[0].content }}
+                </div>
               </td>
               <td class="p-2">
                 <div class="text-left" style="max-width: 720px">

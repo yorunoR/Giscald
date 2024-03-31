@@ -33,7 +33,7 @@
                 {{ answer.id }}
               </td>
               <td class="p-2">
-                {{ answer.category }}
+                {{ answer.question.category }}
               </td>
               <td class="p-2">
                 <div class="text-left" style="max-width: 720px">
@@ -106,6 +106,9 @@ const sortedAnswers = computed(() => {
       if (column === 'usage') {
         a_column = a[column].total_tokens
         b_column = b[column].total_tokens
+      } else if (column === 'category') {
+        a_column = a.question.category
+        b_column = b.question.category
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])

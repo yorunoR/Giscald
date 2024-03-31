@@ -33,3 +33,6 @@ superuser:
 
 seed:
 	poetry run python manage.py seed
+
+one_time_conv:
+	poetry run python manage.py conv

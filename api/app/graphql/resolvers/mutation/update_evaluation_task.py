@@ -14,7 +14,10 @@ def convert_list_to_dict(input_list):
 
 def avg_points(evaluation_task):
     category_points_avg = (
-        Rate.objects.filter(evaluation_task=evaluation_task).values("answer__question__category").annotate(point=Avg("point"))
+        Rate.objects.filter(evaluation_task=evaluation_task)
+        .exclude(point=0)
+        .values("answer__question__category")
+        .annotate(point=Avg("point"))
     )
 
     return convert_list_to_dict(category_points_avg)

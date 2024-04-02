@@ -21,6 +21,8 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
         api_key = os.getenv("OPENAI_API_KEY")
     if model.startswith("gemini"):
         api_key = os.getenv("GEMINI_API_KEY")
+    if model.startswith("claude"):
+        api_key = os.getenv("ANTHROPIC_API_KEY")
 
     user = info.context.user
     generation_task = await GenerationTask.objects.aget(id=generation_task_id, user=user, status=GenerationTaskStatus.COMPLETED)
@@ -45,7 +47,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
                 {"role": "user", "content": content},
             ]
-            params = {"temperature": 0, "max_tokens": 1024}
+            params = {"temperature": 0, "max_tokens": 1500}
             jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
@@ -55,7 +57,9 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                         if isinstance(result, asyncio.exceptions.CancelledError):
                             raise Exception("Timeout")
                         match = re.search(r"\[\[(\d{1,2})\]\]", result["response"]["answer"])
-                        point = int(match.group(1))
+                        point = 0
+                        if match is not None:
+                            point = int(match.group(1))
                         await Rate.objects.acreate(
                             user=user,
                             evaluation_task=evaluation_task,
@@ -70,7 +74,10 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                     except Exception as e:
                         print(result)
                         raise e
-                time.sleep(10)  # for gemini rate limit
+                if model.startswith("gemini"):
+                    time.sleep(10)
+                if model.startswith("claude"):
+                    time.sleep(10)
         evaluation_task.status = EvaluationTaskStatus.COMPLETED
         await sync_to_async(lambda: evaluation_task.save())()
         return evaluation_task

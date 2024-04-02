@@ -101,11 +101,15 @@
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evaluator" class="font-semibold w-8rem">評価者</label>
-          <Dropdown v-model="evaluator" :options="['gpt-4-turbo-preview', 'gemini/gemini-pro']" />
+          <Dropdown
+            v-model="evaluator"
+            :options="['gpt-4-turbo-preview', 'gemini/gemini-pro', 'claude-3-opus-20240229']"
+          />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
-          <span>10</span>
+          <div v-if="evaluator === 'claude-3-opus-20240229'">1</div>
+          <div v-else>10</div>
         </div>
         <div class="flex justify-content-end gap-2">
           <Button
@@ -227,12 +231,13 @@ const clickEvaluationTask = async () => {
   count.value = 0
 
   await countDisplay()
+  const workerCount = evaluator.value === 'claude-3-opus-20240229' ? 1 : 10
   try {
     const result = await createEvaluationTask({
       generationTaskId: selectedId.value,
       evalName: evalName.value,
       model: evaluator.value,
-      workerCount: 10
+      workerCount
     })
     if (result.error) {
       loading.value = false

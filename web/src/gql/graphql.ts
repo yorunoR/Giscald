@@ -50,6 +50,7 @@ export type EvaluationTaskType = {
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   points: Scalars['JSON']['output']
+  processingTimes: Scalars['JSON']['output']
   rates: Array<RateType>
   status: EvaluationTaskStatusType
 }
@@ -276,6 +277,7 @@ export type EvaluationTasksQuery = {
       name: string
       status: EvaluationTaskStatusType
       points: any
+      processingTimes: any
       createdAt: string
     }>
   }
@@ -791,6 +793,7 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
                     ]
                   }

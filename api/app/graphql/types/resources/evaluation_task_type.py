@@ -21,6 +21,7 @@ class EvaluationTaskType:
     id: auto
     name: auto
     points: auto
+    processing_times: auto
     status: EvaluationTaskStatusType
     created_at: auto
     rates: list[RateType]

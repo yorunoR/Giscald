@@ -27,11 +27,11 @@ const documents = {
     types.UpdateEvaluationTaskDocument,
   '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n':
     types.CurrentUserDocument,
-  '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          category\n        }\n      }\n    }\n  }\n':
+  '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          question {\n            category\n          }\n        }\n      }\n    }\n  }\n':
     types.EvaluationTaskDocument,
-  '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        createdAt\n      }\n    }\n  }\n':
+  '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n      }\n    }\n  }\n':
     types.EvaluationTasksDocument,
-  '\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        category\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n  }\n':
+  '\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        text\n        finishReason\n        usage\n        processingTime\n        question {\n          category\n        }\n      }\n    }\n  }\n':
     types.GenerationTaskDocument,
   '\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n        generationSetting {\n          host\n          workerCount\n          parameters\n        }\n      }\n    }\n  }\n':
     types.GenerationTasksDocument,
@@ -98,20 +98,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          category\n        }\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          category\n        }\n      }\n    }\n  }\n']
+  source: '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          question {\n            category\n          }\n        }\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          question {\n            category\n          }\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        createdAt\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        createdAt\n      }\n    }\n  }\n']
+  source: '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        category\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        category\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n  }\n']
+  source: '\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        text\n        finishReason\n        usage\n        processingTime\n        question {\n          category\n        }\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        text\n        finishReason\n        usage\n        processingTime\n        question {\n          category\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

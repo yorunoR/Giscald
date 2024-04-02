@@ -38,7 +38,7 @@
                 {{ rate.id }}
               </td>
               <td class="p-2">
-                {{ rate.answer.category }}
+                {{ rate.answer.question.category }}
               </td>
               <td class="p-2">
                 {{ rate.text }}
@@ -111,8 +111,8 @@ const sortedRates = computed(() => {
         a_column = a[column].total_tokens
         b_column = b[column].total_tokens
       } else if (column === 'category') {
-        a_column = a.answer.category
-        b_column = b.answer.category
+        a_column = a.answer.question.category
+        b_column = b.answer.question.category
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])

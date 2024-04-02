@@ -6,6 +6,7 @@ const QUERY = /* GraphQL */ `
         name
         status
         points
+        processingTimes
         createdAt
       }
     }

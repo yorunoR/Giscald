@@ -28,11 +28,11 @@ export type Scalars = {
 
 export type AnswerType = {
   __typename?: 'AnswerType'
-  category: Scalars['String']['output']
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
   messages: Scalars['JSON']['output']
   processingTime: Scalars['Decimal']['output']
+  question: QuestionType
   text: Scalars['String']['output']
   usage: Scalars['JSON']['output']
 }
@@ -50,6 +50,7 @@ export type EvaluationTaskType = {
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   points: Scalars['JSON']['output']
+  processingTimes: Scalars['JSON']['output']
   rates: Array<RateType>
   status: EvaluationTaskStatusType
 }
@@ -133,6 +134,14 @@ export type QueryEvaluationTaskArgs = {
 
 export type QueryGenerationTaskArgs = {
   id: Scalars['ID']['input']
+}
+
+export type QuestionType = {
+  __typename?: 'QuestionType'
+  category: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  questionNumber: Scalars['Int']['output']
+  turns: Array<Scalars['String']['output']>
 }
 
 export type RateType = {
@@ -248,7 +257,10 @@ export type EvaluationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
-      answer: { __typename?: 'AnswerType'; category: string }
+      answer: {
+        __typename?: 'AnswerType'
+        question: { __typename?: 'QuestionType'; category: string }
+      }
     }>
   }
 }
@@ -265,6 +277,7 @@ export type EvaluationTasksQuery = {
       name: string
       status: EvaluationTaskStatusType
       points: any
+      processingTimes: any
       createdAt: string
     }>
   }
@@ -288,11 +301,11 @@ export type GenerationTaskQuery = {
       __typename?: 'AnswerType'
       id: string
       messages: any
-      category: string
       text: string
       finishReason: string
       usage: any
       processingTime: any
+      question: { __typename?: 'QuestionType'; category: string }
     }>
   }
 }
@@ -729,7 +742,18 @@ export const EvaluationTaskDocument = {
                         name: { kind: 'Name', value: 'answer' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'question' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'category' } }
+                                ]
+                              }
+                            }
+                          ]
                         }
                       }
                     ]
@@ -769,6 +793,7 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
                     ]
                   }
@@ -828,11 +853,18 @@ export const GenerationTaskDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'messages' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'category' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'question' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                        }
+                      }
                     ]
                   }
                 }

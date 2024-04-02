@@ -17,6 +17,7 @@ class EvaluationTask(BaseModel):
     generation_task = models.ForeignKey(GenerationTask, on_delete=models.CASCADE, related_name="evaluation_tasks")
     name = models.CharField(max_length=512)
     points = models.JSONField()
+    processing_times = models.JSONField()
     status = models.IntegerField(choices=Status.choices, default=Status.CREATED)
 
     class Meta:

@@ -24,8 +24,12 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="w-1">点数</th>
-              <th class="w-1">処理時間</th>
+              <th class="cursor-pointer w-1" @click="setKey('points')">
+                <u :class="{ 'text-primary': sortKey === 'points' }"> 点数 </u>
+              </th>
+              <th class="cursor-pointer w-1" @click="setKey('processingTimes')">
+                <u :class="{ 'text-primary': sortKey === 'processingTimes' }"> 処理時間 </u>
+              </th>
               <th class="w-1">操作</th>
             </tr>
           </thead>
@@ -149,8 +153,16 @@ const sortedEvaluationTasks = computed(() => {
   const column = sortKey.value
   if (column != '') {
     evaluationTasks.sort((a, b) => {
-      if (a[column] < b[column]) return sortAsc.value ? -1 : 1
-      if (a[column] > b[column]) return sortAsc.value ? 1 : -1
+      let a_column, b_column
+      if (column === 'points' || column === 'processingTimes') {
+        a_column = Object.values(a[column]).reduce((sum, num) => sum + num, 0)
+        b_column = Object.values(b[column]).reduce((sum, num) => sum + num, 0)
+      } else {
+        a_column = a[column]
+        b_column = b[column]
+      }
+      if (a_column < b_column) return sortAsc.value ? -1 : 1
+      if (a_column > b_column) return sortAsc.value ? 1 : -1
       return a.id < b.id ? 1 : -1
     })
   }

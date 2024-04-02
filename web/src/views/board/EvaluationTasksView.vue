@@ -24,7 +24,8 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th>点数</th>
+              <th class="w-1">点数</th>
+              <th class="w-1">処理時間</th>
               <th class="w-1">操作</th>
             </tr>
           </thead>
@@ -59,15 +60,30 @@
               <td class="py-2">
                 {{ evaluationTask.status }}
               </td>
-              <td class="py-2">
-                <div>{{ evaluationTask.points }}</div>
-                <div class="mt-2">AVG: {{ avg(evaluationTask.points) }}</div>
+              <td class="py-2 text-left">
+                <div
+                  v-for="point in objToList(evaluationTask.points)"
+                  :key="point.key"
+                  class="px-2 flex justify-content-between"
+                >
+                  <div>{{ point.key }}:</div>
+                  <div>{{ pointFormat(point.value) }}</div>
+                </div>
+                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.points) }}</div>
+              </td>
+              <td class="py-2 text-left">
+                <div
+                  v-for="processingTime in objToList(evaluationTask.processingTimes)"
+                  :key="processingTime.key"
+                  class="px-2 flex justify-content-between"
+                >
+                  <div>{{ processingTime.key }}:</div>
+                  <div>{{ pointFormat(processingTime.value) }}</div>
+                </div>
+                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.processingTimes) }}</div>
               </td>
               <td>
-                <div
-                  v-if="evaluationTask.status === 'Completed' && isEmpty(evaluationTask.points)"
-                  class="p-1"
-                >
+                <div v-if="evaluationTask.status === 'Completed'" class="p-1">
                   <u
                     v-if="!loading"
                     class="cursor-pointer"
@@ -229,13 +245,14 @@ const setChartOptions = () => {
   }
 }
 
-const isEmpty = (obj) => {
+const _isEmpty = (obj) => {
   return Object.keys(obj).length === 0
 }
 const avg = (obj) => {
   const len = Object.keys(obj).length
   if (len < 1) return 0
-  return Object.values(obj).reduce((sum, element) => sum + element, 0) / len
+  const avg_val = Object.values(obj).reduce((sum, element) => sum + element, 0) / len
+  return pointFormat(avg_val)
 }
 
 const clickDeleteEvaluationTask = async (id) => {
@@ -252,6 +269,19 @@ const clickDeleteEvaluationTask = async (id) => {
   if (value === 'ok') {
     await deleteEvaluationTask({ id })
   }
+}
+
+const objToList = (obj) => {
+  const list = Object.entries(obj).map(([key, value]) => ({ key, value }))
+  return list.sort((a, b) => {
+    return a.key > b.key ? 1 : -1
+  })
+}
+
+const pointFormat = (point) => {
+  let num = point * 10
+  num = Math.round(num)
+  return num / 10
 }
 </script>
 

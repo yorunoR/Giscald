@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING, Annotated
+
 import strawberry
 from strawberry import auto
 
 from libs.models import Rate
 
 from .answer_type import AnswerType
+
+if TYPE_CHECKING:
+    from .evaluation_task_type import EvaluationTaskType
 
 
 @strawberry.django.type(Rate)
@@ -16,3 +21,4 @@ class RateType:
     usage: auto
     processing_time: auto
     answer: AnswerType
+    evaluation_task: Annotated["EvaluationTaskType", strawberry.lazy(".evaluation_task_type")]

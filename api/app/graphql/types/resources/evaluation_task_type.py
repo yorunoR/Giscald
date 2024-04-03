@@ -5,6 +5,7 @@ from strawberry import auto
 
 from libs.models import EvaluationTask
 
+from .generation_task_type import GenerationTaskType
 from .rate_type import RateType
 
 
@@ -25,3 +26,4 @@ class EvaluationTaskType:
     status: EvaluationTaskStatusType
     created_at: auto
     rates: list[RateType]
+    generation_task: GenerationTaskType

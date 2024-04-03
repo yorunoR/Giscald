@@ -57,6 +57,7 @@ export enum EvaluationTaskStatusType {
 export type EvaluationTaskType = {
   __typename?: 'EvaluationTaskType'
   createdAt: Scalars['DateTime']['output']
+  generationTask: GenerationTaskType
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   points: Scalars['JSON']['output']
@@ -174,6 +175,7 @@ export type QuestionType = {
 export type RateType = {
   __typename?: 'RateType'
   answer: AnswerType
+  evaluationTask: EvaluationTaskType
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
   model: Scalars['String']['output']
@@ -419,6 +421,10 @@ export type RatesQuery = {
       finishReason: string
       usage: any
       processingTime: any
+    }
+    evaluationTask: {
+      __typename?: 'EvaluationTaskType'
+      generationTask: { __typename?: 'GenerationTaskType'; modelName: string; name: string }
     }
   }>
   question: {
@@ -1168,6 +1174,26 @@ export const RatesDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                    ]
+                  }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'evaluationTask' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'generationTask' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'modelName' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                          ]
+                        }
+                      }
                     ]
                   }
                 }

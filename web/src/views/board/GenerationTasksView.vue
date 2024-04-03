@@ -240,6 +240,7 @@ const clickEvaluationTask = async () => {
       workerCount
     })
     if (result.error) {
+      console.log('failed')
       loading.value = false
       toast.add({
         severity: 'error',
@@ -247,9 +248,11 @@ const clickEvaluationTask = async () => {
         detail: result.error.message
       })
     } else {
+      console.log('completed')
       router.push({ name: 'evaluationTasks' })
     }
   } finally {
+    loading.value = false
     clearInterval(countId)
   }
 }

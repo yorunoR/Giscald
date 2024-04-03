@@ -118,6 +118,7 @@ const clickCreateGenerationTask = async () => {
   try {
     const result = await createGenerationTask({ ...values, paramStr })
     if (result.error) {
+      console.log('failed')
       loading.value = false
       toast.add({
         severity: 'error',
@@ -125,9 +126,11 @@ const clickCreateGenerationTask = async () => {
         detail: result.error.message
       })
     } else {
+      console.log('completed')
       router.push({ name: 'generationTasks' })
     }
   } finally {
+    loading.value = false
     clearInterval(timeoutId)
   }
 }

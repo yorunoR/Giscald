@@ -11,4 +11,4 @@ class BenchType:
     id: auto
     name: auto
     description: auto
-    quesions: list[QuestionType]
+    questions: list[QuestionType]

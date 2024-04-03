@@ -15,6 +15,14 @@ from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
 
+def extract_and_convert_to_int(input_str):
+    match = re.search(r"\d+", input_str)
+    if match:
+        return int(match.group())
+    else:
+        return 0
+
+
 async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str, worker_count: int):
     api_key = "EMPTY"
     if model.startswith("gpt"):
@@ -56,10 +64,10 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                     try:
                         if isinstance(result, asyncio.exceptions.CancelledError):
                             raise Exception("Timeout")
-                        match = re.search(r"\[\[(\d{1,2})\]\]", result["response"]["answer"])
+                        match = re.search(r"\[\[(.+)\]\]", result["response"]["answer"])
                         point = 0
                         if match is not None:
-                            point = int(match.group(1))
+                            point = extract_and_convert_to_int(match.group(1))
                         await Rate.objects.acreate(
                             user=user,
                             evaluation_task=evaluation_task,

@@ -6,6 +6,7 @@ from strawberry import auto
 from libs.models import GenerationTask
 
 from .answer_type import AnswerType
+from .generation_setting_type import GenerationSettingType
 
 
 @strawberry.enum
@@ -25,3 +26,4 @@ class GenerationTaskType:
     status: GenerationTaskStatusType
     created_at: auto
     answers: list[AnswerType]
+    generation_setting: GenerationSettingType

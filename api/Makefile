@@ -30,3 +30,9 @@ rollback:
 
 superuser:
 	poetry run python manage.py createsuperuser
+
+seed:
+	poetry run python manage.py seed
+
+one_time_conv:
+	poetry run python manage.py conv

@@ -28,13 +28,23 @@ export type Scalars = {
 
 export type AnswerType = {
   __typename?: 'AnswerType'
-  category: Scalars['String']['output']
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
   messages: Scalars['JSON']['output']
   processingTime: Scalars['Decimal']['output']
+  question: QuestionType
   text: Scalars['String']['output']
   usage: Scalars['JSON']['output']
+}
+
+export type BenchType = {
+  __typename?: 'BenchType'
+  createdAt: Scalars['DateTime']['output']
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+  questions: Array<QuestionType>
+  updatedAt: Scalars['DateTime']['output']
 }
 
 export enum EvaluationTaskStatusType {
@@ -50,8 +60,17 @@ export type EvaluationTaskType = {
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   points: Scalars['JSON']['output']
+  processingTimes: Scalars['JSON']['output']
   rates: Array<RateType>
   status: EvaluationTaskStatusType
+}
+
+export type GenerationSettingType = {
+  __typename?: 'GenerationSettingType'
+  host: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  parameters: Scalars['JSON']['output']
+  workerCount: Scalars['Int']['output']
 }
 
 export enum GenerationTaskStatusType {
@@ -66,6 +85,7 @@ export type GenerationTaskType = {
   answers: Array<AnswerType>
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
+  generationSetting: GenerationSettingType
   id: Scalars['ID']['output']
   modelName: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -112,10 +132,18 @@ export type MutationUpdateEvaluationTaskArgs = {
 
 export type Query = {
   __typename?: 'Query'
+  bench: BenchType
+  benches: Array<BenchType>
   currentUser: UserType
   evaluationTask: EvaluationTaskType
   generationTask: GenerationTaskType
   ping: Scalars['String']['output']
+  question: QuestionType
+  rates: Array<RateType>
+}
+
+export type QueryBenchArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type QueryEvaluationTaskArgs = {
@@ -124,6 +152,23 @@ export type QueryEvaluationTaskArgs = {
 
 export type QueryGenerationTaskArgs = {
   id: Scalars['ID']['input']
+}
+
+export type QueryQuestionArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryRatesArgs = {
+  questionId: Scalars['ID']['input']
+}
+
+export type QuestionType = {
+  __typename?: 'QuestionType'
+  bench: BenchType
+  category: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  questionNumber: Scalars['Int']['output']
+  turns: Array<Scalars['String']['output']>
 }
 
 export type RateType = {
@@ -210,6 +255,41 @@ export type UpdateEvaluationTaskMutation = {
   updateEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
 }
 
+export type BenchQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type BenchQuery = {
+  __typename?: 'Query'
+  bench: {
+    __typename?: 'BenchType'
+    id: string
+    name: string
+    description?: string | null
+    questions: Array<{
+      __typename?: 'QuestionType'
+      id: string
+      questionNumber: number
+      category: string
+      turns: Array<string>
+    }>
+  }
+}
+
+export type BenchesQueryVariables = Exact<{ [key: string]: never }>
+
+export type BenchesQuery = {
+  __typename?: 'Query'
+  benches: Array<{
+    __typename?: 'BenchType'
+    id: string
+    name: string
+    description?: string | null
+    createdAt: string
+    updatedAt: string
+  }>
+}
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
 
 export type CurrentUserQuery = {
@@ -239,7 +319,10 @@ export type EvaluationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
-      answer: { __typename?: 'AnswerType'; category: string }
+      answer: {
+        __typename?: 'AnswerType'
+        question: { __typename?: 'QuestionType'; category: string }
+      }
     }>
   }
 }
@@ -256,6 +339,7 @@ export type EvaluationTasksQuery = {
       name: string
       status: EvaluationTaskStatusType
       points: any
+      processingTimes: any
       createdAt: string
     }>
   }
@@ -279,11 +363,11 @@ export type GenerationTaskQuery = {
       __typename?: 'AnswerType'
       id: string
       messages: any
-      category: string
       text: string
       finishReason: string
       usage: any
       processingTime: any
+      question: { __typename?: 'QuestionType'; category: string }
     }>
   }
 }
@@ -302,6 +386,12 @@ export type GenerationTasksQuery = {
       description?: string | null
       status: GenerationTaskStatusType
       createdAt: string
+      generationSetting: {
+        __typename?: 'GenerationSettingType'
+        host: string
+        workerCount: number
+        parameters: any
+      }
     }>
   }
 }
@@ -309,6 +399,37 @@ export type GenerationTasksQuery = {
 export type PingQueryVariables = Exact<{ [key: string]: never }>
 
 export type PingQuery = { __typename?: 'Query'; ping: string }
+
+export type RatesQueryVariables = Exact<{
+  questionId: Scalars['ID']['input']
+}>
+
+export type RatesQuery = {
+  __typename?: 'Query'
+  rates: Array<{
+    __typename?: 'RateType'
+    id: string
+    model: string
+    point: number
+    text: string
+    answer: {
+      __typename?: 'AnswerType'
+      id: string
+      text: string
+      finishReason: string
+      usage: any
+      processingTime: any
+    }
+  }>
+  question: {
+    __typename?: 'QuestionType'
+    id: string
+    questionNumber: number
+    category: string
+    turns: Array<string>
+    bench: { __typename?: 'BenchType'; id: string }
+  }
+}
 
 export const CreateEvaluationTaskDocument = {
   kind: 'Document',
@@ -635,6 +756,92 @@ export const UpdateEvaluationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<UpdateEvaluationTaskMutation, UpdateEvaluationTaskMutationVariables>
+export const BenchDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Bench' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'bench' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'questions' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'turns' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<BenchQuery, BenchQueryVariables>
+export const BenchesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Benches' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'benches' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<BenchesQuery, BenchesQueryVariables>
 export const CurrentUserDocument = {
   kind: 'Document',
   definitions: [
@@ -714,7 +921,18 @@ export const EvaluationTaskDocument = {
                         name: { kind: 'Name', value: 'answer' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'question' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'category' } }
+                                ]
+                              }
+                            }
+                          ]
                         }
                       }
                     ]
@@ -754,6 +972,7 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
                     ]
                   }
@@ -813,11 +1032,18 @@ export const GenerationTaskDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'messages' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'category' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'question' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                        }
+                      }
                     ]
                   }
                 }
@@ -856,7 +1082,19 @@ export const GenerationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'modelName' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'generationSetting' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'host' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'workerCount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'parameters' } }
+                          ]
+                        }
+                      }
                     ]
                   }
                 }
@@ -882,3 +1120,90 @@ export const PingDocument = {
     }
   ]
 } as unknown as DocumentNode<PingQuery, PingQueryVariables>
+export const RatesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Rates' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'rates' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'questionId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'point' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'answer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'question' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'turns' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'bench' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RatesQuery, RatesQueryVariables>

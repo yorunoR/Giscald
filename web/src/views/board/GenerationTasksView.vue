@@ -21,6 +21,7 @@
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
               <th>メモ</th>
+              <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
           </thead>
@@ -47,6 +48,13 @@
                 {{ generationTask.description }}
               </td>
               <td>
+                <div class="p-1">
+                  <u class="cursor-pointer" @click="openDetailEvaluationTask(generationTask.id)">
+                    見る
+                  </u>
+                </div>
+              </td>
+              <td>
                 <div v-if="generationTask.status === 'Completed'" class="p-1">
                   <u class="cursor-pointer" @click="openCreateEvaluationTask(generationTask.id)">
                     評価する
@@ -68,6 +76,13 @@
     </section>
   </main>
   <section>
+    <Dialog v-model:visible="visibleDetail" modal header="詳細" class="w-5">
+      <p><b>ホスト:</b><br />{{ selected.generationSetting.host }}</p>
+      <p><b>同時リクエスト数:</b><br />{{ selected.generationSetting.workerCount }}</p>
+      <p><b>パラメーター:</b><br />{{ selected.generationSetting.parameters }}</p>
+    </Dialog>
+  </section>
+  <section>
     <Dialog v-model:visible="visible" modal header="評価" class="w-5">
       <div v-if="loading">
         <h2 class="p-2">running...</h2>
@@ -85,12 +100,16 @@
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
-          <label for="model" class="font-semibold w-8rem">評価モデル</label>
-          <span>gpt-4-turbo-preview</span>
+          <label for="evaluator" class="font-semibold w-8rem">評価者</label>
+          <Dropdown
+            v-model="evaluator"
+            :options="['gpt-4-turbo-preview', 'gemini/gemini-pro', 'claude-3-opus-20240229']"
+          />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
-          <span>10</span>
+          <div v-if="evaluator === 'claude-3-opus-20240229'">1</div>
+          <div v-else>10</div>
         </div>
         <div class="flex justify-content-end gap-2">
           <Button
@@ -128,10 +147,13 @@ const toast = useToast()
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
 const selectedId = ref(null)
+const selected = ref({})
 const visible = ref(false)
+const visibleDetail = ref(false)
 const evalName = ref(null)
 const count = ref(0)
 const loading = ref(false)
+const evaluator = ref('gpt-4-turbo-preview')
 
 const query = graphql(GenerationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -178,7 +200,7 @@ const executeAndDoubleInterval = () => {
   if (
     !data.value ||
     data.value.currentUser.generationTasks.some(
-      (generationTask) => generationTask.status == 'Started'
+      (generationTask) => generationTask.status === 'Started'
     )
   ) {
     timeoutId = setTimeout(executeAndDoubleInterval, interval)
@@ -192,6 +214,14 @@ onBeforeUnmount(() => {
   clearInterval(countId)
 })
 
+const openDetailEvaluationTask = (id) => {
+  selectedId.value = id
+  visibleDetail.value = true
+  if (!data.value) return {}
+  selected.value = data.value.currentUser.generationTasks.find(
+    (generationTask) => generationTask.id === id
+  )
+}
 const openCreateEvaluationTask = (id) => {
   selectedId.value = id
   visible.value = true
@@ -201,12 +231,13 @@ const clickEvaluationTask = async () => {
   count.value = 0
 
   await countDisplay()
+  const workerCount = evaluator.value === 'claude-3-opus-20240229' ? 1 : 10
   try {
     const result = await createEvaluationTask({
       generationTaskId: selectedId.value,
       evalName: evalName.value,
-      model: 'gpt-4-turbo-preview',
-      workerCount: 10
+      model: evaluator.value,
+      workerCount
     })
     if (result.error) {
       loading.value = false

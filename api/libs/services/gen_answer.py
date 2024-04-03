@@ -8,7 +8,16 @@ import litellm
 async def chat(messages, model, host, api_key, params):
     print(params)
 
-    response = await litellm.acompletion(messages=messages, model=model, api_base=host, api_key=api_key, **params)
+    try:
+        response = await litellm.acompletion(messages=messages, model=model, api_base=host, api_key=api_key, **params)
+    except Exception as e:
+        print(e)
+        return {
+            "answer": "[[0]]",
+            "finish_reason": "evaluator",
+            "usage": {"total_tokens": 0, "prompt_tokens": 0, "completion_tokens": 0},
+            "question": messages,
+        }
 
     return {
         "answer": response.choices[0].message.content,

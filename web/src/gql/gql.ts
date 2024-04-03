@@ -25,6 +25,10 @@ const documents = {
     types.SigninDocument,
   '\n  mutation UpdateEvaluationTask($id: ID!) {\n    updateEvaluationTask(id: $id) {\n      id\n    }\n  }\n':
     types.UpdateEvaluationTaskDocument,
+  '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n      }\n    }\n  }\n':
+    types.BenchDocument,
+  '\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n':
+    types.BenchesDocument,
   '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n':
     types.CurrentUserDocument,
   '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          question {\n            category\n          }\n        }\n      }\n    }\n  }\n':
@@ -35,7 +39,9 @@ const documents = {
     types.GenerationTaskDocument,
   '\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n        generationSetting {\n          host\n          workerCount\n          parameters\n        }\n      }\n    }\n  }\n':
     types.GenerationTasksDocument,
-  '\n  query Ping {\n    ping\n  }\n': types.PingDocument
+  '\n  query Ping {\n    ping\n  }\n': types.PingDocument,
+  '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n':
+    types.RatesDocument
 }
 
 /**
@@ -92,6 +98,18 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n      }\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n'
+): (typeof documents)['\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n'
 ): (typeof documents)['\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n']
 /**
@@ -124,6 +142,12 @@ export function graphql(
 export function graphql(
   source: '\n  query Ping {\n    ping\n  }\n'
 ): (typeof documents)['\n  query Ping {\n    ping\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n']
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {}

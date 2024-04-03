@@ -27,7 +27,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
     user = info.context.user
     generation_task = await GenerationTask.objects.aget(id=generation_task_id, user=user, status=GenerationTaskStatus.COMPLETED)
     evaluation_task = await EvaluationTask.objects.acreate(
-        user=user, generation_task=generation_task, name=eval_name, points={}, status=EvaluationTaskStatus.STARTED
+        user=user, generation_task=generation_task, name=eval_name, points={}, processing_times={}, status=EvaluationTaskStatus.STARTED
     )
 
     templates = {}

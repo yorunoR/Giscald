@@ -138,6 +138,8 @@ export type Query = {
   evaluationTask: EvaluationTaskType
   generationTask: GenerationTaskType
   ping: Scalars['String']['output']
+  question: QuestionType
+  rates: Array<RateType>
 }
 
 export type QueryBenchArgs = {
@@ -152,8 +154,17 @@ export type QueryGenerationTaskArgs = {
   id: Scalars['ID']['input']
 }
 
+export type QueryQuestionArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryRatesArgs = {
+  questionId: Scalars['ID']['input']
+}
+
 export type QuestionType = {
   __typename?: 'QuestionType'
+  bench: BenchType
   category: Scalars['String']['output']
   id: Scalars['ID']['output']
   questionNumber: Scalars['Int']['output']
@@ -388,6 +399,37 @@ export type GenerationTasksQuery = {
 export type PingQueryVariables = Exact<{ [key: string]: never }>
 
 export type PingQuery = { __typename?: 'Query'; ping: string }
+
+export type RatesQueryVariables = Exact<{
+  questionId: Scalars['ID']['input']
+}>
+
+export type RatesQuery = {
+  __typename?: 'Query'
+  rates: Array<{
+    __typename?: 'RateType'
+    id: string
+    model: string
+    point: number
+    text: string
+    answer: {
+      __typename?: 'AnswerType'
+      id: string
+      text: string
+      finishReason: string
+      usage: any
+      processingTime: any
+    }
+  }>
+  question: {
+    __typename?: 'QuestionType'
+    id: string
+    questionNumber: number
+    category: string
+    turns: Array<string>
+    bench: { __typename?: 'BenchType'; id: string }
+  }
+}
 
 export const CreateEvaluationTaskDocument = {
   kind: 'Document',
@@ -1078,3 +1120,90 @@ export const PingDocument = {
     }
   ]
 } as unknown as DocumentNode<PingQuery, PingQueryVariables>
+export const RatesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Rates' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'rates' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'questionId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'model' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'point' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'answer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'question' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'turns' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'bench' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RatesQuery, RatesQueryVariables>

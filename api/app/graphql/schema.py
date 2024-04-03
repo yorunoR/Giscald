@@ -13,9 +13,13 @@ from app.graphql.resolvers.query.current_user import resolve as current_user
 from app.graphql.resolvers.query.evaluation_task import resolve as evaluation_task
 from app.graphql.resolvers.query.generation_task import resolve as generation_task
 from app.graphql.resolvers.query.ping import resolve as ping
+from app.graphql.resolvers.query.question import resolve as question
+from app.graphql.resolvers.query.rates import resolve as rates
 from app.graphql.types.resources.bench_type import BenchType
 from app.graphql.types.resources.evaluation_task_type import EvaluationTaskType
 from app.graphql.types.resources.generation_task_type import GenerationTaskType
+from app.graphql.types.resources.question_type import QuestionType
+from app.graphql.types.resources.rate_type import RateType
 from app.graphql.types.resources.user_type import UserType
 
 
@@ -27,6 +31,8 @@ class Query:
     evaluation_task: EvaluationTaskType = strawberry.field(resolver=evaluation_task)
     benches: list[BenchType] = strawberry.field(resolver=benches)
     bench: BenchType = strawberry.field(resolver=bench)
+    rates: list[RateType] = strawberry.field(resolver=rates)
+    question: QuestionType = strawberry.field(resolver=question)
 
 
 @strawberry.type

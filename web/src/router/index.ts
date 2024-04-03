@@ -111,6 +111,16 @@ const router = createRouter({
           },
           component: async () =>
             await import(/* webpackChunkName: "bench" */ '@/views/board/BenchView.vue')
+        },
+        {
+          path: 'rates/:questionId(\\d+)',
+          props: (route) => ({ questionId: route.params.questionId }),
+          name: 'rates',
+          meta: {
+            title: 'rates'
+          },
+          component: async () =>
+            await import(/* webpackChunkName: "rates" */ '@/views/board/RatesView.vue')
         }
       ]
     },

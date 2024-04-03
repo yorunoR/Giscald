@@ -22,9 +22,12 @@
             <tr v-for="question in sortedQuestions" :key="question.id">
               <td class="p-2">
                 {{ question.questionNumber }}
-                <!--router-link class="pl-1" :to="{ name: 'rates', params: { questionId: question.id } }">
+                <router-link
+                  class="pl-1"
+                  :to="{ name: 'rates', params: { questionId: question.id } }"
+                >
                   >
-                </router-link!-->
+                </router-link>
               </td>
               <td class="p-2">
                 {{ question.category }}
@@ -57,8 +60,7 @@ const query = graphql(Bench)
 
 const { fetching, error, data } = useQuery({
   query,
-  variables: { id: props.id },
-  requestPolicy: 'network-only'
+  variables: { id: props.id }
 })
 
 const setKey = (key) => {

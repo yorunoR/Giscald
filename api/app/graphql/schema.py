@@ -7,10 +7,13 @@ from app.graphql.resolvers.mutation.delete_evaluation_task import resolve as del
 from app.graphql.resolvers.mutation.delete_generation_task import resolve as delete_generation_task
 from app.graphql.resolvers.mutation.signin import resolve as signin
 from app.graphql.resolvers.mutation.update_evaluation_task import resolve as update_evaluation_task
+from app.graphql.resolvers.query.bench import resolve as bench
+from app.graphql.resolvers.query.benches import resolve as benches
 from app.graphql.resolvers.query.current_user import resolve as current_user
 from app.graphql.resolvers.query.evaluation_task import resolve as evaluation_task
 from app.graphql.resolvers.query.generation_task import resolve as generation_task
 from app.graphql.resolvers.query.ping import resolve as ping
+from app.graphql.types.resources.bench_type import BenchType
 from app.graphql.types.resources.evaluation_task_type import EvaluationTaskType
 from app.graphql.types.resources.generation_task_type import GenerationTaskType
 from app.graphql.types.resources.user_type import UserType
@@ -22,6 +25,8 @@ class Query:
     current_user: UserType = strawberry.field(resolver=current_user)
     generation_task: GenerationTaskType = strawberry.field(resolver=generation_task)
     evaluation_task: EvaluationTaskType = strawberry.field(resolver=evaluation_task)
+    benches: list[BenchType] = strawberry.field(resolver=benches)
+    bench: BenchType = strawberry.field(resolver=bench)
 
 
 @strawberry.type

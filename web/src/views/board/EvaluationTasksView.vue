@@ -1,10 +1,26 @@
 <template>
   <main style="max-width: 1200px; margin: auto">
     <h1 class="mt-2">評価タスク一覧</h1>
-    <section v-if="dataSources1.length > 0 || dataSources2.length > 0" class="mt-6">
+    <section
+      v-if="
+        radarDataSources1.length > 0 || radarDataSources2.length > 0 || radarDataSources3.length > 0
+      "
+      class="mt-6"
+    >
       <div class="flex">
-        <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-6" />
-        <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-6" />
+        <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
+        <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
+        <Chart type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
+      </div>
+    </section>
+    <section
+      v-if="barDataSources1.length > 0 || barDataSources2.length > 0 || barDataSources3.length > 0"
+      class="mt-6"
+    >
+      <div class="flex">
+        <Chart type="bar" :data="barChartData1" :options="barChartOptions" class="w-4 h-30rem" />
+        <Chart type="bar" :data="barChartData2" :options="barChartOptions" class="w-4 h-30rem" />
+        <Chart type="bar" :data="barChartData3" :options="barChartOptions" class="w-4 h-30rem" />
       </div>
     </section>
     <section class="mt-4">
@@ -38,15 +54,40 @@
               <th class="py-2">
                 <div v-if="evaluationTask.points !== {}">
                   <Checkbox
-                    v-model="dataSources1"
-                    :value="{ name: evaluationTask.name, points: evaluationTask.points }"
-                    @change="() => (chartData1 = setChartData(dataSources1))"
+                    v-model="radarDataSources1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    @change="() => (chartData1 = setChartData(radarDataSources1))"
                   />
                   <Checkbox
-                    v-model="dataSources2"
-                    class="ml-2"
-                    :value="{ name: evaluationTask.name, points: evaluationTask.points }"
-                    @change="() => (chartData2 = setChartData(dataSources2))"
+                    v-model="radarDataSources2"
+                    class="ml-1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    @change="() => (chartData2 = setChartData(radarDataSources2))"
+                  />
+                  <Checkbox
+                    v-model="radarDataSources3"
+                    class="ml-1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    @change="() => (chartData3 = setChartData(radarDataSources3))"
+                  />
+                </div>
+                <div v-if="evaluationTask.processingTimes !== {}" class="mt-1">
+                  <Checkbox
+                    v-model="barDataSources1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    @change="() => (barChartData1 = setChartData(barDataSources1))"
+                  />
+                  <Checkbox
+                    v-model="barDataSources2"
+                    class="ml-1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    @change="() => (barChartData2 = setChartData(barDataSources2))"
+                  />
+                  <Checkbox
+                    v-model="barDataSources3"
+                    class="ml-1"
+                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    @change="() => (barChartData3 = setChartData(barDataSources3))"
                   />
                 </div>
               </th>
@@ -126,8 +167,12 @@ import swal from 'sweetalert'
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
 const loading = ref(false)
-const dataSources1 = ref([])
-const dataSources2 = ref([])
+const radarDataSources1 = ref([])
+const radarDataSources2 = ref([])
+const radarDataSources3 = ref([])
+const barDataSources1 = ref([])
+const barDataSources2 = ref([])
+const barDataSources3 = ref([])
 
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -206,17 +251,21 @@ const clickUpdateEvaluationTask = async (id) => {
 
 onMounted(() => {
   chartOptions.value = setChartOptions()
+  barChartOptions.value = setBarChartOptions()
 })
 
 const chartData1 = ref()
 const chartData2 = ref()
+const barChartData1 = ref()
+const barChartData2 = ref()
 const chartOptions = ref()
+const barChartOptions = ref()
 
 const setChartData = (dataSources) => {
   if (dataSources.length > 0) {
-    const labels = Object.keys(dataSources[0].points).sort()
+    const labels = Object.keys(dataSources[0].values).sort()
     const datasets = dataSources.map((dataSource) => {
-      const data = labels.map((label) => dataSource.points[label])
+      const data = labels.map((label) => dataSource.values[label])
       return {
         label: dataSource.name,
         data
@@ -252,6 +301,49 @@ const setChartOptions = () => {
     elements: {
       line: {
         fill: false // これにより塗りつぶしが無効になります
+      }
+    }
+  }
+}
+
+const setBarChartOptions = () => {
+  const documentStyle = getComputedStyle(document.documentElement)
+  const textColor = documentStyle.getPropertyValue('--text-color')
+  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+  const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+
+  return {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    aspectRatio: 0.8,
+    plugins: {
+      legend: {
+        labels: {
+          color: textColor
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: textColorSecondary,
+          font: {
+            weight: 500
+          }
+        },
+        grid: {
+          display: false,
+          drawBorder: false
+        }
+      },
+      y: {
+        ticks: {
+          color: textColorSecondary
+        },
+        grid: {
+          color: surfaceBorder,
+          drawBorder: false
+        }
       }
     }
   }

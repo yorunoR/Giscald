@@ -37,6 +37,16 @@ export type AnswerType = {
   usage: Scalars['JSON']['output']
 }
 
+export type BenchType = {
+  __typename?: 'BenchType'
+  createdAt: Scalars['DateTime']['output']
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+  questions: Array<QuestionType>
+  updatedAt: Scalars['DateTime']['output']
+}
+
 export enum EvaluationTaskStatusType {
   Completed = 'Completed',
   Created = 'Created',
@@ -122,10 +132,16 @@ export type MutationUpdateEvaluationTaskArgs = {
 
 export type Query = {
   __typename?: 'Query'
+  bench: BenchType
+  benches: Array<BenchType>
   currentUser: UserType
   evaluationTask: EvaluationTaskType
   generationTask: GenerationTaskType
   ping: Scalars['String']['output']
+}
+
+export type QueryBenchArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type QueryEvaluationTaskArgs = {
@@ -226,6 +242,41 @@ export type UpdateEvaluationTaskMutationVariables = Exact<{
 export type UpdateEvaluationTaskMutation = {
   __typename?: 'Mutation'
   updateEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
+}
+
+export type BenchQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type BenchQuery = {
+  __typename?: 'Query'
+  bench: {
+    __typename?: 'BenchType'
+    id: string
+    name: string
+    description?: string | null
+    questions: Array<{
+      __typename?: 'QuestionType'
+      id: string
+      questionNumber: number
+      category: string
+      turns: Array<string>
+    }>
+  }
+}
+
+export type BenchesQueryVariables = Exact<{ [key: string]: never }>
+
+export type BenchesQuery = {
+  __typename?: 'Query'
+  benches: Array<{
+    __typename?: 'BenchType'
+    id: string
+    name: string
+    description?: string | null
+    createdAt: string
+    updatedAt: string
+  }>
 }
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
@@ -663,6 +714,92 @@ export const UpdateEvaluationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<UpdateEvaluationTaskMutation, UpdateEvaluationTaskMutationVariables>
+export const BenchDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Bench' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'bench' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'questions' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'turns' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<BenchQuery, BenchQueryVariables>
+export const BenchesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Benches' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'benches' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<BenchesQuery, BenchesQueryVariables>
 export const CurrentUserDocument = {
   kind: 'Document',
   definitions: [

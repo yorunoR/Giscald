@@ -7,6 +7,7 @@
       "
       class="mt-6"
     >
+      <h2>Japanese MT Bench</h2>
       <div class="flex">
         <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
         <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
@@ -17,6 +18,7 @@
       v-if="barDataSources1.length > 0 || barDataSources2.length > 0 || barDataSources3.length > 0"
       class="mt-6"
     >
+      <h2>応答時間（秒）</h2>
       <div class="flex">
         <Chart type="bar" :data="barChartData1" :options="barChartOptions" class="w-4 h-30rem" />
         <Chart type="bar" :data="barChartData2" :options="barChartOptions" class="w-4 h-30rem" />

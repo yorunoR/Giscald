@@ -77,6 +77,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(GenerationTask)
 class GenerationTaskAdmin(admin.ModelAdmin):
+    list_display = ["name"]
     readonly_fields = DEFAULT_READONLY_FIELDS
 
 
@@ -87,6 +88,7 @@ class AnswerAdmin(admin.ModelAdmin):
 
 @admin.register(EvaluationTask)
 class EvaluationTaskAdmin(admin.ModelAdmin):
+    list_display = ["name"]
     readonly_fields = DEFAULT_READONLY_FIELDS
 
 

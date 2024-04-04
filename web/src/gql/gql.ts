@@ -40,7 +40,7 @@ const documents = {
   '\n  query GenerationTasks {\n    currentUser {\n      generationTasks {\n        id\n        name\n        modelName\n        description\n        status\n        createdAt\n        generationSetting {\n          host\n          workerCount\n          parameters\n        }\n      }\n    }\n  }\n':
     types.GenerationTasksDocument,
   '\n  query Ping {\n    ping\n  }\n': types.PingDocument,
-  '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n':
+  '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n      evaluationTask {\n        generationTask {\n          modelName\n          name\n        }\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n':
     types.RatesDocument
 }
 
@@ -146,8 +146,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n']
+  source: '\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n      evaluationTask {\n        generationTask {\n          modelName\n          name\n        }\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query Rates($questionId: ID!) {\n    rates(questionId: $questionId) {\n      id\n      model\n      point\n      text\n      answer {\n        id\n        text\n        finishReason\n        usage\n        processingTime\n      }\n      evaluationTask {\n        generationTask {\n          modelName\n          name\n        }\n      }\n    }\n    question(id: $questionId) {\n      id\n      questionNumber\n      category\n      turns\n      bench {\n        id\n      }\n    }\n  }\n']
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {}

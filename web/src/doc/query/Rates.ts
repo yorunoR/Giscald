@@ -12,6 +12,12 @@ const QUERY = /* GraphQL */ `
         usage
         processingTime
       }
+      evaluationTask {
+        generationTask {
+          modelName
+          name
+        }
+      }
     }
     question(id: $questionId) {
       id

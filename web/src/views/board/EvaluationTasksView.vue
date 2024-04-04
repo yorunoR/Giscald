@@ -258,8 +258,10 @@ onMounted(() => {
 
 const chartData1 = ref()
 const chartData2 = ref()
+const chartData3 = ref()
 const barChartData1 = ref()
 const barChartData2 = ref()
+const barChartData3 = ref()
 const chartOptions = ref()
 const barChartOptions = ref()
 

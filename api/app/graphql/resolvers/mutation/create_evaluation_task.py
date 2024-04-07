@@ -48,13 +48,16 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
 
     try:
         jobs = []
-        async for answer in generation_task.answers.order_by("id").all():
+        async for answer in generation_task.answers.select_related("question").order_by("id").all():
             question = answer.messages[0]["content"]
             content = template.format(question=question, answer=answer.text)
             messages = [
                 {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
                 {"role": "user", "content": content},
             ]
+            correct_answers = answer.question.correct_answers
+            if correct_answers:
+                messages.append({"role": "user", "content": f"正しい答えは次のようになります。{correct_answers[0]}"})
             params = {"temperature": 0, "max_tokens": 1500}
             jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, params=params))
             if len(jobs) == worker_count:

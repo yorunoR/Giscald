@@ -30,7 +30,9 @@ def run():
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
                 data = json.loads(line)
-                Question.objects.create(bench=bench, question_number=data["question_id"], category=data["category"], turns=data["turns"])
+                Question.objects.create(
+                    bench=bench, question_number=data["question_id"], category=data["category"], turns=data["turns"], correct_answers=[]
+                )
     except Exception as e:
         print(e)
         bench.delete()

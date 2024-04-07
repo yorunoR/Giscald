@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.postgres.fields import ArrayField
+from django.forms import Textarea
 
 from .models import AdminUser, Answer, Bench, EvaluationTask, GenerationSetting, GenerationTask, Question, Rate, User
 
@@ -109,4 +111,8 @@ class BenchAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    list_display = ["id", "category"]
     readonly_fields = DEFAULT_READONLY_FIELDS
+    formfield_overrides = {
+        ArrayField: {"widget": Textarea(attrs={"rows": 4, "cols": 80})},
+    }

@@ -101,14 +101,11 @@
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evaluator" class="font-semibold w-8rem">評価者</label>
-          <Dropdown
-            v-model="evaluator"
-            :options="['gpt-4-turbo-preview', 'gemini/gemini-pro', 'claude-3-opus-20240229']"
-          />
+          <Dropdown v-model="evaluator" :options="options" />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
-          <div v-if="evaluator === 'claude-3-opus-20240229'">1</div>
+          <div v-if="checkEvaluatorLimit(evaluator)">1</div>
           <div v-else>10</div>
         </div>
         <div class="flex justify-content-end gap-2">
@@ -153,7 +150,15 @@ const visibleDetail = ref(false)
 const evalName = ref(null)
 const count = ref(0)
 const loading = ref(false)
-const evaluator = ref('gpt-4-turbo-preview')
+const evaluator = ref('gpt-4-0125-preview')
+const options = ref([
+  'gpt-4-0125-preview',
+  'gpt-4-turbo-2024-04-09',
+  'gemini/gemini-pro',
+  'gemini/gemini-1.5-pro-latest',
+  'claude-3-opus-20240229',
+  'command-r-plus'
+])
 
 const query = graphql(GenerationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -226,12 +231,19 @@ const openCreateEvaluationTask = (id) => {
   selectedId.value = id
   visible.value = true
 }
+const checkEvaluatorLimit = (evaluator) => {
+  return (
+    evaluator === 'claude-3-opus-20240229' ||
+    evaluator === 'gemini/gemini-1.5-pro-latest' ||
+    evaluator === 'command-r-plus'
+  )
+}
 const clickEvaluationTask = async () => {
   loading.value = true
   count.value = 0
 
   await countDisplay()
-  const workerCount = evaluator.value === 'claude-3-opus-20240229' ? 1 : 10
+  const workerCount = checkEvaluatorLimit(evaluator.value) ? 1 : 10
   try {
     const result = await createEvaluationTask({
       generationTaskId: selectedId.value,
@@ -240,6 +252,7 @@ const clickEvaluationTask = async () => {
       workerCount
     })
     if (result.error) {
+      console.log('failed')
       loading.value = false
       toast.add({
         severity: 'error',
@@ -247,9 +260,11 @@ const clickEvaluationTask = async () => {
         detail: result.error.message
       })
     } else {
+      console.log('completed')
       router.push({ name: 'evaluationTasks' })
     }
   } finally {
+    loading.value = false
     clearInterval(countId)
   }
 }

@@ -11,6 +11,7 @@ class Question(BaseModel):
     question_number = models.IntegerField()
     category = models.CharField(max_length=256)
     turns = ArrayField(models.CharField(max_length=4096))
+    correct_answers = ArrayField(models.CharField(max_length=4096))
 
     class Meta:
         db_table = "questions"

@@ -17,13 +17,19 @@
         <table v-if="data" class="w-full">
           <thead>
             <tr>
-              <th class="cursor-pointer py-2 w-1" @click="setKey('id')">
+              <th class="cursor-pointer py-2" @click="setKey('id')">
                 <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              </th>
+              <th class="cursor-pointer py-2 w-1" @click="setKey('name')">
+                <u :class="{ 'text-primary': sortKey === 'name' }"> 生成タスク名 </u>
+              </th>
+              <th class="cursor-pointer py-2 w-1" @click="setKey('modelName')">
+                <u :class="{ 'text-primary': sortKey === 'modelName' }"> モデル </u>
               </th>
               <th class="cursor-pointer py-2 w-1" @click="setKey('model')">
                 <u :class="{ 'text-primary': sortKey === 'model' }"> 評価モデル </u>
               </th>
-              <th class="cursor-pointer py-2 w-1" @click="setKey('point')">
+              <th class="cursor-pointer py-2" @click="setKey('point')">
                 <u :class="{ 'text-primary': sortKey === 'point' }"> 点数 </u>
               </th>
               <th class="">回答</th>
@@ -34,6 +40,12 @@
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
                 {{ rate.id }}
+              </td>
+              <td class="p-2">
+                {{ rate.evaluationTask.generationTask.name }}
+              </td>
+              <td class="p-2">
+                {{ rate.evaluationTask.generationTask.modelName }}
               </td>
               <td class="p-2">
                 {{ rate.model }}
@@ -65,7 +77,7 @@ const props = defineProps<{
   questionId: string
 }>()
 
-const sortKey = ref('category')
+const sortKey = ref('id')
 const sortAsc = ref(false)
 
 const query = graphql(Rates)
@@ -95,8 +107,16 @@ const sortedRates = computed(() => {
   if (column != '') {
     rates.sort((a, b) => {
       let a_column, b_column
-      a_column = a[column]
-      b_column = b[column]
+      if (column === 'name') {
+        a_column = a.evaluationTask.generationTask.name
+        b_column = b.evaluationTask.generationTask.name
+      } else if (column === 'modelName') {
+        a_column = a.evaluationTask.generationTask.modelName
+        b_column = b.evaluationTask.generationTask.modelName
+      } else {
+        a_column = a[column]
+        b_column = b[column]
+      }
       if (a_column < b_column) return sortAsc.value ? -1 : 1
       if (a_column > b_column) return sortAsc.value ? 1 : -1
       return parseInt(a.id) < parseInt(b.id) ? 1 : -1

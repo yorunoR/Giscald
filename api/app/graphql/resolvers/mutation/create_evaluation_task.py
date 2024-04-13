@@ -31,6 +31,8 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
         api_key = os.getenv("GEMINI_API_KEY")
     if model.startswith("claude"):
         api_key = os.getenv("ANTHROPIC_API_KEY")
+    if model.startswith("command"):
+        api_key = os.getenv("COHERE_API_KEY")
 
     user = info.context.user
     generation_task = await GenerationTask.objects.aget(id=generation_task_id, user=user, status=GenerationTaskStatus.COMPLETED)
@@ -87,8 +89,12 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                         raise e
                 if model.startswith("gemini"):
                     time.sleep(10)
+                if model.startswith("gemini/gemini-1.5"):
+                    time.sleep(15)
                 if model.startswith("claude"):
                     time.sleep(10)
+                if model.startswith("command"):
+                    time.sleep(5)
         evaluation_task.status = EvaluationTaskStatus.COMPLETED
         await sync_to_async(lambda: evaluation_task.save())()
         return evaluation_task

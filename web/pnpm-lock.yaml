@@ -36,8 +36,8 @@ dependencies:
     specifier: ^6.0.1
     version: 6.0.1
   primevue:
-    specifier: ^3.48.0
-    version: 3.48.0(vue@3.4.15)
+    specifier: ^3.52.0
+    version: 3.52.0(vue@3.4.15)
   sweetalert:
     specifier: ^2.1.2
     version: 2.1.2
@@ -5268,8 +5268,8 @@ packages:
     resolution: {integrity: sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==}
     dev: false
 
-  /primevue@3.48.0(vue@3.4.15):
-    resolution: {integrity: sha512-aTXOfqEXQ1N/UarVA6S0KvxN/0AL+8NcI3UBlwKECcj7fvsVzvht6f6B6s/RFhZLcx9WnCLJv3eu/DI7BlU0sw==}
+  /primevue@3.52.0(vue@3.4.15):
+    resolution: {integrity: sha512-HLOVP5YI0ArFKUhIyfZsWmTNMaBYNCBWC/3DYvdd/Po4LY5/WXf7yIYvArE2q/3OuwSXJXvjlR8UNQeJYRSQog==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:

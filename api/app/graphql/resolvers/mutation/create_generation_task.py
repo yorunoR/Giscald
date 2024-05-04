@@ -45,7 +45,7 @@ async def resolve(
 
             jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, params=params))
             if len(jobs) == worker_count:
-                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=200) for job in jobs), return_exceptions=True)
+                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
                 jobs = []
                 for result in results:
                     try:

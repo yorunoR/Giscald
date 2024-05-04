@@ -79,7 +79,8 @@
     <Dialog v-model:visible="visibleDetail" modal header="詳細" class="w-5">
       <p><b>ホスト:</b><br />{{ selected.generationSetting.host }}</p>
       <p><b>同時リクエスト数:</b><br />{{ selected.generationSetting.workerCount }}</p>
-      <p><b>パラメーター:</b><br />{{ selected.generationSetting.parameters }}</p>
+      <p><b>パラメーター:</b></p>
+      <pre>{{ selected.generationSetting.parameters }}</pre>
     </Dialog>
   </section>
   <section>

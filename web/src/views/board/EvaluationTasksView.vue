@@ -7,7 +7,7 @@
       "
       class="mt-6"
     >
-      <h2>Japanese MT Bench</h2>
+      <h2>Japanese MT Bench (single)</h2>
       <div class="flex">
         <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
         <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />

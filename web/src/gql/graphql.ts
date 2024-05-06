@@ -111,6 +111,7 @@ export type MutationCreateEvaluationTaskArgs = {
 }
 
 export type MutationCreateGenerationTaskArgs = {
+  benchName: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   host: Scalars['String']['input']
   modelName: Scalars['String']['input']
@@ -210,6 +211,7 @@ export type CreateEvaluationTaskMutation = {
 }
 
 export type CreateGenerationTaskMutationVariables = Exact<{
+  benchName: Scalars['String']['input']
   name: Scalars['String']['input']
   modelName: Scalars['String']['input']
   host: Scalars['String']['input']
@@ -526,6 +528,14 @@ export const CreateGenerationTaskDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
           type: {
             kind: 'NonNullType',
@@ -574,6 +584,11 @@ export const CreateGenerationTaskDocument = {
             kind: 'Field',
             name: { kind: 'Name', value: 'createGenerationTask' },
             arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'benchName' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } }
+              },
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'name' },

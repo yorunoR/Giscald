@@ -12,6 +12,7 @@ class Question(BaseModel):
     category = models.CharField(max_length=256)
     turns = ArrayField(models.CharField(max_length=4096))
     correct_answers = ArrayField(models.CharField(max_length=4096))
+    eval_aspects = ArrayField(models.CharField(max_length=4096))
 
     class Meta:
         db_table = "questions"

@@ -24,7 +24,17 @@ class Command(BaseCommand):
 
 
 def run():
+    templates = {}
+    path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "judge_ja_prompts.jsonl")
+    with open(path, "r", encoding="utf-8") as file:
+        for line in file:
+            data = json.loads(line)
+            templates[data["name"]] = data["prompt_template"]
+    template = templates["single-v1"]
+
     bench = Bench.objects.create(name="Japanese MT Bench origin")
+    bench.template = template
+    bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")
     try:
         with open(path, "r", encoding="utf-8") as file:

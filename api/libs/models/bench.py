@@ -6,6 +6,7 @@ from .base import BaseModel
 class Bench(BaseModel):
     name = models.CharField(max_length=512, unique=True)
     description = models.TextField(max_length=1024, null=True, blank=True)
+    template = models.TextField(max_length=4096, null=True, blank=True)
 
     class Meta:
         db_table = "benches"

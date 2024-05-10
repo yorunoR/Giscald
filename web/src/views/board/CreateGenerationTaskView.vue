@@ -7,6 +7,13 @@
     </div>
     <div v-else>
       <section>
+        <Dropdown
+          v-model="benchName"
+          class="mt-4 w-6 text-left"
+          :options="['Japanese MT Bench origin', 'Elyza Tasks 100 origin']"
+        />
+        <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>
+
         <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
         <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
 
@@ -137,6 +144,7 @@ const clickCreateGenerationTask = async () => {
 
 const { meta, values } = useForm({
   initialValues: {
+    benchName: 'Japanese MT Bench origin',
     name: 'mt-bench-01',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
@@ -144,6 +152,7 @@ const { meta, values } = useForm({
   }
 })
 const isRequired = (value) => (value ? true : 'This field is required')
+const { value: benchName, errors: benchNameErrors } = useField('benchName', isRequired)
 const { value: name, errors: nameErrors } = useField('name', isRequired)
 const { value: modelName, errors: modelNameErrors } = useField('modelName', isRequired)
 const { value: host, errors: hostErrors } = useField('host', isRequired)

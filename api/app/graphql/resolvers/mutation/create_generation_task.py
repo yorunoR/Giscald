@@ -20,12 +20,19 @@ def parse_params_str(param_str):
 
 
 async def resolve(
-    info: Info, name: str, model_name: str, host: str, worker_count: int, param_str: str | None = None, description: str | None = None
+    info: Info,
+    bench_name: str,
+    name: str,
+    model_name: str,
+    host: str,
+    worker_count: int,
+    param_str: str | None = None,
+    description: str | None = None,
 ):
     parameters = parse_params_str(param_str)
 
     user = info.context.user
-    bench = await Bench.objects.aget(name="Japanese MT Bench origin")
+    bench = await Bench.objects.aget(name=bench_name)
     generation_task = await GenerationTask.objects.acreate(
         user=user, bench=bench, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED, description=description
     )

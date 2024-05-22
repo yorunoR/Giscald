@@ -1,20 +1,21 @@
 <template>
   <main style="max-width: 1280px; margin: auto">
-    <h1 class="mt-2">回答評価一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
+        <h2 class="mt-2">{{ data.evaluationTask.name }}</h2>
         <table v-if="data" class="w-full">
           <thead>
             <tr>
-              <th class="cursor-pointer py-2" @click="setKey('id')">
-                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              <th class="cursor-pointer py-2" @click="setKey('questionNumber')">
+                <u :class="{ 'text-primary': sortKey === 'questionNumber' }"> No. </u>
               </th>
               <th class="cursor-pointer py-2" @click="setKey('category')">
                 <u :class="{ 'text-primary': sortKey === 'category' }"> カテゴリー </u>
               </th>
               <th class="">回答</th>
+              <th class="">評価</th>
               <th class="cursor-pointer py-2" @click="setKey('point')">
                 <u :class="{ 'text-primary': sortKey === 'point' }"> 点数 </u>
               </th>
@@ -35,10 +36,13 @@
           <tbody>
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
-                {{ rate.id }}
+                {{ rate.answer.question.questionNumber }}
               </td>
               <td class="p-2">
                 {{ rate.answer.question.category }}
+              </td>
+              <td class="p-2">
+                {{ rate.answer.text }}
               </td>
               <td class="p-2">
                 {{ rate.text }}
@@ -116,9 +120,9 @@ const sortedRates = computed(() => {
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])
-      } else if (column === 'id') {
-        a_column = parseInt(a[column])
-        b_column = parseInt(b[column])
+      } else if (column === 'questionNumber') {
+        a_column = parseInt(a.answer.question.questionNumber)
+        b_column = parseInt(b.answer.question.questionNumber)
       } else {
         a_column = a[column]
         b_column = b[column]

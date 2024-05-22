@@ -325,7 +325,8 @@ export type EvaluationTaskQuery = {
       processingTime: any
       answer: {
         __typename?: 'AnswerType'
-        question: { __typename?: 'QuestionType'; category: string }
+        text: string
+        question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
       }
     }>
   }
@@ -943,12 +944,17 @@ export const EvaluationTaskDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'question' },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'questionNumber' }
+                                  },
                                   { kind: 'Field', name: { kind: 'Name', value: 'category' } }
                                 ]
                               }

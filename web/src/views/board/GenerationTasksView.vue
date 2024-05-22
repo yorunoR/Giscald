@@ -155,6 +155,7 @@ const evaluator = ref('gpt-4-0125-preview')
 const options = ref([
   'gpt-4-0125-preview',
   'gpt-4-turbo-2024-04-09',
+  'gpt-4o',
   'gemini/gemini-pro',
   'gemini/gemini-1.5-pro-latest',
   'claude-3-opus-20240229',

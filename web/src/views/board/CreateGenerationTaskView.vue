@@ -82,6 +82,23 @@ const toast = useToast()
 const loading = ref(false)
 const parameters = ref({
   default: {
+    reflection: false,
+    max_tokens: 1000,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
+  },
+  extraction: {
+    reflection: false,
+    max_tokens: 1000,
+    temperature: 0.1,
+    frequency_penalty: 0,
+    presence_penalty: -1.0,
+    top_p: 0.99
+  },
+  math: {
+    reflection: false,
     max_tokens: 1000,
     temperature: 0.1,
     frequency_penalty: 0,
@@ -89,6 +106,7 @@ const parameters = ref({
     top_p: 0.99
   },
   reasoning: {
+    reflection: false,
     max_tokens: 500,
     temperature: 0.1,
     frequency_penalty: 0,
@@ -96,14 +114,8 @@ const parameters = ref({
     top_p: 0.99
   },
   humanities: {
+    reflection: false,
     max_tokens: 1500,
-    temperature: 0.1,
-    frequency_penalty: 0,
-    presence_penalty: -1.0,
-    top_p: 0.99
-  },
-  writing: {
-    max_tokens: 1000,
     temperature: 0.1,
     frequency_penalty: 0,
     presence_penalty: -1.0,

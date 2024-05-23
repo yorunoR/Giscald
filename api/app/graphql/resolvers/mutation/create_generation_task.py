@@ -49,8 +49,9 @@ async def resolve(
             messages = [{"role": "user", "content": question.turns[0]}]
 
             params = parameters.get(question.category) or parameters.get("default") or {}
+            reflection = params.get("reflection", False)
 
-            jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, params=params))
+            jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, reflection=reflection, params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
                 jobs = []

@@ -6,7 +6,15 @@
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
         <h2>{{ data.bench.name }}</h2>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <Dropdown
+            v-model="selectedCategory"
+            :options="categories"
+            show-clear
+            placeholder="Select a Category"
+          />
+        </div>
+        <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
               <th class="cursor-pointer py-2 w-1" @click="setKey('questionNumber')">
@@ -55,6 +63,7 @@ const props = defineProps<{
 
 const sortKey = ref('category')
 const sortAsc = ref(false)
+const selectedCategory = ref(null)
 
 const query = graphql(Bench)
 
@@ -76,12 +85,27 @@ const setKey = (key) => {
   }
 }
 
+const categories = computed(() => {
+  if (!data.value) return []
+  const categories = data.value.bench.questions.map((question) => {
+    return question.category
+  })
+  return Array.from(new Set(categories))
+})
+
 const sortedQuestions = computed(() => {
   if (!data.value) return []
   const questions = Array.from(data.value.bench.questions)
+  const selectedQuestions = questions.filter((question) => {
+    if (selectedCategory.value) {
+      return question.category === selectedCategory.value
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    questions.sort((a, b) => {
+    selectedQuestions.sort((a, b) => {
       let a_column, b_column
       if (column === 'questionNumber') {
         a_column = parseInt(a[column])
@@ -95,7 +119,7 @@ const sortedQuestions = computed(() => {
       return parseInt(a.id) < parseInt(b.id) ? 1 : -1
     })
   }
-  return questions
+  return selectedQuestions
 })
 </script>
 

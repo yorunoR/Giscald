@@ -14,8 +14,7 @@ async def chat(messages, model, host, api_key, reflection, params):
             content = response.choices[0].message.content
             new_messages = messages + [
                 {"role": "assistant", "content": content},
-                {"role": "user", "content": "回答が正しければ、より詳しい説明を加えて回答してください。"},
-                {"role": "user", "content": "回答が間違っていれば、正しい回答をして下さい。"},
+                {"role": "user", "content": "最初の回答を参考に、より良い回答をして下さい。"},
             ]
             max_tokens = params.get("max_tokens", 1000)
             new_params = dict(**params)

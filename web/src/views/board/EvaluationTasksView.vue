@@ -29,7 +29,10 @@
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <InputText v-model="nameSearch" placeholder="名前検索" />
+        </div>
+        <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
               <th class="w-1 py-2">選択</th>
@@ -169,6 +172,7 @@ import swal from 'sweetalert'
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
 const loading = ref(false)
+const nameSearch = ref('')
 const radarDataSources1 = ref([])
 const radarDataSources2 = ref([])
 const radarDataSources3 = ref([])
@@ -194,12 +198,38 @@ const setKey = (key) => {
   }
 }
 
+const _containsAny = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (targetString.includes(substrings[i])) {
+      return true
+    }
+  }
+  return false
+}
+
+const containsAll = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (!targetString.includes(substrings[i])) {
+      return false
+    }
+  }
+  return true
+}
+
 const sortedEvaluationTasks = computed(() => {
   if (!data.value) return []
   const evaluationTasks = Array.from(data.value.currentUser.evaluationTasks)
+  const selectedEvaluationTasks = evaluationTasks.filter((evaluationTask) => {
+    if (nameSearch.value) {
+      const substrings = nameSearch.value.split(/\s+/)
+      return containsAll(evaluationTask.name.toLowerCase(), substrings)
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    evaluationTasks.sort((a, b) => {
+    selectedEvaluationTasks.sort((a, b) => {
       let a_column, b_column
       if (column === 'points' || column === 'processingTimes') {
         a_column = Object.values(a[column]).reduce((sum, num) => sum + num, 0)
@@ -213,7 +243,7 @@ const sortedEvaluationTasks = computed(() => {
       return a.id < b.id ? 1 : -1
     })
   }
-  return evaluationTasks
+  return selectedEvaluationTasks
 })
 
 const timeFormat = (time) => {

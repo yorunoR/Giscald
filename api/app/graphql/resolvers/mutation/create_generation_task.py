@@ -48,10 +48,11 @@ async def resolve(
         async for question in bench.questions.order_by("question_number").all():
             messages = [{"role": "user", "content": question.turns[0]}]
 
-            params = parameters.get(question.category) or parameters.get("default") or {}
-            reflection = params.get("reflection", False)
+            settings = parameters.get(question.category) or parameters.get("default") or {}
+            strategy = settings.get("strategy", "none")
+            params = settings.get("params")
 
-            jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, reflection=reflection, params=params))
+            jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, strategy=strategy, params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
                 jobs = []

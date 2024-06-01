@@ -5,7 +5,15 @@
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
         <h2 class="mt-2">{{ data.evaluationTask.name }}</h2>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <Dropdown
+            v-model="selectedCategory"
+            :options="categories"
+            show-clear
+            placeholder="Select a Category"
+          />
+        </div>
+        <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
               <th class="cursor-pointer py-2" @click="setKey('questionNumber')">
@@ -82,6 +90,7 @@ const props = defineProps<{
 
 const sortKey = ref('category')
 const sortAsc = ref(false)
+const selectedCategory = ref(null)
 
 const query = graphql(EvaluationTask)
 
@@ -104,12 +113,27 @@ const setKey = (key) => {
   }
 }
 
+const categories = computed(() => {
+  if (!data.value) return []
+  const categories = data.value.evaluationTask.rates.map((rate) => {
+    return rate.answer.question.category
+  })
+  return Array.from(new Set(categories))
+})
+
 const sortedRates = computed(() => {
   if (!data.value) return []
   const rates = Array.from(data.value.evaluationTask.rates)
+  const selectedRates = rates.filter((rate) => {
+    if (selectedCategory.value) {
+      return rate.answer.question.category === selectedCategory.value
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    rates.sort((a, b) => {
+    selectedRates.sort((a, b) => {
       let a_column, b_column
       if (column === 'usage') {
         a_column = a[column].total_tokens
@@ -132,7 +156,7 @@ const sortedRates = computed(() => {
       return a.id < b.id ? 1 : -1
     })
   }
-  return rates
+  return selectedRates
 })
 </script>
 

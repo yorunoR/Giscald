@@ -56,7 +56,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
             # if correct_answers:
             #     messages.append({"role": "user", "content": f"正しい答えは次のようになります。{correct_answers[0]}"})
             params = {"temperature": 0, "max_tokens": 1500}
-            jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, reflection=False, params=params))
+            jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, strategy="none", params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
                 jobs = []

@@ -23,7 +23,7 @@
   <div class="fixed top-0 flex flex-row p-3">
     <Button class="p-button-secondary" icon="pi pi-arrow-right" @click="visibleLeft = true" />
   </div>
-  <div v-if="visibleMain" class="pt-6 px-3 pb-3">
+  <div v-if="visibleMain" class="pt-6 px-3 pb-3 overflow-scroll">
     <router-view />
   </div>
   <Toast :breakpoints="{ '576px': { width: '97%', left: '6px' } }" />

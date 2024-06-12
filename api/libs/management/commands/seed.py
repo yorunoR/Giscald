@@ -26,9 +26,12 @@ class Command(BaseCommand):
             setup_mt_bench()
         elif mode == "elyza":
             setup_elyza_tasks()
+        elif mode == "rakuda":
+            setup_rakuda_tasks()
         elif mode == "all":
             setup_mt_bench()
             setup_elyza_tasks()
+            setup_rakuda_tasks()
 
 
 def setup_mt_bench():
@@ -82,6 +85,31 @@ def setup_elyza_tasks():
 
                 Question.objects.create(
                     bench=bench, question_number=index, category="task", turns=[turn], correct_answers=[answer], eval_aspects=[aspect]
+                )
+                index = index + 1
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_rakuda_tasks():
+    path = os.path.join(settings.BASE_DIR, "data", "rakuda-questions", "prompt_eval.txt")
+    with open(path, "r", encoding="utf-8") as file:
+        template = file.read()
+
+    bench = Bench.objects.create(name="Rakuda Questions origin")
+    bench.template = template
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "rakuda-questions", "rakuda.jsonl")
+    try:
+        with open(path, newline="", encoding="utf-8") as file:
+            index = 1
+            for line in file:
+                data = json.loads(line)
+                turn = data["text"]
+
+                Question.objects.create(
+                    bench=bench, question_number=index, category=data["category"], turns=[turn], correct_answers=[], eval_aspects=[]
                 )
                 index = index + 1
     except Exception as e:

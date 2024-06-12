@@ -10,7 +10,11 @@
         <Dropdown
           v-model="benchName"
           class="mt-4 w-6 text-left"
-          :options="['Japanese MT Bench origin', 'Elyza Tasks 100 origin']"
+          :options="[
+            'Japanese MT Bench origin',
+            'Elyza Tasks 100 origin',
+            'Rakuda Questions origin'
+          ]"
         />
         <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>
 

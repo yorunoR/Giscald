@@ -84,6 +84,7 @@ export enum GenerationTaskStatusType {
 export type GenerationTaskType = {
   __typename?: 'GenerationTaskType'
   answers: Array<AnswerType>
+  bench: BenchType
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   generationSetting: GenerationSettingType
@@ -346,6 +347,10 @@ export type EvaluationTasksQuery = {
       points: any
       processingTimes: any
       createdAt: string
+      generationTask: {
+        __typename?: 'GenerationTaskType'
+        bench: { __typename?: 'BenchType'; id: string; name: string }
+      }
     }>
   }
 }
@@ -1000,7 +1005,27 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'generationTask' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'bench' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
                     ]
                   }
                 }

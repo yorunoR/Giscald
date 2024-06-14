@@ -7,11 +7,32 @@
       "
       class="mt-6"
     >
-      <h2>Japanese MT Bench (single)</h2>
+      <h2>点数</h2>
       <div class="flex">
-        <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData1.labels?.length === 1"
+          type="bar"
+          :data="chartData1"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData2.labels?.length === 1"
+          type="bar"
+          :data="chartData2"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData3.labels?.length === 1"
+          type="bar"
+          :data="chartData3"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
       </div>
     </section>
     <section
@@ -35,11 +56,13 @@
             v-model="benchNameSearch"
             show-clear
             class="ml-2"
+            placeholder="Select bench"
             :options="[
               'Japanese MT Bench origin',
               'Elyza Tasks 100 origin',
               'Rakuda Questions origin',
-              'Tengu Bench origin'
+              'Tengu Bench origin',
+              'AIW origin'
             ]"
           />
         </div>
@@ -315,9 +338,9 @@ onMounted(() => {
   barChartOptions.value = setBarChartOptions()
 })
 
-const chartData1 = ref()
-const chartData2 = ref()
-const chartData3 = ref()
+const chartData1 = ref({})
+const chartData2 = ref({})
+const chartData3 = ref({})
 const barChartData1 = ref()
 const barChartData2 = ref()
 const barChartData3 = ref()
@@ -339,11 +362,13 @@ const setChartData = (dataSources) => {
     return { labels: [], datasets: [] }
   }
 }
-const setChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
 
+const documentStyle = getComputedStyle(document.documentElement)
+const textColor = documentStyle.getPropertyValue('--text-color')
+const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+
+const setChartOptions = () => {
   return {
     plugins: {
       legend: {
@@ -370,11 +395,6 @@ const setChartOptions = () => {
 }
 
 const setBarChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-  const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-
   return {
     indexAxis: 'y',
     maintainAspectRatio: false,

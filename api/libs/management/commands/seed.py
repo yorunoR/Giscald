@@ -31,11 +31,14 @@ class Command(BaseCommand):
             setup_rakuda_tasks()
         elif mode == "tengu":
             setup_tengu_tasks()
+        elif mode == "aiw":
+            setup_aiw_tasks()
         elif mode == "all":
             setup_mt_bench()
             setup_elyza_tasks()
             setup_rakuda_tasks()
             setup_tengu_tasks()
+            setup_aiw_tasks()
 
 
 def setup_mt_bench():
@@ -146,6 +149,28 @@ def setup_tengu_tasks():
                 correct_answers=[correct_answer],
                 eval_aspects=[eval_aspect],
             )
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_aiw_tasks():
+    bench = Bench.objects.create(name="AIW origin")
+    bench.template = ""
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "aiw", "prompts_remove_format.json")
+    try:
+        with open(path, newline="", encoding="utf-8") as file:
+            index = 1
+            for line in file:
+                data = json.loads(line)
+                turn = data["prompt"]
+                correct_answer = data["right_answer"]
+
+                Question.objects.create(
+                    bench=bench, question_number=index, category="alice", turns=[turn], correct_answers=[correct_answer], eval_aspects=[]
+                )
+                index = index + 1
     except Exception as e:
         print(e)
         bench.delete()

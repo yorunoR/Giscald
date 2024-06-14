@@ -14,7 +14,8 @@
             'Japanese MT Bench origin',
             'Elyza Tasks 100 origin',
             'Rakuda Questions origin',
-            'Tengu Bench origin'
+            'Tengu Bench origin',
+            'AIW origin'
           ]"
         />
         <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>

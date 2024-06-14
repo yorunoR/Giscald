@@ -21,6 +21,14 @@ def extract_and_convert_to_int(input_str):
         return 0
 
 
+def extract_and_convert_to_int_or_null(input_str):
+    match = re.search(r"\d+", input_str)
+    if match:
+        return int(match.group())
+    else:
+        return "null"
+
+
 tengu_example_question = "「急がば回れ」という言葉について説明してください。"
 tengu_example_answer = (
     "「急がば回れ」という言葉は、日本の諺の一つであり、直接的な意味は「急ぐときは、早道や危険な方法を選ばずに、"
@@ -73,6 +81,31 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
     evaluation_task = await EvaluationTask.objects.acreate(
         user=user, generation_task=generation_task, name=eval_name, points={}, processing_times={}, status=EvaluationTaskStatus.STARTED
     )
+
+    if generation_task.bench.name == "AIW origin":
+        async for answer in generation_task.answers.select_related("question").order_by("id").all():
+            correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
+            match = re.search(r"\[\[(.+)\]\]", answer.text)
+            point = 0
+            value = "null"
+            if match is not None:
+                value = extract_and_convert_to_int_or_null(match.group(1))
+            if str(correct_answer) == str(value):
+                point = 1
+            await Rate.objects.acreate(
+                user=user,
+                evaluation_task=evaluation_task,
+                answer=answer,
+                text=correct_answer,
+                usage={},
+                finish_reason="stop",
+                processing_time=0,
+                point=point,
+                model="",
+            )
+        evaluation_task.status = EvaluationTaskStatus.COMPLETED
+        await sync_to_async(lambda: evaluation_task.save())()
+        return evaluation_task
 
     template = generation_task.bench.template
 

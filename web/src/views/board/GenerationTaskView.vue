@@ -8,8 +8,8 @@
         <table v-if="data" class="w-full">
           <thead>
             <tr>
-              <th class="cursor-pointer py-2" @click="setKey('id')">
-                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              <th class="cursor-pointer py-2" @click="setKey('questionNumber')">
+                <u :class="{ 'text-primary': sortKey === 'questionNumber' }"> No. </u>
               </th>
               <th class="cursor-pointer py-2" @click="setKey('category')">
                 <u :class="{ 'text-primary': sortKey === 'category' }"> カテゴリー </u>
@@ -30,7 +30,7 @@
           <tbody>
             <tr v-for="answer in sortedAnswers" :key="answer.id">
               <td class="p-2">
-                {{ answer.id }}
+                {{ answer.question.questionNumber }}
               </td>
               <td class="p-2">
                 {{ answer.question.category }}
@@ -114,9 +114,9 @@ const sortedAnswers = computed(() => {
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])
-      } else if (column === 'id') {
-        a_column = parseInt(a[column])
-        b_column = parseInt(b[column])
+      } else if (column === 'questionNumber') {
+        a_column = parseInt(a.question.questionNumber)
+        b_column = parseInt(b.question.questionNumber)
       } else {
         a_column = a[column]
         b_column = b[column]

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, Union
 
 import strawberry
 from strawberry import auto
@@ -15,4 +15,5 @@ class QuestionType:
     question_number: auto
     category: auto
     turns: list[str]
+    correct_answers: list[Union[str, None]]
     bench: Annotated["BenchType", strawberry.lazy(".bench_type")]

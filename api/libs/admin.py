@@ -111,7 +111,7 @@ class BenchAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ["id", "category"]
+    list_display = ["id", "question_number", "category"]
     readonly_fields = DEFAULT_READONLY_FIELDS
     formfield_overrides = {
         ArrayField: {"widget": Textarea(attrs={"rows": 4, "cols": 80})},

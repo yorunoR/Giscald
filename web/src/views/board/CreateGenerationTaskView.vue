@@ -10,12 +10,15 @@
         <Dropdown
           v-model="benchName"
           class="mt-4 w-6 text-left"
-          :options="['Japanese MT Bench origin', 'Elyza Tasks 100 origin']"
+          :options="[
+            'Japanese MT Bench origin',
+            'Elyza Tasks 100 origin',
+            'Rakuda Questions origin',
+            'Tengu Bench origin',
+            'AIW origin'
+          ]"
         />
         <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>
-
-        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
-        <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
 
         <InputText
           v-model="modelName"
@@ -23,6 +26,9 @@
           placeholder="モデル名: openai/cyberagent/calm2-7b-chat"
         />
         <div class="mt-2 p-error">{{ modelNameErrors.join(' ') }}</div>
+
+        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
+        <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
 
         <InputText
           v-model="host"

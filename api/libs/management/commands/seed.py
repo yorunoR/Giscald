@@ -3,6 +3,7 @@ import json
 import logging
 import os
 
+import pandas as pd
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -26,9 +27,18 @@ class Command(BaseCommand):
             setup_mt_bench()
         elif mode == "elyza":
             setup_elyza_tasks()
+        elif mode == "rakuda":
+            setup_rakuda_tasks()
+        elif mode == "tengu":
+            setup_tengu_tasks()
+        elif mode == "aiw":
+            setup_aiw_tasks()
         elif mode == "all":
             setup_mt_bench()
             setup_elyza_tasks()
+            setup_rakuda_tasks()
+            setup_tengu_tasks()
+            setup_aiw_tasks()
 
 
 def setup_mt_bench():
@@ -82,6 +92,83 @@ def setup_elyza_tasks():
 
                 Question.objects.create(
                     bench=bench, question_number=index, category="task", turns=[turn], correct_answers=[answer], eval_aspects=[aspect]
+                )
+                index = index + 1
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_rakuda_tasks():
+    path = os.path.join(settings.BASE_DIR, "data", "rakuda-questions", "prompt_eval.txt")
+    with open(path, "r", encoding="utf-8") as file:
+        template = file.read()
+
+    bench = Bench.objects.create(name="Rakuda Questions origin")
+    bench.template = template
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "rakuda-questions", "rakuda.jsonl")
+    try:
+        with open(path, newline="", encoding="utf-8") as file:
+            index = 1
+            for line in file:
+                data = json.loads(line)
+                turn = data["text"]
+
+                Question.objects.create(
+                    bench=bench, question_number=index, category=data["category"], turns=[turn], correct_answers=[], eval_aspects=[]
+                )
+                index = index + 1
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_tengu_tasks():
+    path = os.path.join(settings.BASE_DIR, "data", "tengu_bench", "prompt_eval.txt")
+    with open(path, "r", encoding="utf-8") as file:
+        template = file.read()
+
+    bench = Bench.objects.create(name="Tengu Bench origin")
+    bench.template = template
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "tengu_bench", "test-00000-of-00001.parquet")
+    try:
+        df = pd.read_parquet(path)
+        for index, row in df.iterrows():
+            category = row["Category"].replace("（千トークン以上）", "")
+            turn = row["Question"]
+            correct_answer = row["Answer"]
+            eval_aspect = row["Criteria"]
+
+            Question.objects.create(
+                bench=bench,
+                question_number=index + 1,
+                category=category,
+                turns=[turn],
+                correct_answers=[correct_answer],
+                eval_aspects=[eval_aspect],
+            )
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_aiw_tasks():
+    bench = Bench.objects.create(name="AIW origin")
+    bench.template = ""
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "aiw", "prompts_remove_format.json")
+    try:
+        with open(path, newline="", encoding="utf-8") as file:
+            index = 1
+            for line in file:
+                data = json.loads(line)
+                turn = data["prompt"]
+                correct_answer = data["right_answer"]
+
+                Question.objects.create(
+                    bench=bench, question_number=index, category="alice", turns=[turn], correct_answers=[correct_answer], eval_aspects=[]
                 )
                 index = index + 1
     except Exception as e:

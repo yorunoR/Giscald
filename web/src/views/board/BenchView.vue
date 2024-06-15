@@ -24,6 +24,7 @@
                 <u :class="{ 'text-primary': sortKey === 'category' }"> カテゴリー </u>
               </th>
               <th class="">質問</th>
+              <th class="">正解</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +43,9 @@
               </td>
               <td class="p-2 text-left">
                 <div v-for="turn in question.turns" :key="turn">- {{ turn }}</div>
+              </td>
+              <td class="p-2 text-left">
+                <div v-for="answer in question.correctAnswers" :key="answer">- {{ answer }}</div>
               </td>
             </tr>
           </tbody>

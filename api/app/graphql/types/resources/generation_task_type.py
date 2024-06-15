@@ -6,6 +6,7 @@ from strawberry import auto
 from libs.models import GenerationTask
 
 from .answer_type import AnswerType
+from .bench_type import BenchType
 from .generation_setting_type import GenerationSettingType
 
 
@@ -27,3 +28,4 @@ class GenerationTaskType:
     created_at: auto
     answers: list[AnswerType]
     generation_setting: GenerationSettingType
+    bench: BenchType

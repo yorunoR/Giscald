@@ -19,6 +19,9 @@ def parse_params_str(param_str):
         return {}
 
 
+answer_format = "回答の最後に、必ず、結果:[[数値]]の形式で最終結果を追加してください。"
+
+
 async def resolve(
     info: Info,
     bench_name: str,
@@ -46,7 +49,13 @@ async def resolve(
     try:
         jobs = []
         async for question in bench.questions.order_by("question_number").all():
-            messages = [{"role": "user", "content": question.turns[0]}]
+            if generation_task.bench.name == "AIW origin":
+                messages = [
+                    {"role": "user", "content": question.turns[0]},
+                    {"role": "user", "content": answer_format},
+                ]
+            else:
+                messages = [{"role": "user", "content": question.turns[0]}]
 
             settings = parameters.get(question.category) or parameters.get("default") or {}
             strategy = settings.get("strategy", "none")

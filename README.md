@@ -28,6 +28,11 @@ DBマイグレーション
 docker compose api make migrate
 ```
 
+評価ベンチ保存
+```
+docker compose api make seed
+```
+
 管理画面用の管理者作成
 ```
 docker compose api make superuser

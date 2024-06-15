@@ -8,6 +8,12 @@ const QUERY = /* GraphQL */ `
         points
         processingTimes
         createdAt
+        generationTask {
+          bench {
+            id
+            name
+          }
+        }
       }
     }
   }

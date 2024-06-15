@@ -14,6 +14,9 @@ class Question(BaseModel):
     correct_answers = ArrayField(models.CharField(max_length=4096))
     eval_aspects = ArrayField(models.CharField(max_length=4096))
 
+    def __str__(self):
+        return str(self.question_number)
+
     class Meta:
         db_table = "questions"
         verbose_name = "質問"

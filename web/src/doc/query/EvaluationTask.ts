@@ -17,6 +17,7 @@ const QUERY = /* GraphQL */ `
         answer {
           text
           question {
+            id
             questionNumber
             category
           }

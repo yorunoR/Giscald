@@ -84,6 +84,7 @@ export enum GenerationTaskStatusType {
 export type GenerationTaskType = {
   __typename?: 'GenerationTaskType'
   answers: Array<AnswerType>
+  bench: BenchType
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   generationSetting: GenerationSettingType
@@ -168,6 +169,7 @@ export type QuestionType = {
   __typename?: 'QuestionType'
   bench: BenchType
   category: Scalars['String']['output']
+  correctAnswers: Array<Maybe<Scalars['String']['output']>>
   id: Scalars['ID']['output']
   questionNumber: Scalars['Int']['output']
   turns: Array<Scalars['String']['output']>
@@ -276,6 +278,7 @@ export type BenchQuery = {
       questionNumber: number
       category: string
       turns: Array<string>
+      correctAnswers: Array<string | null>
     }>
   }
 }
@@ -326,7 +329,12 @@ export type EvaluationTaskQuery = {
       answer: {
         __typename?: 'AnswerType'
         text: string
-        question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
+        question: {
+          __typename?: 'QuestionType'
+          id: string
+          questionNumber: number
+          category: string
+        }
       }
     }>
   }
@@ -346,6 +354,10 @@ export type EvaluationTasksQuery = {
       points: any
       processingTimes: any
       createdAt: string
+      generationTask: {
+        __typename?: 'GenerationTaskType'
+        bench: { __typename?: 'BenchType'; id: string; name: string }
+      }
     }>
   }
 }
@@ -372,7 +384,7 @@ export type GenerationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
-      question: { __typename?: 'QuestionType'; category: string }
+      question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
     }>
   }
 }
@@ -823,7 +835,8 @@ export const BenchDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'category' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'turns' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'turns' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'correctAnswers' } }
                     ]
                   }
                 }
@@ -951,6 +964,7 @@ export const EvaluationTaskDocument = {
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'questionNumber' }
@@ -1000,7 +1014,27 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'generationTask' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'bench' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
                     ]
                   }
                 }
@@ -1068,7 +1102,10 @@ export const GenerationTaskDocument = {
                         name: { kind: 'Name', value: 'question' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'category' } }]
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'category' } }
+                          ]
                         }
                       }
                     ]

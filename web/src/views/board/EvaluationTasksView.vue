@@ -7,11 +7,32 @@
       "
       class="mt-6"
     >
-      <h2>Japanese MT Bench (single)</h2>
+      <h2>点数</h2>
       <div class="flex">
-        <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData1.labels?.length === 1"
+          type="bar"
+          :data="chartData1"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData2.labels?.length === 1"
+          type="bar"
+          :data="chartData2"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData3.labels?.length === 1"
+          type="bar"
+          :data="chartData3"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
       </div>
     </section>
     <section
@@ -31,13 +52,29 @@
       <div v-else>
         <div class="text-left">
           <InputText v-model="nameSearch" placeholder="名前検索" />
+          <Dropdown
+            v-model="benchNameSearch"
+            show-clear
+            class="ml-2"
+            placeholder="Select bench"
+            :options="[
+              'Japanese MT Bench origin',
+              'Elyza Tasks 100 origin',
+              'Rakuda Questions origin',
+              'Tengu Bench origin',
+              'AIW origin'
+            ]"
+          />
         </div>
         <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
               <th class="w-1 py-2">選択</th>
-              <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
+              <th class="cursor-pointer w-2" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
+              </th>
+              <th class="cursor-pointer w-1 py-2" @click="setKey('benchName')">
+                <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
               </th>
               <th class="cursor-pointer w-1" @click="setKey('createdAt')">
                 <u :class="{ 'text-primary': sortKey === 'createdAt' }"> 作成日時 </u>
@@ -101,6 +138,14 @@
                 <router-link
                   class="pl-2"
                   :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
+                  >></router-link
+                >
+              </td>
+              <td class="py-2">
+                <span>{{ evaluationTask.generationTask.bench.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'bench', params: { id: evaluationTask.generationTask.bench.id } }"
                   >></router-link
                 >
               </td>
@@ -173,6 +218,7 @@ const sortKey = ref('createdAt')
 const sortAsc = ref(false)
 const loading = ref(false)
 const nameSearch = ref('')
+const benchNameSearch = ref('')
 const radarDataSources1 = ref([])
 const radarDataSources2 = ref([])
 const radarDataSources3 = ref([])
@@ -220,6 +266,9 @@ const sortedEvaluationTasks = computed(() => {
   if (!data.value) return []
   const evaluationTasks = Array.from(data.value.currentUser.evaluationTasks)
   const selectedEvaluationTasks = evaluationTasks.filter((evaluationTask) => {
+    if (benchNameSearch.value) {
+      if (benchNameSearch.value !== evaluationTask.generationTask.bench.name) return false
+    }
     if (nameSearch.value) {
       const substrings = nameSearch.value.split(/\s+/)
       return containsAll(evaluationTask.name.toLowerCase(), substrings)
@@ -234,6 +283,9 @@ const sortedEvaluationTasks = computed(() => {
       if (column === 'points' || column === 'processingTimes') {
         a_column = Object.values(a[column]).reduce((sum, num) => sum + num, 0)
         b_column = Object.values(b[column]).reduce((sum, num) => sum + num, 0)
+      } else if (column === 'benchName') {
+        a_column = a.generationTask.bench.name
+        b_column = b.generationTask.bench.name
       } else {
         a_column = a[column]
         b_column = b[column]
@@ -286,9 +338,9 @@ onMounted(() => {
   barChartOptions.value = setBarChartOptions()
 })
 
-const chartData1 = ref()
-const chartData2 = ref()
-const chartData3 = ref()
+const chartData1 = ref({})
+const chartData2 = ref({})
+const chartData3 = ref({})
 const barChartData1 = ref()
 const barChartData2 = ref()
 const barChartData3 = ref()
@@ -310,11 +362,13 @@ const setChartData = (dataSources) => {
     return { labels: [], datasets: [] }
   }
 }
-const setChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
 
+const documentStyle = getComputedStyle(document.documentElement)
+const textColor = documentStyle.getPropertyValue('--text-color')
+const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+
+const setChartOptions = () => {
   return {
     plugins: {
       legend: {
@@ -341,11 +395,6 @@ const setChartOptions = () => {
 }
 
 const setBarChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-  const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-
   return {
     indexAxis: 'y',
     maintainAspectRatio: false,

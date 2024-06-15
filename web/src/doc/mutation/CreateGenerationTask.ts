@@ -5,6 +5,7 @@ const MUTATION = /* GraphQL */ `
     $modelName: String!
     $host: String!
     $workerCount: Int!
+    $tagIds: [ID!]!
     $paramStr: String
     $description: String
   ) {
@@ -14,6 +15,7 @@ const MUTATION = /* GraphQL */ `
       modelName: $modelName
       host: $host
       workerCount: $workerCount
+      tagIds: $tagIds
       paramStr: $paramStr
       description: $description
     ) {

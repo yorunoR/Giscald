@@ -7,3 +7,5 @@ from .answer import Answer
 from .evaluation_task import EvaluationTask
 from .rate import Rate
 from .generation_setting import GenerationSetting
+from .tag import Tag
+from .generation_task_tag import GenerationTaskTag

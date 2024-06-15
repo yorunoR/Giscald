@@ -353,7 +353,7 @@ const setChartData = (dataSources) => {
     const datasets = dataSources.map((dataSource) => {
       const data = labels.map((label) => dataSource.values[label])
       return {
-        label: dataSource.name,
+        label: dataSource.name.split('@')[0],
         data
       }
     })

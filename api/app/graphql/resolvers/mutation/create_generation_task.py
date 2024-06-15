@@ -24,7 +24,7 @@ answer_format = "回答の最後に、必ず、結果:[[数値]]の形式で最�
 
 async def resolve(
     info: Info,
-    bench_name: str,
+    bench_code: str,
     name: str,
     model_name: str,
     host: str,
@@ -35,7 +35,7 @@ async def resolve(
     parameters = parse_params_str(param_str)
 
     user = info.context.user
-    bench = await Bench.objects.aget(name=bench_name)
+    bench = await Bench.objects.aget(code=bench_code)
     generation_task = await GenerationTask.objects.acreate(
         user=user, bench=bench, name=name, model_name=model_name, status=GenerationTaskStatus.STARTED, description=description
     )
@@ -49,7 +49,7 @@ async def resolve(
     try:
         jobs = []
         async for question in bench.questions.order_by("question_number").all():
-            if generation_task.bench.name == "AIW origin":
+            if generation_task.bench.code == "aiw":
                 messages = [
                     {"role": "user", "content": question.turns[0]},
                     {"role": "user", "content": answer_format},

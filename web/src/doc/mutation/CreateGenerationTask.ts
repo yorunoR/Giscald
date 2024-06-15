@@ -1,6 +1,6 @@
 const MUTATION = /* GraphQL */ `
   mutation CreateGenerationTask(
-    $benchName: String!
+    $benchCode: String!
     $name: String!
     $modelName: String!
     $host: String!
@@ -9,7 +9,7 @@ const MUTATION = /* GraphQL */ `
     $description: String
   ) {
     createGenerationTask(
-      benchName: $benchName
+      benchCode: $benchCode
       name: $name
       modelName: $modelName
       host: $host

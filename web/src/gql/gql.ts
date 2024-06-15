@@ -15,7 +15,7 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
 const documents = {
   '\n  mutation CreateEvaluationTask(\n    $generationTaskId: ID!\n    $evalName: String!\n    $model: String!\n    $workerCount: Int!\n  ) {\n    createEvaluationTask(\n      generationTaskId: $generationTaskId\n      evalName: $evalName\n      model: $model\n      workerCount: $workerCount\n    ) {\n      id\n    }\n  }\n':
     types.CreateEvaluationTaskDocument,
-  '\n  mutation CreateGenerationTask(\n    $benchName: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchName: $benchName\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n':
+  '\n  mutation CreateGenerationTask(\n    $benchCode: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchCode: $benchCode\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n':
     types.CreateGenerationTaskDocument,
   '\n  mutation DeleteEvaluationTask($id: ID!) {\n    deleteEvaluationTask(id: $id) {\n      id\n    }\n  }\n':
     types.DeleteEvaluationTaskDocument,
@@ -27,7 +27,7 @@ const documents = {
     types.UpdateEvaluationTaskDocument,
   '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n      }\n    }\n  }\n':
     types.BenchDocument,
-  '\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n':
+  '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n':
     types.BenchesDocument,
   '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n':
     types.CurrentUserDocument,
@@ -68,8 +68,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation CreateGenerationTask(\n    $benchName: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchName: $benchName\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n'
-): (typeof documents)['\n  mutation CreateGenerationTask(\n    $benchName: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchName: $benchName\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n']
+  source: '\n  mutation CreateGenerationTask(\n    $benchCode: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchCode: $benchCode\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation CreateGenerationTask(\n    $benchCode: String!\n    $name: String!\n    $modelName: String!\n    $host: String!\n    $workerCount: Int!\n    $paramStr: String\n    $description: String\n  ) {\n    createGenerationTask(\n      benchCode: $benchCode\n      name: $name\n      modelName: $modelName\n      host: $host\n      workerCount: $workerCount\n      paramStr: $paramStr\n      description: $description\n    ) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -104,8 +104,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n'
-): (typeof documents)['\n  query Benches {\n    benches {\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n  }\n']
+  source: '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n'
+): (typeof documents)['\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -8,17 +8,13 @@
     <div v-else>
       <section>
         <Dropdown
-          v-model="benchName"
+          v-model="benchCode"
           class="mt-4 w-6 text-left"
-          :options="[
-            'Japanese MT Bench origin',
-            'Elyza Tasks 100 origin',
-            'Rakuda Questions origin',
-            'Tengu Bench origin',
-            'AIW origin'
-          ]"
+          :options="options"
+          option-label="name"
+          option-value="code"
         />
-        <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>
+        <div class="mt-2 p-error">{{ benchCodeErrors.join(' ') }}</div>
 
         <InputText
           v-model="modelName"
@@ -73,10 +69,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from 'vue'
-import { useMutation } from '@urql/vue'
+import { ref, computed, onBeforeUnmount, watchEffect } from 'vue'
+import { useQuery, useMutation } from '@urql/vue'
 import router from '@/router'
 import { graphql } from '@/gql'
+import Benches from '@/doc/query/Benches'
 import CreateGenerationTask from '@/doc/mutation/CreateGenerationTask'
 import { useField, useForm } from 'vee-validate'
 import VueJsonPretty from 'vue-json-pretty'
@@ -140,6 +137,9 @@ const parameters = ref({
 })
 const count = ref(0)
 
+const query = graphql(Benches)
+const { data } = useQuery({ query })
+
 const { executeMutation: createGenerationTask } = useMutation(graphql(CreateGenerationTask))
 
 // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -172,7 +172,7 @@ const clickCreateGenerationTask = async () => {
 
 const { meta, values } = useForm({
   initialValues: {
-    benchName: 'Japanese MT Bench origin',
+    benchCode: 'multi',
     name: 'mt-bench-01',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
@@ -180,12 +180,23 @@ const { meta, values } = useForm({
   }
 })
 const isRequired = (value) => (value ? true : 'This field is required')
-const { value: benchName, errors: benchNameErrors } = useField('benchName', isRequired)
+const { value: benchCode, errors: benchCodeErrors } = useField('benchCode', isRequired)
 const { value: name, errors: nameErrors } = useField('name', isRequired)
 const { value: modelName, errors: modelNameErrors } = useField('modelName', isRequired)
 const { value: host, errors: hostErrors } = useField('host', isRequired)
 const { value: workerCount, errors: workerCountErrors } = useField('workerCount', isRequired)
 const { value: description, errors: descriptionErrors } = useField('description')
+
+const options = computed(() => {
+  if (!data.value) return []
+  return data.value.benches.slice().sort((a, b) => a.id - b.id)
+})
+
+watchEffect(() => {
+  const parts = modelName.value.split('/')
+  const lastName = parts[parts.length - 1]
+  name.value = lastName + '_' + benchCode.value
+})
 
 let timeoutId
 const countDisplay = async () => {

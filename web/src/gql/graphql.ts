@@ -39,6 +39,7 @@ export type AnswerType = {
 
 export type BenchType = {
   __typename?: 'BenchType'
+  code?: Maybe<Scalars['String']['output']>
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
@@ -112,7 +113,7 @@ export type MutationCreateEvaluationTaskArgs = {
 }
 
 export type MutationCreateGenerationTaskArgs = {
-  benchName: Scalars['String']['input']
+  benchCode: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   host: Scalars['String']['input']
   modelName: Scalars['String']['input']
@@ -213,7 +214,7 @@ export type CreateEvaluationTaskMutation = {
 }
 
 export type CreateGenerationTaskMutationVariables = Exact<{
-  benchName: Scalars['String']['input']
+  benchCode: Scalars['String']['input']
   name: Scalars['String']['input']
   modelName: Scalars['String']['input']
   host: Scalars['String']['input']
@@ -291,6 +292,7 @@ export type BenchesQuery = {
     __typename?: 'BenchType'
     id: string
     name: string
+    code?: string | null
     description?: string | null
     createdAt: string
     updatedAt: string
@@ -541,7 +543,7 @@ export const CreateGenerationTaskDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchCode' } },
           type: {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
@@ -599,8 +601,8 @@ export const CreateGenerationTaskDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'benchName' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } }
+                name: { kind: 'Name', value: 'benchCode' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchCode' } }
               },
               {
                 kind: 'Argument',
@@ -866,6 +868,7 @@ export const BenchesDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'code' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }

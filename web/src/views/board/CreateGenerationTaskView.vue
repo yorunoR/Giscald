@@ -8,6 +8,13 @@
     <div v-else>
       <section>
         <Dropdown
+          v-model="framework"
+          class="mt-4 w-6 text-left"
+          :options="['TGI', 'vllm', 'other']"
+        />
+      </section>
+      <section>
+        <Dropdown
           v-model="benchCode"
           class="mt-4 w-6 text-left"
           :options="options"
@@ -36,7 +43,7 @@
         <InputNumber v-model="workerCount" class="mt-4 w-6" placeholder="同時リクエスト数: 5" />
         <div class="mt-2 p-error">{{ workerCountErrors.join(' ') }}</div>
 
-        <Textarea v-model="description" class="mt-4 w-6" placeholder="GPU 情報等" />
+        <Textarea v-model="description" class="mt-4 w-6" placeholder="詳細等" />
         <div class="mt-2 p-error">{{ descriptionErrors.join(' ') }}</div>
 
         <div class="flex justify-content-center mt-4">
@@ -136,6 +143,7 @@ const parameters = ref({
   }
 })
 const count = ref(0)
+const framework = ref('TGI')
 
 const query = graphql(Benches)
 const { data } = useQuery({ query })
@@ -195,7 +203,7 @@ const options = computed(() => {
 watchEffect(() => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
-  name.value = lastName + '_' + benchCode.value
+  name.value = lastName + '@' + benchCode.value + '.' + framework.value
 })
 
 let timeoutId

@@ -3,9 +3,10 @@ import json
 import os
 
 from asgiref.sync import sync_to_async
+from strawberry import ID
 from strawberry.types import Info
 
-from libs.models import Answer, Bench, GenerationSetting, GenerationTask
+from libs.models import Answer, Bench, GenerationSetting, GenerationTask, GenerationTaskTag, Tag
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
@@ -29,6 +30,7 @@ async def resolve(
     model_name: str,
     host: str,
     worker_count: int,
+    tag_ids: list[ID],
     param_str: str | None = None,
     description: str | None = None,
 ):
@@ -42,6 +44,9 @@ async def resolve(
     _generation_setting = await GenerationSetting.objects.acreate(
         user=user, generation_task=generation_task, host=host, worker_count=worker_count, parameters=parameters
     )
+
+    async for tag in Tag.objects.filter(id__in=tag_ids):
+        await GenerationTaskTag.objects.acreate(generation_task=generation_task, tag=tag)
 
     if not model_name.startswith("openai/"):
         host = None

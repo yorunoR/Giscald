@@ -62,6 +62,25 @@ tengu_example_evaluation = """[該当する評価項目とその簡潔な理由]
 [点数]
 [[7]]"""
 
+safety_settings = [
+    {
+        "category": "HARM_CATEGORY_HARASSMENT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HATE_SPEECH",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "threshold": "BLOCK_NONE",
+    },
+]
+
 
 async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str, worker_count: int):
     api_key = "EMPTY"
@@ -137,7 +156,10 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 ]
             # if correct_answers:
             #     messages.append({"role": "user", "content": f"正しい答えは次のようになります。{correct_answers[0]}"})
-            params = {"temperature": 0, "max_tokens": 1500}
+            if model.startswith("gemini"):
+                params = {"temperature": 0, "max_tokens": 1500, "safety_settings": safety_settings}
+            else:
+                params = {"temperature": 0, "max_tokens": 1500}
             jobs.append(chat_with_job_info(answer, messages, model, host=None, api_key=api_key, strategy="none", params=params))
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)

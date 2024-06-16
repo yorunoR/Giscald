@@ -36,7 +36,7 @@
                 {{ answer.question.category }}
               </td>
               <td class="p-2">
-                <div class="text-left" style="max-width: 720px">
+                <div class="text-left" style="max-width: 720px; white-space: pre-wrap">
                   <div v-for="message in answer.messages" :key="message.content">
                     {{ '<' + message.role + '> ' + message.content }}
                   </div>

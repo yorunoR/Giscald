@@ -47,6 +47,24 @@
         <div class="mt-2 p-error">{{ descriptionErrors.join(' ') }}</div>
 
         <div class="flex justify-content-center mt-4">
+          <div class="w-6 text-left">
+            <b>タグ選択</b>
+          </div>
+        </div>
+        <span v-if="tagsData" class="w-6 limited-width text-left">
+          <Button
+            v-for="tag in tagsData.tags"
+            :key="tag.name"
+            :label="tag.name"
+            class="mt-2 ml-2 py-1 px-2"
+            :severity="tagIds.includes(tag.id) ? 'info' : 'secondary'"
+            size="small"
+            outlined
+            @click="clickTag(tag)"
+          />
+        </span>
+
+        <div class="flex justify-content-center mt-4">
           <div class="w-6">
             <div class="w-full text-left p-1 my-2">
               <div><b> parameters </b></div>
@@ -81,6 +99,7 @@ import { useQuery, useMutation } from '@urql/vue'
 import router from '@/router'
 import { graphql } from '@/gql'
 import Benches from '@/doc/query/Benches'
+import Tags from '@/doc/query/Tags'
 import CreateGenerationTask from '@/doc/mutation/CreateGenerationTask'
 import { useField, useForm } from 'vee-validate'
 import VueJsonPretty from 'vue-json-pretty'
@@ -98,12 +117,23 @@ const framework = ref('TGI')
 
 const query = graphql(Benches)
 const { data } = useQuery({ query })
+const tagsQuery = graphql(Tags)
+const { data: tagsData } = useQuery({ query: tagsQuery })
 
 const { executeMutation: createGenerationTask } = useMutation(graphql(CreateGenerationTask))
 
 // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const clickCreateGenerationTask = async () => {
+  if (tagsData.value.tags.length > 0 && tagIds.value.length === 0) {
+    toast.add({
+      severity: 'error',
+      summary: 'Generate answers',
+      detail: 'タグが存在する時は、タグを一つ以上選んでください'
+    })
+    return
+  }
+
   loading.value = true
   count.value = 0
 
@@ -135,7 +165,8 @@ const { meta, values } = useForm({
     name: 'mt-bench-01',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
-    workerCount: 10
+    workerCount: 10,
+    tagIds: []
   }
 })
 const isRequired = (value) => (value ? true : 'This field is required')
@@ -145,6 +176,7 @@ const { value: modelName, errors: modelNameErrors } = useField('modelName', isRe
 const { value: host, errors: hostErrors } = useField('host', isRequired)
 const { value: workerCount, errors: workerCountErrors } = useField('workerCount', isRequired)
 const { value: description, errors: descriptionErrors } = useField('description')
+const { value: tagIds, errors: _tagIdsErrors } = useField('tagIds')
 
 const options = computed(() => {
   if (!data.value) return []
@@ -166,6 +198,16 @@ watchEffect(() => {
   }
 })
 
+const clickTag = (tag) => {
+  const ids = tagIds.value.slice()
+  if (ids.includes(tag.id)) {
+    tagIds.value = ids.filter((tagId) => tagId !== tag.id)
+  } else {
+    ids.push(tag.id)
+    tagIds.value = ids
+  }
+}
+
 let timeoutId
 const countDisplay = async () => {
   timeoutId = setInterval(() => {
@@ -177,3 +219,10 @@ onBeforeUnmount(() => {
   clearInterval(timeoutId)
 })
 </script>
+
+<style lang="scss" scoped>
+.limited-width {
+  display: inline-block;
+  word-wrap: break-word;
+}
+</style>

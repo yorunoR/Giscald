@@ -79,6 +79,10 @@
     <Dialog v-model:visible="visibleDetail" modal header="詳細" class="w-5">
       <p><b>ホスト:</b><br />{{ selected.generationSetting.host }}</p>
       <p><b>同時リクエスト数:</b><br />{{ selected.generationSetting.workerCount }}</p>
+      <div>
+        <b>タグ:</b>
+        <div v-for="tag in selected.tags" :key="tag.id">{{ tag.name }}</div>
+      </div>
       <p><b>パラメーター:</b></p>
       <pre>{{ selected.generationSetting.parameters }}</pre>
     </Dialog>

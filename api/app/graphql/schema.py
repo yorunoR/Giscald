@@ -15,11 +15,13 @@ from app.graphql.resolvers.query.generation_task import resolve as generation_ta
 from app.graphql.resolvers.query.ping import resolve as ping
 from app.graphql.resolvers.query.question import resolve as question
 from app.graphql.resolvers.query.rates import resolve as rates
+from app.graphql.resolvers.query.tags import resolve as tags
 from app.graphql.types.resources.bench_type import BenchType
 from app.graphql.types.resources.evaluation_task_type import EvaluationTaskType
 from app.graphql.types.resources.generation_task_type import GenerationTaskType
 from app.graphql.types.resources.question_type import QuestionType
 from app.graphql.types.resources.rate_type import RateType
+from app.graphql.types.resources.tag_type import TagType
 from app.graphql.types.resources.user_type import UserType
 
 
@@ -33,6 +35,7 @@ class Query:
     bench: BenchType = strawberry.field(resolver=bench)
     rates: list[RateType] = strawberry.field(resolver=rates)
     question: QuestionType = strawberry.field(resolver=question)
+    tags: list[TagType] = strawberry.field(resolver=tags)
 
 
 @strawberry.type

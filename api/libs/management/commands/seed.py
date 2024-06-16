@@ -50,7 +50,7 @@ def setup_mt_bench():
             templates[data["name"]] = data["prompt_template"]
     template = templates["single-v1"]
 
-    bench = Bench.objects.create(name="Japanese MT Bench origin")
+    bench = Bench.objects.create(name="Japanese MT Bench origin", code="multi")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")
@@ -76,7 +76,7 @@ def setup_elyza_tasks():
     with open(path, "r", encoding="utf-8") as file:
         template = file.read()
 
-    bench = Bench.objects.create(name="Elyza Tasks 100 origin")
+    bench = Bench.objects.create(name="Elyza Tasks 100 origin", code="elyza")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "elyza_tasks_100", "test.csv")
@@ -104,7 +104,7 @@ def setup_rakuda_tasks():
     with open(path, "r", encoding="utf-8") as file:
         template = file.read()
 
-    bench = Bench.objects.create(name="Rakuda Questions origin")
+    bench = Bench.objects.create(name="Rakuda Questions origin", code="rakuda")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "rakuda-questions", "rakuda.jsonl")
@@ -129,7 +129,7 @@ def setup_tengu_tasks():
     with open(path, "r", encoding="utf-8") as file:
         template = file.read()
 
-    bench = Bench.objects.create(name="Tengu Bench origin")
+    bench = Bench.objects.create(name="Tengu Bench origin", code="tengu")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "tengu_bench", "test-00000-of-00001.parquet")
@@ -155,7 +155,7 @@ def setup_tengu_tasks():
 
 
 def setup_aiw_tasks():
-    bench = Bench.objects.create(name="AIW origin")
+    bench = Bench.objects.create(name="AIW origin", code="aiw")
     bench.template = ""
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "aiw", "prompts_remove_format.json")

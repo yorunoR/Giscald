@@ -101,7 +101,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
         user=user, generation_task=generation_task, name=eval_name, points={}, processing_times={}, status=EvaluationTaskStatus.STARTED
     )
 
-    if generation_task.bench.name == "AIW origin":
+    if generation_task.bench.code == "aiw":
         async for answer in generation_task.answers.select_related("question").order_by("id").all():
             correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
             match = re.search(r"\[\[(.+)\]\]", answer.text)
@@ -135,7 +135,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
             correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
             eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
             content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
-            if generation_task.bench.name == "Tengu Bench origin":
+            if generation_task.bench.code == "tengu":
                 example_user_content = template.format(
                     question=tengu_example_question,
                     answer=tengu_example_answer,

@@ -8,6 +8,7 @@ from libs.models import GenerationTask
 from .answer_type import AnswerType
 from .bench_type import BenchType
 from .generation_setting_type import GenerationSettingType
+from .tag_type import TagType
 
 
 @strawberry.enum
@@ -29,3 +30,4 @@ class GenerationTaskType:
     answers: list[AnswerType]
     generation_setting: GenerationSettingType
     bench: BenchType
+    tags: list[TagType]

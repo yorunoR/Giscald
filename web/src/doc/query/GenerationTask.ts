@@ -19,6 +19,10 @@ const QUERY = /* GraphQL */ `
           category
         }
       }
+      tags {
+        id
+        name
+      }
     }
   }
 `

@@ -39,6 +39,7 @@ export type AnswerType = {
 
 export type BenchType = {
   __typename?: 'BenchType'
+  code?: Maybe<Scalars['String']['output']>
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
@@ -92,6 +93,7 @@ export type GenerationTaskType = {
   modelName: Scalars['String']['output']
   name: Scalars['String']['output']
   status: GenerationTaskStatusType
+  tags: Array<TagType>
 }
 
 export type Mutation = {
@@ -112,12 +114,13 @@ export type MutationCreateEvaluationTaskArgs = {
 }
 
 export type MutationCreateGenerationTaskArgs = {
-  benchName: Scalars['String']['input']
+  benchCode: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   host: Scalars['String']['input']
   modelName: Scalars['String']['input']
   name: Scalars['String']['input']
   paramStr?: InputMaybe<Scalars['String']['input']>
+  tagIds: Array<Scalars['ID']['input']>
   workerCount: Scalars['Int']['input']
 }
 
@@ -143,6 +146,7 @@ export type Query = {
   ping: Scalars['String']['output']
   question: QuestionType
   rates: Array<RateType>
+  tags: Array<TagType>
 }
 
 export type QueryBenchArgs = {
@@ -188,6 +192,12 @@ export type RateType = {
   usage: Scalars['JSON']['output']
 }
 
+export type TagType = {
+  __typename?: 'TagType'
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+}
+
 export type UserType = {
   __typename?: 'UserType'
   activated: Scalars['Boolean']['output']
@@ -213,11 +223,12 @@ export type CreateEvaluationTaskMutation = {
 }
 
 export type CreateGenerationTaskMutationVariables = Exact<{
-  benchName: Scalars['String']['input']
+  benchCode: Scalars['String']['input']
   name: Scalars['String']['input']
   modelName: Scalars['String']['input']
   host: Scalars['String']['input']
   workerCount: Scalars['Int']['input']
+  tagIds: Array<Scalars['ID']['input']> | Scalars['ID']['input']
   paramStr?: InputMaybe<Scalars['String']['input']>
   description?: InputMaybe<Scalars['String']['input']>
 }>
@@ -291,6 +302,7 @@ export type BenchesQuery = {
     __typename?: 'BenchType'
     id: string
     name: string
+    code?: string | null
     description?: string | null
     createdAt: string
     updatedAt: string
@@ -386,6 +398,7 @@ export type GenerationTaskQuery = {
       processingTime: any
       question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
     }>
+    tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
   }
 }
 
@@ -409,6 +422,7 @@ export type GenerationTasksQuery = {
         workerCount: number
         parameters: any
       }
+      tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
     }>
   }
 }
@@ -450,6 +464,13 @@ export type RatesQuery = {
     turns: Array<string>
     bench: { __typename?: 'BenchType'; id: string }
   }
+}
+
+export type TagsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TagsQuery = {
+  __typename?: 'Query'
+  tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
 }
 
 export const CreateEvaluationTaskDocument = {
@@ -541,7 +562,7 @@ export const CreateGenerationTaskDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchCode' } },
           type: {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
@@ -581,6 +602,20 @@ export const CreateGenerationTaskDocument = {
         },
         {
           kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tagIds' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+              }
+            }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'paramStr' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
         },
@@ -599,8 +634,8 @@ export const CreateGenerationTaskDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'benchName' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchName' } }
+                name: { kind: 'Name', value: 'benchCode' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchCode' } }
               },
               {
                 kind: 'Argument',
@@ -621,6 +656,11 @@ export const CreateGenerationTaskDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'workerCount' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'workerCount' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tagIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tagIds' } }
               },
               {
                 kind: 'Argument',
@@ -866,6 +906,7 @@ export const BenchesDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'code' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
@@ -1110,6 +1151,17 @@ export const GenerationTaskDocument = {
                       }
                     ]
                   }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tags' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                    ]
+                  }
                 }
               ]
             }
@@ -1156,6 +1208,17 @@ export const GenerationTasksDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'host' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'workerCount' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'parameters' } }
+                          ]
+                        }
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'tags' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } }
                           ]
                         }
                       }
@@ -1291,3 +1354,29 @@ export const RatesDocument = {
     }
   ]
 } as unknown as DocumentNode<RatesQuery, RatesQueryVariables>
+export const TagsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Tags' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tags' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<TagsQuery, TagsQueryVariables>

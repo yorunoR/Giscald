@@ -2,7 +2,19 @@ from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
 from django.forms import Textarea
 
-from .models import AdminUser, Answer, Bench, EvaluationTask, GenerationSetting, GenerationTask, Question, Rate, User
+from .models import (
+    AdminUser,
+    Answer,
+    Bench,
+    EvaluationTask,
+    GenerationSetting,
+    GenerationTask,
+    GenerationTaskTag,
+    Question,
+    Rate,
+    Tag,
+    User,
+)
 
 DEFAULT_READONLY_FIELDS = [
     "created_at",
@@ -116,3 +128,13 @@ class QuestionAdmin(admin.ModelAdmin):
     formfield_overrides = {
         ArrayField: {"widget": Textarea(attrs={"rows": 4, "cols": 80})},
     }
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    readonly_fields = DEFAULT_READONLY_FIELDS
+
+
+@admin.register(GenerationTaskTag)
+class GenerationTaskTagAdmin(admin.ModelAdmin):
+    readonly_fields = DEFAULT_READONLY_FIELDS

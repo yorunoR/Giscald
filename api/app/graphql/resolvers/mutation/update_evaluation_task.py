@@ -48,7 +48,7 @@ async def resolve(info: Info, id: ID):
         id=id, user=user, status=EvaluationTaskStatus.COMPLETED
     )
 
-    if evaluation_task.generation_task.bench.name == "AIW origin":
+    if evaluation_task.generation_task.bench.code == "aiw":
         points = await sync_to_async(avg_points_with_zero)(evaluation_task)
     else:
         points = await sync_to_async(avg_points)(evaluation_task)

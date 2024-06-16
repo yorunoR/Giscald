@@ -9,6 +9,7 @@ class Bench(BaseModel):
     template = models.TextField(max_length=4096, null=True, blank=True)
     # TODO: 既存データのため null=True としたが、 null=False, unique=True とする
     code = models.CharField(max_length=128, null=True)
+    system_template = models.TextField(max_length=4096, null=True, blank=True)
 
     class Meta:
         db_table = "benches"

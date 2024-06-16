@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount, watchEffect } from 'vue'
+import { ref, computed, onBeforeUnmount, watch } from 'vue'
 import { useQuery, useMutation } from '@urql/vue'
 import router from '@/router'
 import { graphql } from '@/gql'
@@ -111,7 +111,7 @@ import { tgiSet, vllmSet, otherSet } from '@/data/presets'
 const toast = useToast()
 
 const loading = ref(false)
-const parameters = ref({})
+const parameters = ref(tgiMultiSet)
 const count = ref(0)
 const framework = ref('TGI')
 
@@ -162,7 +162,7 @@ const clickCreateGenerationTask = async () => {
 const { meta, values } = useForm({
   initialValues: {
     benchCode: 'multi',
-    name: 'mt-bench-01',
+    name: 'calm2-7b-chat@multi.TGI',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
     workerCount: 10,
@@ -183,7 +183,7 @@ const options = computed(() => {
   return data.value.benches.slice().sort((a, b) => a.id - b.id)
 })
 
-watchEffect(() => {
+watch([benchCode, framework, modelName], () => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
   name.value = lastName + '@' + benchCode.value + '.' + framework.value

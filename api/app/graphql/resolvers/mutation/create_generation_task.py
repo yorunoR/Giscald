@@ -3,6 +3,7 @@ import json
 import os
 
 from asgiref.sync import sync_to_async
+from jinja2 import Template
 from strawberry import ID
 from strawberry.types import Info
 
@@ -58,6 +59,19 @@ async def resolve(
                 messages = [
                     {"role": "user", "content": question.turns[0]},
                     {"role": "user", "content": answer_format},
+                ]
+            elif generation_task.bench.code == "bfcl":
+                system_template = Template(bench.system_template)
+                function = question.function
+                vars = {
+                    "name": function["name"],
+                    "description": function["description"],
+                    "parameters_properties": function["parameters"]["properties"],
+                }
+                system_content = system_template.render(vars)
+                messages = [
+                    {"role": "system", "content": system_content},
+                    {"role": "user", "content": question.turns[0]},
                 ]
             else:
                 messages = [{"role": "user", "content": question.turns[0]}]

@@ -15,7 +15,10 @@ const QUERY = /* GraphQL */ `
         usage
         processingTime
         answer {
+          text
           question {
+            id
+            questionNumber
             category
           }
         }

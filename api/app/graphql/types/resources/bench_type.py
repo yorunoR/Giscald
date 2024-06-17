@@ -10,6 +10,7 @@ from .question_type import QuestionType
 class BenchType:
     id: auto
     name: auto
+    code: auto
     description: auto
     created_at: auto
     updated_at: auto

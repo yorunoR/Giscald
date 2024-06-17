@@ -9,6 +9,7 @@ const QUERY = /* GraphQL */ `
         questionNumber
         category
         turns
+        correctAnswers
       }
     }
   }

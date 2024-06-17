@@ -23,6 +23,14 @@ def avg_points(evaluation_task):
     return convert_list_to_dict(category_points_avg)
 
 
+def avg_points_with_zero(evaluation_task):
+    category_points_avg = (
+        Rate.objects.filter(evaluation_task=evaluation_task).values("answer__question__category").annotate(result=Avg("point"))
+    )
+
+    return convert_list_to_dict(category_points_avg)
+
+
 def avg_processing_times(evaluation_task):
     category_processing_times_avg = (
         Rate.objects.filter(evaluation_task=evaluation_task)
@@ -36,9 +44,14 @@ def avg_processing_times(evaluation_task):
 
 async def resolve(info: Info, id: ID):
     user = info.context.user
-    evaluation_task = await EvaluationTask.objects.aget(id=id, user=user, status=EvaluationTaskStatus.COMPLETED)
+    evaluation_task = await EvaluationTask.objects.select_related("generation_task__bench").aget(
+        id=id, user=user, status=EvaluationTaskStatus.COMPLETED
+    )
 
-    points = await sync_to_async(avg_points)(evaluation_task)
+    if evaluation_task.generation_task.bench.code == "aiw":
+        points = await sync_to_async(avg_points_with_zero)(evaluation_task)
+    else:
+        points = await sync_to_async(avg_points)(evaluation_task)
     processing_times = await sync_to_async(avg_processing_times)(evaluation_task)
 
     evaluation_task.points = points

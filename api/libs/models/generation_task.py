@@ -19,6 +19,7 @@ class GenerationTask(BaseModel):
     model_name = models.CharField(max_length=256)
     description = models.TextField(max_length=1024, null=True, blank=True)
     status = models.IntegerField(choices=Status.choices, default=Status.CREATED)
+    tags = models.ManyToManyField("Tag", through="GenerationTaskTag")
 
     class Meta:
         db_table = "generation_tasks"

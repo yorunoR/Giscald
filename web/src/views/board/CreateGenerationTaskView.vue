@@ -8,14 +8,20 @@
     <div v-else>
       <section>
         <Dropdown
-          v-model="benchName"
+          v-model="framework"
           class="mt-4 w-6 text-left"
-          :options="['Japanese MT Bench origin', 'Elyza Tasks 100 origin']"
+          :options="['TGI', 'vllm', 'other']"
         />
-        <div class="mt-2 p-error">{{ benchNameErrors.join(' ') }}</div>
-
-        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
-        <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
+      </section>
+      <section>
+        <Dropdown
+          v-model="benchCode"
+          class="mt-4 w-6 text-left"
+          :options="options"
+          option-label="name"
+          option-value="code"
+        />
+        <div class="mt-2 p-error">{{ benchCodeErrors.join(' ') }}</div>
 
         <InputText
           v-model="modelName"
@@ -23,6 +29,9 @@
           placeholder="モデル名: openai/cyberagent/calm2-7b-chat"
         />
         <div class="mt-2 p-error">{{ modelNameErrors.join(' ') }}</div>
+
+        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
+        <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
 
         <InputText
           v-model="host"
@@ -34,8 +43,26 @@
         <InputNumber v-model="workerCount" class="mt-4 w-6" placeholder="同時リクエスト数: 5" />
         <div class="mt-2 p-error">{{ workerCountErrors.join(' ') }}</div>
 
-        <Textarea v-model="description" class="mt-4 w-6" placeholder="GPU 情報等" />
+        <Textarea v-model="description" class="mt-4 w-6" placeholder="詳細等" />
         <div class="mt-2 p-error">{{ descriptionErrors.join(' ') }}</div>
+
+        <div class="flex justify-content-center mt-4">
+          <div class="w-6 text-left">
+            <b>タグ選択</b>
+          </div>
+        </div>
+        <span v-if="tagsData" class="w-6 limited-width text-left">
+          <Button
+            v-for="tag in tagsData.tags"
+            :key="tag.name"
+            :label="tag.name"
+            class="mt-2 ml-2 py-1 px-2"
+            :severity="tagIds.includes(tag.id) ? 'info' : 'secondary'"
+            size="small"
+            outlined
+            @click="clickTag(tag)"
+          />
+        </span>
 
         <div class="flex justify-content-center mt-4">
           <div class="w-6">
@@ -67,56 +94,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from 'vue'
-import { useMutation } from '@urql/vue'
+import { ref, computed, onBeforeUnmount, watch } from 'vue'
+import { useQuery, useMutation } from '@urql/vue'
 import router from '@/router'
 import { graphql } from '@/gql'
+import Benches from '@/doc/query/Benches'
+import Tags from '@/doc/query/Tags'
 import CreateGenerationTask from '@/doc/mutation/CreateGenerationTask'
 import { useField, useForm } from 'vee-validate'
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 import { useToast } from 'primevue/usetoast'
+import { tgiMultiSet, vllmMultiSet, otherMultiSet } from '@/data/presets/multi'
+import { tgiSet, vllmSet, otherSet } from '@/data/presets'
 
 const toast = useToast()
 
 const loading = ref(false)
-const parameters = ref({
-  default: {
-    max_tokens: 1000,
-    temperature: 0.1,
-    frequency_penalty: 0,
-    presence_penalty: -1.0,
-    top_p: 0.99
-  },
-  reasoning: {
-    max_tokens: 500,
-    temperature: 0.1,
-    frequency_penalty: 0,
-    presence_penalty: -1.0,
-    top_p: 0.99
-  },
-  humanities: {
-    max_tokens: 1500,
-    temperature: 0.1,
-    frequency_penalty: 0,
-    presence_penalty: -1.0,
-    top_p: 0.99
-  },
-  writing: {
-    max_tokens: 1000,
-    temperature: 0.1,
-    frequency_penalty: 0,
-    presence_penalty: -1.0,
-    top_p: 0.99
-  }
-})
+const parameters = ref(tgiMultiSet)
 const count = ref(0)
+const framework = ref('TGI')
+
+const query = graphql(Benches)
+const { data } = useQuery({ query })
+const tagsQuery = graphql(Tags)
+const { data: tagsData } = useQuery({ query: tagsQuery })
 
 const { executeMutation: createGenerationTask } = useMutation(graphql(CreateGenerationTask))
 
 // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const clickCreateGenerationTask = async () => {
+  if (tagsData.value.tags.length > 0 && tagIds.value.length === 0) {
+    toast.add({
+      severity: 'error',
+      summary: 'Generate answers',
+      detail: 'タグが存在する時は、タグを一つ以上選んでください'
+    })
+    return
+  }
+
   loading.value = true
   count.value = 0
 
@@ -144,20 +161,52 @@ const clickCreateGenerationTask = async () => {
 
 const { meta, values } = useForm({
   initialValues: {
-    benchName: 'Japanese MT Bench origin',
-    name: 'mt-bench-01',
+    benchCode: 'multi',
+    name: 'calm2-7b-chat@multi.TGI',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
-    workerCount: 10
+    workerCount: 10,
+    tagIds: []
   }
 })
 const isRequired = (value) => (value ? true : 'This field is required')
-const { value: benchName, errors: benchNameErrors } = useField('benchName', isRequired)
+const { value: benchCode, errors: benchCodeErrors } = useField('benchCode', isRequired)
 const { value: name, errors: nameErrors } = useField('name', isRequired)
 const { value: modelName, errors: modelNameErrors } = useField('modelName', isRequired)
 const { value: host, errors: hostErrors } = useField('host', isRequired)
 const { value: workerCount, errors: workerCountErrors } = useField('workerCount', isRequired)
 const { value: description, errors: descriptionErrors } = useField('description')
+const { value: tagIds, errors: _tagIdsErrors } = useField('tagIds')
+
+const options = computed(() => {
+  if (!data.value) return []
+  return data.value.benches.slice().sort((a, b) => a.id - b.id)
+})
+
+watch([benchCode, framework, modelName], () => {
+  const parts = modelName.value.split('/')
+  const lastName = parts[parts.length - 1]
+  name.value = lastName + '@' + benchCode.value + '.' + framework.value
+  if (benchCode.value == 'multi') {
+    if (framework.value == 'TGI') parameters.value = tgiMultiSet
+    if (framework.value == 'vllm') parameters.value = vllmMultiSet
+    if (framework.value == 'other') parameters.value = otherMultiSet
+  } else {
+    if (framework.value == 'TGI') parameters.value = tgiSet
+    if (framework.value == 'vllm') parameters.value = vllmSet
+    if (framework.value == 'other') parameters.value = otherSet
+  }
+})
+
+const clickTag = (tag) => {
+  const ids = tagIds.value.slice()
+  if (ids.includes(tag.id)) {
+    tagIds.value = ids.filter((tagId) => tagId !== tag.id)
+  } else {
+    ids.push(tag.id)
+    tagIds.value = ids
+  }
+}
 
 let timeoutId
 const countDisplay = async () => {
@@ -170,3 +219,10 @@ onBeforeUnmount(() => {
   clearInterval(timeoutId)
 })
 </script>
+
+<style lang="scss" scoped>
+.limited-width {
+  display: inline-block;
+  word-wrap: break-word;
+}
+</style>

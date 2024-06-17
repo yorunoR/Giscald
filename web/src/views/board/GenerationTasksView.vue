@@ -49,14 +49,14 @@
               </td>
               <td>
                 <div class="p-1">
-                  <u class="cursor-pointer" @click="openDetailEvaluationTask(generationTask.id)">
+                  <u class="cursor-pointer" @click="openDetailEvaluationTask(generationTask)">
                     見る
                   </u>
                 </div>
               </td>
               <td>
                 <div v-if="generationTask.status === 'Completed'" class="p-1">
-                  <u class="cursor-pointer" @click="openCreateEvaluationTask(generationTask.id)">
+                  <u class="cursor-pointer" @click="openCreateEvaluationTask(generationTask)">
                     評価する
                   </u>
                 </div>
@@ -79,6 +79,10 @@
     <Dialog v-model:visible="visibleDetail" modal header="詳細" class="w-5">
       <p><b>ホスト:</b><br />{{ selected.generationSetting.host }}</p>
       <p><b>同時リクエスト数:</b><br />{{ selected.generationSetting.workerCount }}</p>
+      <div>
+        <b>タグ:</b>
+        <div v-for="tag in selected.tags" :key="tag.id">{{ tag.name }}</div>
+      </div>
       <p><b>パラメーター:</b></p>
       <pre>{{ selected.generationSetting.parameters }}</pre>
     </Dialog>
@@ -129,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, watchEffect } from 'vue'
 import router from '@/router'
 import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
@@ -144,7 +148,6 @@ const toast = useToast()
 
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
-const selectedId = ref(null)
 const selected = ref({})
 const visible = ref(false)
 const visibleDetail = ref(false)
@@ -155,6 +158,7 @@ const evaluator = ref('gpt-4-0125-preview')
 const options = ref([
   'gpt-4-0125-preview',
   'gpt-4-turbo-2024-04-09',
+  'gpt-4o',
   'gemini/gemini-pro',
   'gemini/gemini-1.5-pro-latest',
   'claude-3-opus-20240229',
@@ -193,6 +197,10 @@ const sortedGenerationTasks = computed(() => {
   return generationTasks
 })
 
+watchEffect(() => {
+  evalName.value = selected.value.name + '/' + evaluator.value
+})
+
 const timeFormat = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
 }
@@ -220,16 +228,13 @@ onBeforeUnmount(() => {
   clearInterval(countId)
 })
 
-const openDetailEvaluationTask = (id) => {
-  selectedId.value = id
+const openDetailEvaluationTask = (generationTask) => {
+  selected.value = generationTask
   visibleDetail.value = true
-  if (!data.value) return {}
-  selected.value = data.value.currentUser.generationTasks.find(
-    (generationTask) => generationTask.id === id
-  )
 }
-const openCreateEvaluationTask = (id) => {
-  selectedId.value = id
+const openCreateEvaluationTask = (generationTask) => {
+  selected.value = generationTask
+  evalName.value = generationTask.name + '/' + evaluator.value
   visible.value = true
 }
 const checkEvaluatorLimit = (evaluator) => {
@@ -247,7 +252,7 @@ const clickEvaluationTask = async () => {
   const workerCount = checkEvaluatorLimit(evaluator.value) ? 1 : 10
   try {
     const result = await createEvaluationTask({
-      generationTaskId: selectedId.value,
+      generationTaskId: selected.value.id,
       evalName: evalName.value,
       model: evaluator.value,
       workerCount

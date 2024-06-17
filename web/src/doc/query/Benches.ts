@@ -3,6 +3,7 @@ const QUERY = /* GraphQL */ `
     benches {
       id
       name
+      code
       description
       createdAt
       updatedAt

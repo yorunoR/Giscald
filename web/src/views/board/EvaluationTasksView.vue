@@ -7,11 +7,32 @@
       "
       class="mt-6"
     >
-      <h2>Japanese MT Bench (single)</h2>
+      <h2>点数</h2>
       <div class="flex">
-        <Chart type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
-        <Chart type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData1.labels?.length === 1"
+          type="bar"
+          :data="chartData1"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData1" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData2.labels?.length === 1"
+          type="bar"
+          :data="chartData2"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData2" :options="chartOptions" class="w-4" />
+        <Chart
+          v-if="chartData3.labels?.length === 1"
+          type="bar"
+          :data="chartData3"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
       </div>
     </section>
     <section
@@ -29,12 +50,27 @@
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <InputText v-model="nameSearch" placeholder="名前検索" />
+          <Dropdown
+            v-model="benchNameSearch"
+            show-clear
+            class="ml-2"
+            placeholder="Select bench"
+            :options="options"
+            option-label="name"
+            option-value="code"
+          />
+        </div>
+        <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
               <th class="w-1 py-2">選択</th>
-              <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
+              <th class="cursor-pointer w-2" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
+              </th>
+              <th class="cursor-pointer w-1 py-2" @click="setKey('benchName')">
+                <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
               </th>
               <th class="cursor-pointer w-1" @click="setKey('createdAt')">
                 <u :class="{ 'text-primary': sortKey === 'createdAt' }"> 作成日時 </u>
@@ -102,6 +138,14 @@
                 >
               </td>
               <td class="py-2">
+                <span>{{ evaluationTask.generationTask.bench.name }}</span>
+                <router-link
+                  class="pl-2"
+                  :to="{ name: 'bench', params: { id: evaluationTask.generationTask.bench.id } }"
+                  >></router-link
+                >
+              </td>
+              <td class="py-2">
                 {{ timeFormat(evaluationTask.createdAt) }}
               </td>
               <td class="py-2">
@@ -160,6 +204,7 @@
 import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
 import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
+import Benches from '@/doc/query/Benches'
 import EvaluationTasks from '@/doc/query/EvaluationTasks'
 import UpdateEvaluationTask from '@/doc/mutation/UpdateEvaluationTask'
 import DeleteEvaluationTask from '@/doc/mutation/DeleteEvaluationTask'
@@ -169,6 +214,8 @@ import swal from 'sweetalert'
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
 const loading = ref(false)
+const nameSearch = ref('')
+const benchNameSearch = ref('')
 const radarDataSources1 = ref([])
 const radarDataSources2 = ref([])
 const radarDataSources3 = ref([])
@@ -178,6 +225,8 @@ const barDataSources3 = ref([])
 
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
+const benchesQuery = graphql(Benches)
+const { data: benchesData } = useQuery({ query: benchesQuery })
 const { executeMutation: updateEvaluationTask } = useMutation(graphql(UpdateEvaluationTask))
 const { executeMutation: deleteEvaluationTask } = useMutation(graphql(DeleteEvaluationTask))
 
@@ -194,16 +243,48 @@ const setKey = (key) => {
   }
 }
 
+const _containsAny = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (targetString.includes(substrings[i])) {
+      return true
+    }
+  }
+  return false
+}
+
+const containsAll = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (!targetString.includes(substrings[i])) {
+      return false
+    }
+  }
+  return true
+}
+
 const sortedEvaluationTasks = computed(() => {
   if (!data.value) return []
   const evaluationTasks = Array.from(data.value.currentUser.evaluationTasks)
+  const selectedEvaluationTasks = evaluationTasks.filter((evaluationTask) => {
+    if (benchNameSearch.value) {
+      if (benchNameSearch.value !== evaluationTask.generationTask.bench.code) return false
+    }
+    if (nameSearch.value) {
+      const substrings = nameSearch.value.split(/\s+/)
+      return containsAll(evaluationTask.name.toLowerCase(), substrings)
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    evaluationTasks.sort((a, b) => {
+    selectedEvaluationTasks.sort((a, b) => {
       let a_column, b_column
       if (column === 'points' || column === 'processingTimes') {
         a_column = Object.values(a[column]).reduce((sum, num) => sum + num, 0)
         b_column = Object.values(b[column]).reduce((sum, num) => sum + num, 0)
+      } else if (column === 'benchName') {
+        a_column = a.generationTask.bench.name
+        b_column = b.generationTask.bench.name
       } else {
         a_column = a[column]
         b_column = b[column]
@@ -213,7 +294,12 @@ const sortedEvaluationTasks = computed(() => {
       return a.id < b.id ? 1 : -1
     })
   }
-  return evaluationTasks
+  return selectedEvaluationTasks
+})
+
+const options = computed(() => {
+  if (!benchesData.value) return []
+  return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
 })
 
 const timeFormat = (time) => {
@@ -256,9 +342,9 @@ onMounted(() => {
   barChartOptions.value = setBarChartOptions()
 })
 
-const chartData1 = ref()
-const chartData2 = ref()
-const chartData3 = ref()
+const chartData1 = ref({})
+const chartData2 = ref({})
+const chartData3 = ref({})
 const barChartData1 = ref()
 const barChartData2 = ref()
 const barChartData3 = ref()
@@ -271,7 +357,7 @@ const setChartData = (dataSources) => {
     const datasets = dataSources.map((dataSource) => {
       const data = labels.map((label) => dataSource.values[label])
       return {
-        label: dataSource.name,
+        label: dataSource.name.split('@')[0],
         data
       }
     })
@@ -280,11 +366,13 @@ const setChartData = (dataSources) => {
     return { labels: [], datasets: [] }
   }
 }
-const setChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
 
+const documentStyle = getComputedStyle(document.documentElement)
+const textColor = documentStyle.getPropertyValue('--text-color')
+const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+
+const setChartOptions = () => {
   return {
     plugins: {
       legend: {
@@ -311,11 +399,6 @@ const setChartOptions = () => {
 }
 
 const setBarChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement)
-  const textColor = documentStyle.getPropertyValue('--text-color')
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-  const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
-
   return {
     indexAxis: 'y',
     maintainAspectRatio: false,

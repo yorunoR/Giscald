@@ -33,7 +33,7 @@ const documents = {
     types.CurrentUserDocument,
   '\n  query EvaluationTask($id: ID!) {\n    evaluationTask(id: $id) {\n      id\n      name\n      status\n      points\n      createdAt\n      rates {\n        id\n        model\n        point\n        text\n        finishReason\n        usage\n        processingTime\n        answer {\n          text\n          question {\n            id\n            questionNumber\n            category\n          }\n        }\n      }\n    }\n  }\n':
     types.EvaluationTaskDocument,
-  '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n':
+  '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n            code\n          }\n        }\n      }\n    }\n  }\n':
     types.EvaluationTasksDocument,
   '\n  query GenerationTask($id: ID!) {\n    generationTask(id: $id) {\n      id\n      name\n      modelName\n      description\n      status\n      createdAt\n      answers {\n        id\n        messages\n        text\n        finishReason\n        usage\n        processingTime\n        question {\n          questionNumber\n          category\n        }\n      }\n      tags {\n        id\n        name\n      }\n    }\n  }\n':
     types.GenerationTaskDocument,
@@ -123,8 +123,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n']
+  source: '\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n            code\n          }\n        }\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query EvaluationTasks {\n    currentUser {\n      evaluationTasks {\n        id\n        name\n        status\n        points\n        processingTimes\n        createdAt\n        generationTask {\n          bench {\n            id\n            name\n            code\n          }\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

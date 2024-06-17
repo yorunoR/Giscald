@@ -12,6 +12,7 @@ const QUERY = /* GraphQL */ `
           bench {
             id
             name
+            code
           }
         }
       }

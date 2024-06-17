@@ -368,7 +368,7 @@ export type EvaluationTasksQuery = {
       createdAt: string
       generationTask: {
         __typename?: 'GenerationTaskType'
-        bench: { __typename?: 'BenchType'; id: string; name: string }
+        bench: { __typename?: 'BenchType'; id: string; name: string; code?: string | null }
       }
     }>
   }
@@ -1069,7 +1069,8 @@ export const EvaluationTasksDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'code' } }
                                 ]
                               }
                             }

@@ -57,13 +57,9 @@
             show-clear
             class="ml-2"
             placeholder="Select bench"
-            :options="[
-              'Japanese MT Bench origin',
-              'Elyza Tasks 100 origin',
-              'Rakuda Questions origin',
-              'Tengu Bench origin',
-              'AIW origin'
-            ]"
+            :options="options"
+            option-label="name"
+            option-value="code"
           />
         </div>
         <table v-if="data" class="mt-2 w-full">
@@ -208,6 +204,7 @@
 import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
 import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
+import Benches from '@/doc/query/Benches'
 import EvaluationTasks from '@/doc/query/EvaluationTasks'
 import UpdateEvaluationTask from '@/doc/mutation/UpdateEvaluationTask'
 import DeleteEvaluationTask from '@/doc/mutation/DeleteEvaluationTask'
@@ -228,6 +225,8 @@ const barDataSources3 = ref([])
 
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
+const benchesQuery = graphql(Benches)
+const { data: benchesData } = useQuery({ query: benchesQuery })
 const { executeMutation: updateEvaluationTask } = useMutation(graphql(UpdateEvaluationTask))
 const { executeMutation: deleteEvaluationTask } = useMutation(graphql(DeleteEvaluationTask))
 
@@ -267,7 +266,7 @@ const sortedEvaluationTasks = computed(() => {
   const evaluationTasks = Array.from(data.value.currentUser.evaluationTasks)
   const selectedEvaluationTasks = evaluationTasks.filter((evaluationTask) => {
     if (benchNameSearch.value) {
-      if (benchNameSearch.value !== evaluationTask.generationTask.bench.name) return false
+      if (benchNameSearch.value !== evaluationTask.generationTask.bench.code) return false
     }
     if (nameSearch.value) {
       const substrings = nameSearch.value.split(/\s+/)
@@ -296,6 +295,11 @@ const sortedEvaluationTasks = computed(() => {
     })
   }
   return selectedEvaluationTasks
+})
+
+const options = computed(() => {
+  if (!benchesData.value) return []
+  return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
 })
 
 const timeFormat = (time) => {

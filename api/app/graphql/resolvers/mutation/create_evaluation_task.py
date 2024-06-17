@@ -131,11 +131,11 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
     try:
         jobs = []
         async for answer in generation_task.answers.select_related("question").order_by("id").all():
-            question = answer.messages[0]["content"]
-            correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
-            eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
-            content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
             if generation_task.bench.code == "tengu":
+                question = answer.messages[0]["content"]
+                correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
+                eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
+                content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
                 example_user_content = template.format(
                     question=tengu_example_question,
                     answer=tengu_example_answer,
@@ -149,7 +149,22 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                     {"role": "assistant", "content": example_assistant_content},
                     {"role": "user", "content": content},
                 ]
+            elif generation_task.bench.code == "bfcl":
+                for message in answer.messages:
+                    if message["role"] == "user":
+                        question = message["content"]
+                    elif message["role"] == "system":
+                        system = message["content"]
+                content = template.format(question=question, answer=answer.text, system=system)
+                messages = [
+                    {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
+                    {"role": "user", "content": content},
+                ]
             else:
+                question = answer.messages[0]["content"]
+                correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
+                eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
+                content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
                 messages = [
                     {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
                     {"role": "user", "content": content},

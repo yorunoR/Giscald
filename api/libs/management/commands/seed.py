@@ -33,12 +33,15 @@ class Command(BaseCommand):
             setup_tengu_tasks()
         elif mode == "aiw":
             setup_aiw_tasks()
+        elif mode == "bfcl":
+            setup_bfcl_tasks()
         elif mode == "all":
             setup_mt_bench()
             setup_elyza_tasks()
             setup_rakuda_tasks()
             setup_tengu_tasks()
             setup_aiw_tasks()
+            setup_bfcl_tasks()
 
 
 def setup_mt_bench():
@@ -169,6 +172,44 @@ def setup_aiw_tasks():
 
                 Question.objects.create(
                     bench=bench, question_number=index, category="alice", turns=[turn], correct_answers=[correct_answer], eval_aspects=[]
+                )
+                index = index + 1
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_bfcl_tasks():
+    path = os.path.join(settings.BASE_DIR, "data", "bfcl", "judge.txt")
+    with open(path, "r", encoding="utf-8") as file:
+        template = file.read()
+
+    system_path = os.path.join(settings.BASE_DIR, "data", "bfcl", "system_initial.jinja")
+    with open(system_path, "r", encoding="utf-8") as system_file:
+        system_template = system_file.read()
+
+    bench = Bench.objects.create(name="Berkeley Function-Calling origin", code="bfcl")
+    bench.template = template
+    bench.system_template = system_template
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "bfcl", "gorilla_openfunctions_v1_test_simple_with_return_200.json")
+    try:
+        with open(path, newline="", encoding="utf-8") as file:
+            index = 1
+            for line in file:
+                data = json.loads(line)
+                turn = data["question"]
+                correct_answer = data["expected_return_value"]
+                function = data["function"]
+
+                Question.objects.create(
+                    bench=bench,
+                    question_number=index,
+                    category="simple",
+                    turns=[turn],
+                    correct_answers=[correct_answer],
+                    eval_aspects=[],
+                    function=function,
                 )
                 index = index + 1
     except Exception as e:

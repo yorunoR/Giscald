@@ -76,6 +76,7 @@ export type GenerationSettingType = {
 }
 
 export enum GenerationTaskStatusType {
+  Aborted = 'Aborted',
   Completed = 'Completed',
   Created = 'Created',
   Failed = 'Failed',

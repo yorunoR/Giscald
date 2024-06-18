@@ -17,6 +17,7 @@ class GenerationTaskStatusType(Enum):
     Started = 10
     Completed = 20
     Failed = 30
+    Aborted = 40
 
 
 @strawberry.django.type(GenerationTask)

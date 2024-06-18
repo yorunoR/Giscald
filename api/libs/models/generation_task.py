@@ -10,6 +10,7 @@ class Status(models.IntegerChoices):
     STARTED = 10, "Started"
     COMPLETED = 20, "Completed"
     FAILED = 30, "Failed"
+    ABORTED = 40, "Aborted"
 
 
 class GenerationTask(BaseModel):

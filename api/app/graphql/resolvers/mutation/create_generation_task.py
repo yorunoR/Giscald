@@ -65,6 +65,9 @@ async def resolve(
     try:
         jobs = []
         async for question in bench.questions.order_by("question_number").all():
+            latest_generation_task = await GenerationTask.objects.filter(id=generation_task.id).afirst()
+            if latest_generation_task.status == GenerationTaskStatus.ABORTED:
+                break
             if generation_task.bench.code == "aiw":
                 messages = [
                     {"role": "user", "content": question.turns[0]},
@@ -112,8 +115,9 @@ async def resolve(
                         print(result)
                         raise e
 
-        generation_task.status = GenerationTaskStatus.COMPLETED
-        await sync_to_async(lambda: generation_task.save())()
+        if latest_generation_task.status != GenerationTaskStatus.ABORTED:
+            generation_task.status = GenerationTaskStatus.COMPLETED
+            await sync_to_async(lambda: generation_task.save())()
         return generation_task
     except Exception as e:
         print(e)

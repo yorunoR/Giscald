@@ -158,7 +158,7 @@ def setup_tengu_tasks():
 
 
 def setup_aiw_tasks():
-    bench = Bench.objects.create(name="AIW origin", code="aiw")
+    bench = Bench.objects.create(name="Alice In Wonderland origin", code="aiw")
     bench.template = ""
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "aiw", "prompts_remove_format.json")

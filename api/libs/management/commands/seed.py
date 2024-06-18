@@ -23,8 +23,8 @@ class Command(BaseCommand):
         self.main(mode)
 
     def main(self, mode):
-        if mode == "mt":
-            setup_mt_bench()
+        if mode == "jmt":
+            setup_jmt_bench()
         elif mode == "elyza":
             setup_elyza_tasks()
         elif mode == "rakuda":
@@ -36,7 +36,7 @@ class Command(BaseCommand):
         elif mode == "bfcl":
             setup_bfcl_tasks()
         elif mode == "all":
-            setup_mt_bench()
+            setup_jmt_bench()
             setup_elyza_tasks()
             setup_rakuda_tasks()
             setup_tengu_tasks()
@@ -44,7 +44,7 @@ class Command(BaseCommand):
             setup_bfcl_tasks()
 
 
-def setup_mt_bench():
+def setup_jmt_bench():
     templates = {}
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "judge_ja_prompts.jsonl")
     with open(path, "r", encoding="utf-8") as file:
@@ -53,7 +53,7 @@ def setup_mt_bench():
             templates[data["name"]] = data["prompt_template"]
     template = templates["single-v1"]
 
-    bench = Bench.objects.create(name="Japanese MT Bench origin", code="multi")
+    bench = Bench.objects.create(name="Japanese MT Bench origin", code="jmt")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")

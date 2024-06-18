@@ -11,8 +11,6 @@ from libs.models import Answer, Bench, GenerationSetting, GenerationTask, Genera
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
-api_key = os.getenv("OPENAI_API_KEY", "EMPTY")
-
 
 def parse_params_str(param_str):
     try:
@@ -35,6 +33,18 @@ async def resolve(
     param_str: str | None = None,
     description: str | None = None,
 ):
+    api_key = "EMPTY"
+    if model_name.startswith("gpt"):
+        api_key = os.getenv("OPENAI_API_KEY")
+    if model_name.startswith("gemini"):
+        api_key = os.getenv("GEMINI_API_KEY")
+    if model_name.startswith("claude"):
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+    if model_name.startswith("command"):
+        api_key = os.getenv("COHERE_API_KEY")
+    if model_name.startswith("deepseek"):
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+
     parameters = parse_params_str(param_str)
 
     user = info.context.user

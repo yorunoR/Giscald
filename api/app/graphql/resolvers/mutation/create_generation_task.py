@@ -80,8 +80,8 @@ async def resolve(
                 }
                 system_content = system_template.render(vars)
                 messages = [
-                    {"role": "system", "content": system_content},
-                    {"role": "user", "content": question.turns[0]},
+                    # {"role": "system", "content": system_content},
+                    {"role": "user", "content": system_content + "\n\n" + question.turns[0]},
                 ]
             else:
                 messages = [{"role": "user", "content": question.turns[0]}]

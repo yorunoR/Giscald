@@ -151,6 +151,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 ]
             elif generation_task.bench.code == "bfcl":
                 for message in answer.messages:
+                    system = ""
                     if message["role"] == "user":
                         question = message["content"]
                     elif message["role"] == "system":

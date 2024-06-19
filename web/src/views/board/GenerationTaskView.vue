@@ -5,7 +5,22 @@
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <Dropdown
+            v-model="selectedCategory"
+            :options="categories"
+            show-clear
+            placeholder="Select a Category"
+          />
+          <Dropdown
+            v-model="selectedTurn"
+            :options="[1, 2]"
+            show-clear
+            placeholder="Select a Turn"
+            class="ml-2"
+          />
+        </div>
+        <table v-if="data" class="w-full mt-2">
           <thead>
             <tr>
               <th class="cursor-pointer py-2" @click="setKey('questionNumber')">
@@ -14,6 +29,7 @@
               <th class="cursor-pointer py-2" @click="setKey('category')">
                 <u :class="{ 'text-primary': sortKey === 'category' }"> カテゴリー </u>
               </th>
+              <th>ターン</th>
               <th class="">質問</th>
               <th class="">回答</th>
               <th class="cursor-pointer" @click="setKey('finishReason')">
@@ -34,6 +50,9 @@
               </td>
               <td class="p-2">
                 {{ answer.question.category }}
+              </td>
+              <td class="px-4">
+                {{ answer.turnNumber }}
               </td>
               <td class="p-2">
                 <div class="text-left" style="max-width: 720px; white-space: pre-wrap">
@@ -76,6 +95,8 @@ const props = defineProps<{
 
 const sortKey = ref('category')
 const sortAsc = ref(false)
+const selectedCategory = ref(null)
+const selectedTurn = ref(null)
 
 const query = graphql(GenerationTask)
 
@@ -83,6 +104,14 @@ const { fetching, error, data } = useQuery({
   query,
   variables: { id: props.id },
   requestPolicy: 'network-only'
+})
+
+const categories = computed(() => {
+  if (!data.value) return []
+  const categories = data.value.generationTask.answers.map((answer) => {
+    return answer.question.category
+  })
+  return Array.from(new Set(categories))
 })
 
 const setKey = (key) => {
@@ -101,9 +130,23 @@ const setKey = (key) => {
 const sortedAnswers = computed(() => {
   if (!data.value) return []
   const answers = Array.from(data.value.generationTask.answers)
+  const selectedAnswers = answers.filter((answer) => {
+    if (selectedTurn.value && selectedCategory.value) {
+      return (
+        answer.turnNumber === selectedTurn.value &&
+        answer.question.category === selectedCategory.value
+      )
+    } else if (selectedTurn.value) {
+      return answer.turnNumber === selectedTurn.value
+    } else if (selectedCategory.value) {
+      return answer.question.category === selectedCategory.value
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    answers.sort((a, b) => {
+    selectedAnswers.sort((a, b) => {
       let a_column, b_column
       if (column === 'usage') {
         a_column = a[column].total_tokens
@@ -126,7 +169,7 @@ const sortedAnswers = computed(() => {
       return a.id < b.id ? 1 : -1
     })
   }
-  return answers
+  return selectedAnswers
 })
 </script>
 

@@ -13,7 +13,7 @@ class Question(BaseModel):
     turns = ArrayField(models.CharField(max_length=4096))
     correct_answers = ArrayField(models.CharField(max_length=4096))
     eval_aspects = ArrayField(models.CharField(max_length=4096))
-    function = models.JSONField()
+    function = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return str(self.question_number)

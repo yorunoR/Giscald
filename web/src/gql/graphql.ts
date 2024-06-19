@@ -39,7 +39,7 @@ export type AnswerType = {
 
 export type BenchType = {
   __typename?: 'BenchType'
-  code?: Maybe<Scalars['String']['output']>
+  code: Scalars['String']['output']
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
@@ -303,7 +303,7 @@ export type BenchesQuery = {
     __typename?: 'BenchType'
     id: string
     name: string
-    code?: string | null
+    code: string
     description?: string | null
     createdAt: string
     updatedAt: string
@@ -369,7 +369,7 @@ export type EvaluationTasksQuery = {
       createdAt: string
       generationTask: {
         __typename?: 'GenerationTaskType'
-        bench: { __typename?: 'BenchType'; id: string; name: string; code?: string | null }
+        bench: { __typename?: 'BenchType'; id: string; name: string; code: string }
       }
     }>
   }

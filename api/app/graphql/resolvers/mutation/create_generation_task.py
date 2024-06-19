@@ -110,6 +110,7 @@ async def resolve(
                             finish_reason=result["response"]["finish_reason"],
                             processing_time=result["processing_time"],
                             question=result["info"],
+                            turn_number=1,
                         )
                     except Exception as e:
                         print(result)

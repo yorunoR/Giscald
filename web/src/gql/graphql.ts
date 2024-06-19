@@ -34,6 +34,7 @@ export type AnswerType = {
   processingTime: Scalars['Decimal']['output']
   question: QuestionType
   text: Scalars['String']['output']
+  turnNumber: Scalars['Int']['output']
   usage: Scalars['JSON']['output']
 }
 
@@ -397,6 +398,7 @@ export type GenerationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
+      turnNumber: number
       question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
     }>
     tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
@@ -1140,6 +1142,7 @@ export const GenerationTaskDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'turnNumber' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'question' },

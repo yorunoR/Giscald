@@ -17,6 +17,7 @@
               <th class="cursor-pointer w-1" @click="setKey('updatedAt')">
                 <u :class="{ 'text-primary': sortKey === 'updatedAt' }"> 更新日時 </u>
               </th>
+              <th class="w-1">コード</th>
               <th>メモ</th>
               <th class="w-1">操作</th>
             </tr>
@@ -34,6 +35,9 @@
               </td>
               <td class="py-2">
                 {{ timeFormat(bench.updatedAt) }}
+              </td>
+              <td class="py-2">
+                {{ bench.code }}
               </td>
               <td class="py-2">
                 {{ bench.description }}

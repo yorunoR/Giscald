@@ -187,7 +187,7 @@ watch([benchCode, framework, modelName], () => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
   name.value = lastName + '@' + benchCode.value + '.' + framework.value
-  if (benchCode.value == 'jmt') {
+  if (benchCode.value.startsWith('jmt')) {
     if (framework.value == 'TGI') parameters.value = tgiMultiSet
     if (framework.value == 'vllm') parameters.value = vllmMultiSet
     if (framework.value == 'other') parameters.value = otherMultiSet

@@ -8,7 +8,7 @@ from libs.models.evaluation_task import Status as EvaluationTaskStatus
 
 
 def convert_list_to_dict(input_list):
-    result_dict = {item["answer__question__category"]: float(item["result"]) for item in input_list}
+    result_dict = {item["answers__question__category"]: float(item["result"]) for item in input_list}
     return result_dict
 
 
@@ -16,7 +16,7 @@ def avg_points(evaluation_task):
     category_points_avg = (
         Rate.objects.filter(evaluation_task=evaluation_task)
         .exclude(point=0)
-        .values("answer__question__category")
+        .values("answers__question__category")
         .annotate(result=Avg("point"))
     )
 
@@ -25,7 +25,7 @@ def avg_points(evaluation_task):
 
 def avg_points_with_zero(evaluation_task):
     category_points_avg = (
-        Rate.objects.filter(evaluation_task=evaluation_task).values("answer__question__category").annotate(result=Avg("point"))
+        Rate.objects.filter(evaluation_task=evaluation_task).values("answers__question__category").annotate(result=Avg("point"))
     )
 
     return convert_list_to_dict(category_points_avg)
@@ -35,8 +35,8 @@ def avg_processing_times(evaluation_task):
     category_processing_times_avg = (
         Rate.objects.filter(evaluation_task=evaluation_task)
         .exclude(point=0)
-        .values("answer__question__category")
-        .annotate(result=Avg("answer__processing_time"))
+        .values("answers__question__category")
+        .annotate(result=Avg("answers__processing_time"))
     )
 
     return convert_list_to_dict(category_processing_times_avg)

@@ -162,7 +162,7 @@ const clickCreateGenerationTask = async () => {
 const { meta, values } = useForm({
   initialValues: {
     benchCode: 'jmt',
-    name: 'calm2-7b-chat@jmt.TGI',
+    name: 'calm2-7b-chat@xxx.jmt.TGI',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
     workerCount: 10,
@@ -186,7 +186,8 @@ const options = computed(() => {
 watch([benchCode, framework, modelName], () => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
-  name.value = lastName + '@' + benchCode.value + '.' + framework.value
+  const randomString = generateRandomString()
+  name.value = lastName + '@' + randomString + '.' + benchCode.value + '.' + framework.value
   if (benchCode.value.startsWith('jmt')) {
     if (framework.value == 'TGI') parameters.value = tgiMultiSet
     if (framework.value == 'vllm') parameters.value = vllmMultiSet
@@ -218,6 +219,16 @@ const countDisplay = async () => {
 onBeforeUnmount(() => {
   clearInterval(timeoutId)
 })
+
+const generateRandomString = () => {
+  let result = ''
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  const charactersLength = characters.length
+  for (let i = 0; i < 3; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
 </script>
 
 <style lang="scss" scoped>

@@ -9,3 +9,4 @@ from .rate import Rate
 from .generation_setting import GenerationSetting
 from .tag import Tag
 from .generation_task_tag import GenerationTaskTag
+from .rate_answer import RateAnswer

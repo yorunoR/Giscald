@@ -183,7 +183,7 @@ export type QuestionType = {
 
 export type RateType = {
   __typename?: 'RateType'
-  answer: AnswerType
+  answers: Array<AnswerType>
   evaluationTask: EvaluationTaskType
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
@@ -340,7 +340,7 @@ export type EvaluationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
-      answer: {
+      answers: Array<{
         __typename?: 'AnswerType'
         text: string
         question: {
@@ -349,7 +349,7 @@ export type EvaluationTaskQuery = {
           questionNumber: number
           category: string
         }
-      }
+      }>
     }>
   }
 }
@@ -446,14 +446,14 @@ export type RatesQuery = {
     model: string
     point: number
     text: string
-    answer: {
+    answers: Array<{
       __typename?: 'AnswerType'
       id: string
       text: string
       finishReason: string
       usage: any
       processingTime: any
-    }
+    }>
     evaluationTask: {
       __typename?: 'EvaluationTaskType'
       generationTask: { __typename?: 'GenerationTaskType'; modelName: string; name: string }
@@ -997,7 +997,7 @@ export const EvaluationTaskDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'answer' },
+                        name: { kind: 'Name', value: 'answers' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -1291,7 +1291,7 @@ export const RatesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'answer' },
+                  name: { kind: 'Name', value: 'answers' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [

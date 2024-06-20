@@ -5,7 +5,7 @@ const QUERY = /* GraphQL */ `
       model
       point
       text
-      answer {
+      answers {
         id
         text
         finishReason

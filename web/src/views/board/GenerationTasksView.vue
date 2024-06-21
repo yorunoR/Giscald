@@ -175,6 +175,7 @@ const evaluatorOptions = ref([
   'gemini/gemini-pro',
   'gemini/gemini-1.5-pro-latest',
   'claude-3-opus-20240229',
+  'claude-3-5-sonnet-20240620',
   'command-r-plus'
 ])
 const nameSearch = ref('')
@@ -291,6 +292,7 @@ const openCreateEvaluationTask = (generationTask) => {
 const checkEvaluatorLimit = (evaluator) => {
   return (
     evaluator === 'claude-3-opus-20240229' ||
+    evaluator === 'claude-3-5-sonnet-20240620' ||
     evaluator === 'gemini/gemini-1.5-pro-latest' ||
     evaluator === 'command-r-plus'
   )

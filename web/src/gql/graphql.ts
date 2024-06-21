@@ -90,6 +90,7 @@ export type GenerationTaskType = {
   bench: BenchType
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
+  evaluationTasks: Array<EvaluationTaskType>
   generationSetting: GenerationSettingType
   id: Scalars['ID']['output']
   modelName: Scalars['String']['output']
@@ -427,6 +428,7 @@ export type GenerationTasksQuery = {
       }
       bench: { __typename?: 'BenchType'; id: string; code: string }
       tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
+      evaluationTasks: Array<{ __typename?: 'EvaluationTaskType'; id: string }>
     }>
   }
 }
@@ -1237,6 +1239,14 @@ export const GenerationTasksDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'name' } }
                           ]
+                        }
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'evaluationTasks' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
                         }
                       }
                     ]

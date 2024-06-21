@@ -33,6 +33,7 @@
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
               <th>メモ</th>
+              <th class="w-1">評価数</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
@@ -58,6 +59,9 @@
               </td>
               <td class="py-2">
                 {{ generationTask.description }}
+              </td>
+              <td class="py-2">
+                {{ generationTask.evaluationTasks.length }}
               </td>
               <td>
                 <div class="p-1">

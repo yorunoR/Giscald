@@ -21,6 +21,9 @@ const QUERY = /* GraphQL */ `
           id
           name
         }
+        evaluationTasks {
+          id
+        }
       }
     }
   }

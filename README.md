@@ -17,6 +17,9 @@ TGI や vllm で、OpenAI 互換の LLM サーバーを起動してください
 起動
 ```
 docker compose up
+
+# langfuse の出力を無効にしたい時
+docker compose up -no-attach langfuse
 ```
 
 http://localhost:8000/ で操作画面が開きます  

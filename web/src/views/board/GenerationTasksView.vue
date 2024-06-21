@@ -33,6 +33,7 @@
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
               <th>メモ</th>
+              <th class="w-1">評価数</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
@@ -58,6 +59,9 @@
               </td>
               <td class="py-2">
                 {{ generationTask.description }}
+              </td>
+              <td class="py-2">
+                {{ generationTask.evaluationTasks.length }}
               </td>
               <td>
                 <div class="p-1">
@@ -175,6 +179,7 @@ const evaluatorOptions = ref([
   'gemini/gemini-pro',
   'gemini/gemini-1.5-pro-latest',
   'claude-3-opus-20240229',
+  'claude-3-5-sonnet-20240620',
   'command-r-plus'
 ])
 const nameSearch = ref('')
@@ -291,6 +296,7 @@ const openCreateEvaluationTask = (generationTask) => {
 const checkEvaluatorLimit = (evaluator) => {
   return (
     evaluator === 'claude-3-opus-20240229' ||
+    evaluator === 'claude-3-5-sonnet-20240620' ||
     evaluator === 'gemini/gemini-1.5-pro-latest' ||
     evaluator === 'command-r-plus'
   )

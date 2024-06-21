@@ -14,4 +14,5 @@ class AnswerType:
     finish_reason: auto
     usage: auto
     processing_time: auto
+    turn_number: auto
     question: QuestionType

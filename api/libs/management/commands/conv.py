@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "conv database."
+    help = "one shot. connect question and answer relations."
 
     def add_arguments(self, parser):
         parser.add_argument("--mode", type=str, help="Mode")

@@ -12,7 +12,7 @@
         </div>
         <p class="text-left my-4">
           {{ data.question.questionNumber }}:
-          {{ data.question.turns[0] }}
+          {{ data.question.turns.join(', ') }}
         </p>
         <table v-if="data" class="w-full">
           <thead>
@@ -54,7 +54,7 @@
                 {{ rate.point }}
               </td>
               <td class="p-2 text-left">
-                {{ rate.answer.text }}
+                <div v-for="answer in rate.answers" :key="answer.id">- {{ answer.text }}</div>
               </td>
               <td class="p-2 text-left">
                 {{ rate.text }}

@@ -23,8 +23,10 @@ class Command(BaseCommand):
         self.main(mode)
 
     def main(self, mode):
-        if mode == "mt":
-            setup_mt_bench()
+        if mode == "jmt":
+            setup_jmt_bench()
+        elif mode == "jmt-multi":
+            setup_jmt_multi_bench()
         elif mode == "elyza":
             setup_elyza_tasks()
         elif mode == "rakuda":
@@ -36,7 +38,8 @@ class Command(BaseCommand):
         elif mode == "bfcl":
             setup_bfcl_tasks()
         elif mode == "all":
-            setup_mt_bench()
+            setup_jmt_bench()
+            setup_jmt_multi_bench()
             setup_elyza_tasks()
             setup_rakuda_tasks()
             setup_tengu_tasks()
@@ -44,7 +47,7 @@ class Command(BaseCommand):
             setup_bfcl_tasks()
 
 
-def setup_mt_bench():
+def setup_jmt_bench():
     templates = {}
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "judge_ja_prompts.jsonl")
     with open(path, "r", encoding="utf-8") as file:
@@ -53,7 +56,33 @@ def setup_mt_bench():
             templates[data["name"]] = data["prompt_template"]
     template = templates["single-v1"]
 
-    bench = Bench.objects.create(name="Japanese MT Bench origin", code="multi")
+    bench = Bench.objects.create(name="Japanese MT Bench origin", code="jmt")
+    bench.template = template
+    bench.save()
+    path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
+                data = json.loads(line)
+                Question.objects.create(
+                    bench=bench,
+                    question_number=data["question_id"],
+                    category=data["category"],
+                    turns=data["turns"],
+                    correct_answers=[],
+                    eval_aspects=[],
+                )
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def setup_jmt_multi_bench():
+    path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "judge_ja_multi_prompt.txt")
+    with open(path, "r", encoding="utf-8") as file:
+        template = file.read()
+
+    bench = Bench.objects.create(name="Japanese MT Bench multi origin", code="jmt-multi")
     bench.template = template
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "japanese_mt_bench", "question_full.jsonl")
@@ -158,7 +187,7 @@ def setup_tengu_tasks():
 
 
 def setup_aiw_tasks():
-    bench = Bench.objects.create(name="AIW origin", code="aiw")
+    bench = Bench.objects.create(name="Alice In Wonderland origin", code="aiw")
     bench.template = ""
     bench.save()
     path = os.path.join(settings.BASE_DIR, "data", "aiw", "prompts_remove_format.json")

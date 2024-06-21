@@ -20,5 +20,5 @@ class RateType:
     finish_reason: auto
     usage: auto
     processing_time: auto
-    answer: AnswerType
+    answers: list[AnswerType]
     evaluation_task: Annotated["EvaluationTaskType", strawberry.lazy(".evaluation_task_type")]

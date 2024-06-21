@@ -107,7 +107,18 @@ async def resolve(
                 else:
                     messages = [{"role": "user", "content": question.turns[index]}]
 
-                jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, strategy=strategy, params=params))
+                session_id = generation_task.name.replace("/", "_") + "_" + str(generation_task.id)
+                metadata = {
+                    "session_id": session_id,
+                    "trace_id": session_id + "." + f"{question.question_number:03}",
+                    "tags": [strategy],
+                }
+
+                jobs.append(
+                    chat_with_job_info(
+                        question, messages, model_name, host, api_key=api_key, metadata=metadata, strategy=strategy, params=params
+                    )
+                )
                 if len(jobs) == worker_count:
                     results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
                     jobs = []

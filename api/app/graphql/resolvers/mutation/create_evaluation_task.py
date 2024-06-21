@@ -132,11 +132,13 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
         jobs = []
         async for answer in generation_task.answers.select_related("question").filter(turn_number=1).order_by("id").all():
             info = [answer]
+            question = answer.question
             if generation_task.bench.code == "tengu":
-                question = answer.question.turns[0]
-                correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
-                eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
-                content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
+                correct_answer = question.correct_answers[0] if question.correct_answers else None
+                eval_aspect = question.eval_aspects[0] if question.eval_aspects else None
+                content = template.format(
+                    question=question.turns[0], answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect
+                )
                 example_user_content = template.format(
                     question=tengu_example_question,
                     answer=tengu_example_answer,
@@ -152,19 +154,19 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 ]
             elif generation_task.bench.code == "bfcl":
                 for message in answer.messages:
-                    system = ""
+                    system_text = ""
                     if message["role"] == "user":
-                        question = message["content"]
+                        question_text = message["content"]
                     elif message["role"] == "system":
-                        system = message["content"]
-                content = template.format(question=question, answer=answer.text, system=system)
+                        system_text = message["content"]
+                content = template.format(question=question_text, answer=answer.text, system=system_text)
                 messages = [
                     {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
                     {"role": "user", "content": content},
                 ]
             elif generation_task.bench.code == "jmt-multi":
-                turns = answer.question.turns
-                answer_2 = await Answer.objects.aget(generation_task=generation_task, question=answer.question, turn_number=2)
+                turns = question.turns
+                answer_2 = await Answer.objects.aget(generation_task=generation_task, question=question, turn_number=2)
                 content = template.format(question_1=turns[0], question_2=turns[1], answer_1=answer.text, answer_2=answer_2.text)
                 messages = [
                     {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
@@ -172,10 +174,11 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 ]
                 info = [answer, answer_2]
             else:
-                question = answer.question.turns[0]
-                correct_answer = answer.question.correct_answers[0] if answer.question.correct_answers else None
-                eval_aspect = answer.question.eval_aspects[0] if answer.question.eval_aspects else None
-                content = template.format(question=question, answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect)
+                correct_answer = question.correct_answers[0] if question.correct_answers else None
+                eval_aspect = question.eval_aspects[0] if question.eval_aspects else None
+                content = template.format(
+                    question=question.turns[0], answer=answer.text, correct_answer=correct_answer, eval_aspect=eval_aspect
+                )
                 messages = [
                     {"role": "system", "content": "評価の点数は必ず[[数字]]の形式で示す。説明は簡潔にする。"},
                     {"role": "user", "content": content},
@@ -186,7 +189,16 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 params = {"temperature": 0, "max_tokens": 1500, "safety_settings": safety_settings}
             else:
                 params = {"temperature": 0, "max_tokens": 1500}
-            jobs.append(chat_with_job_info(info, messages, model, host=None, api_key=api_key, strategy="none", params=params))
+
+            session_id = evaluation_task.name.replace("/", "_") + "_" + str(evaluation_task.id)
+            metadata = {
+                "session_id": session_id,
+                "trace_id": session_id + "." + f"{question.question_number:03}",
+            }
+
+            jobs.append(
+                chat_with_job_info(info, messages, model, host=None, api_key=api_key, metadata=metadata, strategy="none", params=params)
+            )
             if len(jobs) == worker_count:
                 results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
                 jobs = []

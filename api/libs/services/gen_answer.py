@@ -2,7 +2,11 @@ import time
 
 import litellm
 
+from libs.services.prompt_logger import callbacks
+
 # litellm.set_verbose = True
+litellm.success_callback = callbacks
+litellm.failure_callback = callbacks
 
 
 async def chat(messages, model, host, api_key, strategy, params):

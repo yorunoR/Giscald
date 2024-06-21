@@ -120,7 +120,7 @@ async def resolve(
                     )
                 )
                 if len(jobs) == worker_count:
-                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
+                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=240) for job in jobs), return_exceptions=True)
                     jobs = []
                     for result in results:
                         try:

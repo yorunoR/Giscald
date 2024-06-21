@@ -13,6 +13,10 @@ const QUERY = /* GraphQL */ `
           workerCount
           parameters
         }
+        bench {
+          id
+          code
+        }
         tags {
           id
           name

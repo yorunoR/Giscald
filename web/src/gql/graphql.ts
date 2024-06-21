@@ -34,12 +34,13 @@ export type AnswerType = {
   processingTime: Scalars['Decimal']['output']
   question: QuestionType
   text: Scalars['String']['output']
+  turnNumber: Scalars['Int']['output']
   usage: Scalars['JSON']['output']
 }
 
 export type BenchType = {
   __typename?: 'BenchType'
-  code?: Maybe<Scalars['String']['output']>
+  code: Scalars['String']['output']
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
@@ -76,6 +77,7 @@ export type GenerationSettingType = {
 }
 
 export enum GenerationTaskStatusType {
+  Aborted = 'Aborted',
   Completed = 'Completed',
   Created = 'Created',
   Failed = 'Failed',
@@ -181,7 +183,7 @@ export type QuestionType = {
 
 export type RateType = {
   __typename?: 'RateType'
-  answer: AnswerType
+  answers: Array<AnswerType>
   evaluationTask: EvaluationTaskType
   finishReason: Scalars['String']['output']
   id: Scalars['ID']['output']
@@ -302,7 +304,7 @@ export type BenchesQuery = {
     __typename?: 'BenchType'
     id: string
     name: string
-    code?: string | null
+    code: string
     description?: string | null
     createdAt: string
     updatedAt: string
@@ -338,7 +340,7 @@ export type EvaluationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
-      answer: {
+      answers: Array<{
         __typename?: 'AnswerType'
         text: string
         question: {
@@ -347,7 +349,7 @@ export type EvaluationTaskQuery = {
           questionNumber: number
           category: string
         }
-      }
+      }>
     }>
   }
 }
@@ -368,7 +370,7 @@ export type EvaluationTasksQuery = {
       createdAt: string
       generationTask: {
         __typename?: 'GenerationTaskType'
-        bench: { __typename?: 'BenchType'; id: string; name: string; code?: string | null }
+        bench: { __typename?: 'BenchType'; id: string; name: string; code: string }
       }
     }>
   }
@@ -396,6 +398,7 @@ export type GenerationTaskQuery = {
       finishReason: string
       usage: any
       processingTime: any
+      turnNumber: number
       question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
     }>
     tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
@@ -422,6 +425,7 @@ export type GenerationTasksQuery = {
         workerCount: number
         parameters: any
       }
+      bench: { __typename?: 'BenchType'; id: string; code: string }
       tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
     }>
   }
@@ -443,14 +447,14 @@ export type RatesQuery = {
     model: string
     point: number
     text: string
-    answer: {
+    answers: Array<{
       __typename?: 'AnswerType'
       id: string
       text: string
       finishReason: string
       usage: any
       processingTime: any
-    }
+    }>
     evaluationTask: {
       __typename?: 'EvaluationTaskType'
       generationTask: { __typename?: 'GenerationTaskType'; modelName: string; name: string }
@@ -994,7 +998,7 @@ export const EvaluationTaskDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'answer' },
+                        name: { kind: 'Name', value: 'answers' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -1139,6 +1143,7 @@ export const GenerationTaskDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'finishReason' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'usage' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTime' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'turnNumber' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'question' },
@@ -1209,6 +1214,17 @@ export const GenerationTasksDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'host' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'workerCount' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'parameters' } }
+                          ]
+                        }
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'bench' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'code' } }
                           ]
                         }
                       },
@@ -1287,7 +1303,7 @@ export const RatesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'answer' },
+                  name: { kind: 'Name', value: 'answers' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [

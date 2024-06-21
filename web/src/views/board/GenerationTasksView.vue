@@ -5,7 +5,19 @@
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
-        <table v-if="data" class="w-full">
+        <div class="text-left">
+          <InputText v-model="nameSearch" placeholder="名前検索" />
+          <Dropdown
+            v-model="benchNameSearch"
+            show-clear
+            class="ml-2"
+            placeholder="Select bench"
+            :options="options"
+            option-label="name"
+            option-value="code"
+          />
+        </div>
+        <table v-if="data" class="w-full mt-2">
           <thead>
             <tr>
               <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
@@ -106,7 +118,7 @@
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evaluator" class="font-semibold w-8rem">評価者</label>
-          <Dropdown v-model="evaluator" :options="options" />
+          <Dropdown v-model="evaluator" :options="evaluatorOptions" />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
@@ -137,6 +149,7 @@ import { ref, computed, onBeforeUnmount, watchEffect } from 'vue'
 import router from '@/router'
 import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
+import Benches from '@/doc/query/Benches'
 import GenerationTasks from '@/doc/query/GenerationTasks'
 import CreateEvaluationTask from '@/doc/mutation/CreateEvaluationTask'
 import DeleteGenerationTask from '@/doc/mutation/DeleteGenerationTask'
@@ -155,7 +168,7 @@ const evalName = ref(null)
 const count = ref(0)
 const loading = ref(false)
 const evaluator = ref('gpt-4-0125-preview')
-const options = ref([
+const evaluatorOptions = ref([
   'gpt-4-0125-preview',
   'gpt-4-turbo-2024-04-09',
   'gpt-4o',
@@ -164,9 +177,13 @@ const options = ref([
   'claude-3-opus-20240229',
   'command-r-plus'
 ])
+const nameSearch = ref('')
+const benchNameSearch = ref('')
 
 const query = graphql(GenerationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
+const benchesQuery = graphql(Benches)
+const { data: benchesData } = useQuery({ query: benchesQuery })
 const { executeMutation: createEvaluationTask } = useMutation(graphql(CreateEvaluationTask))
 const { executeMutation: deleteGenerationTask } = useMutation(graphql(DeleteGenerationTask))
 
@@ -183,18 +200,52 @@ const setKey = (key) => {
   }
 }
 
+const _containsAny = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (targetString.includes(substrings[i])) {
+      return true
+    }
+  }
+  return false
+}
+
+const containsAll = (targetString, substrings) => {
+  for (let i = 0; i < substrings.length; i++) {
+    if (!targetString.includes(substrings[i])) {
+      return false
+    }
+  }
+  return true
+}
+
 const sortedGenerationTasks = computed(() => {
   if (!data.value) return []
   const generationTasks = Array.from(data.value.currentUser.generationTasks)
+  const selectedGenerationTasks = generationTasks.filter((generationTask) => {
+    if (benchNameSearch.value) {
+      if (benchNameSearch.value !== generationTask.bench.code) return false
+    }
+    if (nameSearch.value) {
+      const substrings = nameSearch.value.split(/\s+/)
+      return containsAll(generationTask.name.toLowerCase(), substrings)
+    } else {
+      return true
+    }
+  })
   const column = sortKey.value
   if (column != '') {
-    generationTasks.sort((a, b) => {
+    selectedGenerationTasks.sort((a, b) => {
       if (a[column] < b[column]) return sortAsc.value ? -1 : 1
       if (a[column] > b[column]) return sortAsc.value ? 1 : -1
       return a.id < b.id ? 1 : -1
     })
   }
-  return generationTasks
+  return selectedGenerationTasks
+})
+
+const options = computed(() => {
+  if (!benchesData.value) return []
+  return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
 })
 
 watchEffect(() => {

@@ -12,6 +12,7 @@ from .models import (
     GenerationTaskTag,
     Question,
     Rate,
+    RateAnswer,
     Tag,
     User,
 )
@@ -137,4 +138,9 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(GenerationTaskTag)
 class GenerationTaskTagAdmin(admin.ModelAdmin):
+    readonly_fields = DEFAULT_READONLY_FIELDS
+
+
+@admin.register(RateAnswer)
+class RateAnswer(admin.ModelAdmin):
     readonly_fields = DEFAULT_READONLY_FIELDS

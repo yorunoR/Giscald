@@ -14,6 +14,7 @@ const QUERY = /* GraphQL */ `
         finishReason
         usage
         processingTime
+        turnNumber
         question {
           questionNumber
           category

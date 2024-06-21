@@ -14,7 +14,7 @@ const QUERY = /* GraphQL */ `
         finishReason
         usage
         processingTime
-        answer {
+        answers {
           text
           question {
             id

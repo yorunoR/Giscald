@@ -11,8 +11,6 @@ from libs.models import Answer, Bench, GenerationSetting, GenerationTask, Genera
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
-api_key = os.getenv("OPENAI_API_KEY", "EMPTY")
-
 
 def parse_params_str(param_str):
     try:
@@ -35,6 +33,18 @@ async def resolve(
     param_str: str | None = None,
     description: str | None = None,
 ):
+    api_key = "EMPTY"
+    if model_name.startswith("gpt"):
+        api_key = os.getenv("OPENAI_API_KEY")
+    if model_name.startswith("gemini"):
+        api_key = os.getenv("GEMINI_API_KEY")
+    if model_name.startswith("claude"):
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+    if model_name.startswith("command"):
+        api_key = os.getenv("COHERE_API_KEY")
+    if model_name.startswith("deepseek"):
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+
     parameters = parse_params_str(param_str)
 
     user = info.context.user
@@ -54,56 +64,75 @@ async def resolve(
 
     try:
         jobs = []
-        async for question in bench.questions.order_by("question_number").all():
-            if generation_task.bench.code == "aiw":
-                messages = [
-                    {"role": "user", "content": question.turns[0]},
-                    {"role": "user", "content": answer_format},
-                ]
-            elif generation_task.bench.code == "bfcl":
-                system_template = Template(bench.system_template)
-                function = question.function
-                vars = {
-                    "name": function["name"],
-                    "description": function["description"],
-                    "parameters_properties": function["parameters"]["properties"],
-                }
-                system_content = system_template.render(vars)
-                messages = [
-                    {"role": "system", "content": system_content},
-                    {"role": "user", "content": question.turns[0]},
-                ]
-            else:
-                messages = [{"role": "user", "content": question.turns[0]}]
 
-            settings = parameters.get(question.category) or parameters.get("default") or {}
-            strategy = settings.get("strategy", "none")
-            params = settings.get("params")
+        if generation_task.bench.code == "jmt-multi":
+            turn_count = 2
+        else:
+            turn_count = 1
 
-            jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, strategy=strategy, params=params))
-            if len(jobs) == worker_count:
-                results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
-                jobs = []
-                for result in results:
-                    try:
-                        if isinstance(result, asyncio.exceptions.CancelledError):
-                            raise Exception("Timeout")
-                        await Answer.objects.acreate(
-                            user=user,
-                            generation_task=generation_task,
-                            messages=result["response"]["question"],
-                            text=result["response"]["answer"],
-                            usage=result["response"]["usage"],
-                            finish_reason=result["response"]["finish_reason"],
-                            processing_time=result["processing_time"],
-                            question=result["info"],
-                        )
-                    except Exception as e:
-                        print(result)
-                        raise e
+        for index in range(turn_count):
+            async for question in bench.questions.order_by("question_number").all():
+                latest_generation_task = await GenerationTask.objects.filter(id=generation_task.id).afirst()
+                if latest_generation_task.status == GenerationTaskStatus.ABORTED:
+                    break
 
-        generation_task.status = GenerationTaskStatus.COMPLETED
-        await sync_to_async(lambda: generation_task.save())()
+                settings = parameters.get(question.category) or parameters.get("default") or {}
+                strategy = settings.get("strategy", "none")
+                params = settings.get("params")
+
+                if generation_task.bench.code == "aiw":
+                    messages = [
+                        {"role": "user", "content": question.turns[index]},
+                        {"role": "user", "content": answer_format},
+                    ]
+                elif generation_task.bench.code == "bfcl":
+                    system_template = Template(bench.system_template)
+                    function = question.function
+                    vars = {
+                        "name": function["name"],
+                        "description": function["description"],
+                        "parameters_properties": function["parameters"]["properties"],
+                    }
+                    system_content = system_template.render(vars)
+                    messages = [
+                        # {"role": "system", "content": system_content},
+                        {"role": "user", "content": system_content + "\n\n" + question.turns[index]},
+                    ]
+                elif generation_task.bench.code == "jmt-multi" and index > 0:
+                    previous_answer = await Answer.objects.aget(generation_task=generation_task, question=question, turn_number=index)
+                    messages = previous_answer.messages + [
+                        {"role": "assistant", "content": previous_answer.text},
+                        {"role": "user", "content": question.turns[index]},
+                    ]
+                else:
+                    messages = [{"role": "user", "content": question.turns[index]}]
+
+                jobs.append(chat_with_job_info(question, messages, model_name, host, api_key=api_key, strategy=strategy, params=params))
+                if len(jobs) == worker_count:
+                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=450) for job in jobs), return_exceptions=True)
+                    jobs = []
+                    for result in results:
+                        try:
+                            if isinstance(result, asyncio.exceptions.CancelledError):
+                                raise Exception("Timeout")
+                            await Answer.objects.acreate(
+                                user=user,
+                                generation_task=generation_task,
+                                messages=result["response"]["question"],
+                                text=result["response"]["answer"],
+                                usage=result["response"]["usage"],
+                                finish_reason=result["response"]["finish_reason"],
+                                processing_time=result["processing_time"],
+                                question=result["info"],
+                                turn_number=index + 1,
+                            )
+                        except Exception as e:
+                            print(result)
+                            raise e
+
+        if latest_generation_task.status != GenerationTaskStatus.ABORTED:
+            generation_task.status = GenerationTaskStatus.COMPLETED
+            await sync_to_async(lambda: generation_task.save())()
         return generation_task
     except Exception as e:
         print(e)

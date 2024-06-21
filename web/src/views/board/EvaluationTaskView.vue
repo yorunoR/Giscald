@@ -44,18 +44,18 @@
           <tbody>
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
-                <span>{{ rate.answer.question.questionNumber }}</span>
+                <span>{{ rate.answers[0].question.questionNumber }}</span>
                 <router-link
                   class="pl-2"
-                  :to="{ name: 'rates', params: { questionId: rate.answer.question.id } }"
+                  :to="{ name: 'rates', params: { questionId: rate.answers[0].question.id } }"
                   >></router-link
                 >
               </td>
               <td class="p-2">
-                {{ rate.answer.question.category }}
+                {{ rate.answers[0].question.category }}
               </td>
               <td class="p-2">
-                {{ rate.answer.text }}
+                <div v-for="answer in rate.answers" :key="answer.id">- {{ answer.text }}</div>
               </td>
               <td class="p-2">
                 {{ rate.text }}
@@ -121,7 +121,7 @@ const setKey = (key) => {
 const categories = computed(() => {
   if (!data.value) return []
   const categories = data.value.evaluationTask.rates.map((rate) => {
-    return rate.answer.question.category
+    return rate.answers[0].question.category
   })
   return Array.from(new Set(categories))
 })
@@ -131,7 +131,7 @@ const sortedRates = computed(() => {
   const rates = Array.from(data.value.evaluationTask.rates)
   const selectedRates = rates.filter((rate) => {
     if (selectedCategory.value) {
-      return rate.answer.question.category === selectedCategory.value
+      return rate.answers[0].question.category === selectedCategory.value
     } else {
       return true
     }
@@ -144,14 +144,14 @@ const sortedRates = computed(() => {
         a_column = a[column].total_tokens
         b_column = b[column].total_tokens
       } else if (column === 'category') {
-        a_column = a.answer.question.category
-        b_column = b.answer.question.category
+        a_column = a.answers[0].question.category
+        b_column = b.answers[0].question.category
       } else if (column === 'processingTime') {
         a_column = parseFloat(a[column])
         b_column = parseFloat(b[column])
       } else if (column === 'questionNumber') {
-        a_column = parseInt(a.answer.question.questionNumber)
-        b_column = parseInt(b.answer.question.questionNumber)
+        a_column = parseInt(a.answers[0].question.questionNumber)
+        b_column = parseInt(b.answers[0].question.questionNumber)
       } else {
         a_column = a[column]
         b_column = b[column]

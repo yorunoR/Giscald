@@ -425,6 +425,7 @@ export type GenerationTasksQuery = {
         workerCount: number
         parameters: any
       }
+      bench: { __typename?: 'BenchType'; id: string; code: string }
       tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
     }>
   }
@@ -1213,6 +1214,17 @@ export const GenerationTasksDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'host' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'workerCount' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'parameters' } }
+                          ]
+                        }
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'bench' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'code' } }
                           ]
                         }
                       },

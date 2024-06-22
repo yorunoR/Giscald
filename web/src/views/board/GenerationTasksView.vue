@@ -20,6 +20,9 @@
         <table v-if="data" class="w-full mt-2">
           <thead>
             <tr>
+              <th class="cursor-pointer py-2" @click="setKey('id')">
+                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              </th>
               <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
               </th>
@@ -41,12 +44,16 @@
           <tbody>
             <tr v-for="generationTask in sortedGenerationTasks" :key="generationTask.id">
               <td class="py-2">
+                <span>{{ generationTask.id }}</span>
+              </td>
+              <td class="py-2">
                 <span>{{ generationTask.name }}</span>
                 <router-link
                   class="pl-2"
                   :to="{ name: 'generationTask', params: { id: generationTask.id } }"
-                  >></router-link
                 >
+                  >
+                </router-link>
               </td>
               <td class="py-2">
                 {{ generationTask.modelName }}
@@ -240,8 +247,16 @@ const sortedGenerationTasks = computed(() => {
   const column = sortKey.value
   if (column != '') {
     selectedGenerationTasks.sort((a, b) => {
-      if (a[column] < b[column]) return sortAsc.value ? -1 : 1
-      if (a[column] > b[column]) return sortAsc.value ? 1 : -1
+      let a_column, b_column
+      if (column === 'id') {
+        a_column = parseInt(a[column])
+        b_column = parseInt(b[column])
+      } else {
+        a_column = a[column]
+        b_column = b[column]
+      }
+      if (a_column < b_column) return sortAsc.value ? -1 : 1
+      if (a_column > b_column) return sortAsc.value ? 1 : -1
       return a.id < b.id ? 1 : -1
     })
   }

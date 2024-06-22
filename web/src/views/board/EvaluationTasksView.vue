@@ -65,11 +65,14 @@
         <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
+              <th class="cursor-pointer p-2" @click="setKey('id')">
+                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              </th>
               <th class="w-1 py-2">選択</th>
-              <th class="cursor-pointer w-2" @click="setKey('name')">
+              <th class="cursor-pointer w-3" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
               </th>
-              <th class="cursor-pointer w-1 py-2" @click="setKey('benchName')">
+              <th class="cursor-pointer w-2 py-2" @click="setKey('benchName')">
                 <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
               </th>
               <th class="cursor-pointer w-1" @click="setKey('createdAt')">
@@ -78,7 +81,7 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('points')">
+              <th class="cursor-pointer w-1.5" @click="setKey('points')">
                 <u :class="{ 'text-primary': sortKey === 'points' }"> 点数 </u>
               </th>
               <th class="cursor-pointer w-1" @click="setKey('processingTimes')">
@@ -89,6 +92,9 @@
           </thead>
           <tbody>
             <tr v-for="evaluationTask in sortedEvaluationTasks" :key="evaluationTask.id">
+              <td class="py-2">
+                <span>{{ evaluationTask.id }}</span>
+              </td>
               <th class="py-2">
                 <div v-if="evaluationTask.points !== {}">
                   <Checkbox
@@ -134,8 +140,9 @@
                 <router-link
                   class="pl-2"
                   :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
-                  >></router-link
                 >
+                  >
+                </router-link>
               </td>
               <td class="py-2">
                 <span>{{ evaluationTask.generationTask.bench.name }}</span>
@@ -285,6 +292,9 @@ const sortedEvaluationTasks = computed(() => {
       } else if (column === 'benchName') {
         a_column = a.generationTask.bench.name
         b_column = b.generationTask.bench.name
+      } else if (column === 'id') {
+        a_column = parseInt(a[column])
+        b_column = parseInt(b[column])
       } else {
         a_column = a[column]
         b_column = b[column]

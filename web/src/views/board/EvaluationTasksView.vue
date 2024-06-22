@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1200px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <h1 class="mt-2">評価タスク一覧</h1>
     <section
       v-if="
@@ -81,10 +81,10 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="cursor-pointer w-1.5" @click="setKey('points')">
+              <th class="cursor-pointer w-1.8" @click="setKey('points')">
                 <u :class="{ 'text-primary': sortKey === 'points' }"> 点数 </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('processingTimes')">
+              <th class="cursor-pointer w-1.8" @click="setKey('processingTimes')">
                 <u :class="{ 'text-primary': sortKey === 'processingTimes' }"> 処理時間 </u>
               </th>
               <th class="w-1">操作</th>
@@ -158,27 +158,33 @@
               <td class="py-2">
                 {{ evaluationTask.status }}
               </td>
-              <td class="py-2 text-left">
-                <div
-                  v-for="point in objToList(evaluationTask.points)"
-                  :key="point.key"
-                  class="px-2 flex justify-content-between"
-                >
-                  <div>{{ point.key }}:</div>
-                  <div>{{ pointFormat(point.value) }}</div>
+              <td class="text-left">
+                <div class="px-3 mt-3 pb-2 container">
+                  <div
+                    v-for="point in objToList(evaluationTask.points)"
+                    :key="point.key"
+                    class="flex justify-content-between"
+                  >
+                    <div>{{ point.key }}:</div>
+                    <div>{{ pointFormat(point.value) }}</div>
+                  </div>
                 </div>
-                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.points) }}</div>
+                <hr class="mx-3" />
+                <div class="px-3 pt-2 pb-3">AVG: {{ avg(evaluationTask.points) }}</div>
               </td>
-              <td class="py-2 text-left">
-                <div
-                  v-for="processingTime in objToList(evaluationTask.processingTimes)"
-                  :key="processingTime.key"
-                  class="px-2 flex justify-content-between"
-                >
-                  <div>{{ processingTime.key }}:</div>
-                  <div>{{ pointFormat(processingTime.value) }}</div>
+              <td class="text-left">
+                <div class="px-3 mt-3 pb-2 container">
+                  <div
+                    v-for="processingTime in objToList(evaluationTask.processingTimes)"
+                    :key="processingTime.key"
+                    class="flex justify-content-between"
+                  >
+                    <div>{{ processingTime.key }}:</div>
+                    <div>{{ pointFormat(processingTime.value) }}</div>
+                  </div>
                 </div>
-                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.processingTimes) }}</div>
+                <hr class="mx-3" />
+                <div class="px-3 pt-2 pb-3">AVG: {{ avg(evaluationTask.processingTimes) }}</div>
               </td>
               <td>
                 <div v-if="evaluationTask.status === 'Completed'" class="p-1">
@@ -493,5 +499,18 @@ table {
 td,
 th {
   border: 1px solid;
+}
+.container {
+  /*
+  max-height: 200px;
+  overflow-y: scroll;
+  */
+}
+.container::-webkit-scrollbar {
+  width: 1px;
+}
+.container::-webkit-scrollbar-thumb {
+  background-color: #888888;
+  border-radius: 8px;
 }
 </style>

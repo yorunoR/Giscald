@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1200px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <h1 class="mt-2">回答生成タスク一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
@@ -43,7 +43,7 @@
           </thead>
           <tbody>
             <tr v-for="generationTask in sortedGenerationTasks" :key="generationTask.id">
-              <td class="py-2">
+              <td class="p-2">
                 <span>{{ generationTask.id }}</span>
               </td>
               <td class="py-2">

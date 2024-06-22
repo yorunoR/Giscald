@@ -27,7 +27,7 @@
               <th class="cursor-pointer py-2" @click="setKey('point')">
                 <u :class="{ 'text-primary': sortKey === 'point' }"> 点数 </u>
               </th>
-              <th class="cursor-pointer py-2" @click="setKey('model')">
+              <th class="cursor-pointer py-2 w-1" @click="setKey('model')">
                 <u :class="{ 'text-primary': sortKey === 'model' }"> モデル </u>
               </th>
               <th class="cursor-pointer" @click="setKey('finishReason')">

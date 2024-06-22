@@ -27,7 +27,7 @@
               <th class="cursor-pointer py-2" @click="setKey('point')">
                 <u :class="{ 'text-primary': sortKey === 'point' }"> 点数 </u>
               </th>
-              <th class="cursor-pointer py-2" @click="setKey('model')">
+              <th class="cursor-pointer py-2 w-1" @click="setKey('model')">
                 <u :class="{ 'text-primary': sortKey === 'model' }"> モデル </u>
               </th>
               <th class="cursor-pointer" @click="setKey('finishReason')">
@@ -44,12 +44,11 @@
           <tbody>
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
-                <span>{{ rate.answers[0].question.questionNumber }}</span>
                 <router-link
-                  class="pl-2"
                   :to="{ name: 'rates', params: { questionId: rate.answers[0].question.id } }"
-                  >></router-link
                 >
+                  {{ rate.answers[0].question.questionNumber }}
+                </router-link>
               </td>
               <td class="p-2">
                 {{ rate.answers[0].question.category }}

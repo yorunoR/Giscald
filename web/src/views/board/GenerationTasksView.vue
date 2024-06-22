@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1200px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <h1 class="mt-2">回答生成タスク一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
@@ -20,6 +20,9 @@
         <table v-if="data" class="w-full mt-2">
           <thead>
             <tr>
+              <th class="cursor-pointer py-2" @click="setKey('id')">
+                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
+              </th>
               <th class="cursor-pointer w-3 py-2" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
               </th>
@@ -32,21 +35,25 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
+              <th class="w-1.5">評価有無</th>
               <th>メモ</th>
-              <th class="w-1">評価数</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="generationTask in sortedGenerationTasks" :key="generationTask.id">
+              <td class="p-2">
+                <span>{{ generationTask.id }}</span>
+              </td>
               <td class="py-2">
                 <span>{{ generationTask.name }}</span>
                 <router-link
                   class="pl-2"
                   :to="{ name: 'generationTask', params: { id: generationTask.id } }"
-                  >></router-link
                 >
+                  >
+                </router-link>
               </td>
               <td class="py-2">
                 {{ generationTask.modelName }}
@@ -57,11 +64,22 @@
               <td class="py-2">
                 {{ generationTask.status }}
               </td>
-              <td class="py-2">
-                {{ generationTask.description }}
+              <td class="py-1">
+                <div
+                  v-for="evaluationTask in generationTask.evaluationTasks"
+                  :key="evaluationTask.id"
+                  class="mt-1"
+                >
+                  <router-link
+                    class="pl-2"
+                    :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
+                  >
+                    {{ getEvaluator(evaluationTask) }}
+                  </router-link>
+                </div>
               </td>
               <td class="py-2">
-                {{ generationTask.evaluationTasks.length }}
+                {{ generationTask.description }}
               </td>
               <td>
                 <div class="p-1">
@@ -118,6 +136,7 @@
             class="flex-auto"
             autocomplete="off"
             placeholder="一意な名前"
+            disabled
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
@@ -240,8 +259,16 @@ const sortedGenerationTasks = computed(() => {
   const column = sortKey.value
   if (column != '') {
     selectedGenerationTasks.sort((a, b) => {
-      if (a[column] < b[column]) return sortAsc.value ? -1 : 1
-      if (a[column] > b[column]) return sortAsc.value ? 1 : -1
+      let a_column, b_column
+      if (column === 'id') {
+        a_column = parseInt(a[column])
+        b_column = parseInt(b[column])
+      } else {
+        a_column = a[column]
+        b_column = b[column]
+      }
+      if (a_column < b_column) return sortAsc.value ? -1 : 1
+      if (a_column > b_column) return sortAsc.value ? 1 : -1
       return a.id < b.id ? 1 : -1
     })
   }
@@ -352,6 +379,15 @@ const clickDeleteGenerationTask = async (id) => {
 
   if (value === 'ok') {
     await deleteGenerationTask({ id })
+  }
+}
+
+const getEvaluator = (evaluationTask) => {
+  if (evaluationTask.name.includes('/')) {
+    const array = evaluationTask.name.split('/')
+    return array[array.length - 1]
+  } else {
+    return evaluationTask.id
   }
 }
 </script>

@@ -400,7 +400,12 @@ export type GenerationTaskQuery = {
       usage: any
       processingTime: any
       turnNumber: number
-      question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
+      question: {
+        __typename?: 'QuestionType'
+        id: string
+        questionNumber: number
+        category: string
+      }
     }>
     tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
   }
@@ -428,7 +433,7 @@ export type GenerationTasksQuery = {
       }
       bench: { __typename?: 'BenchType'; id: string; code: string }
       tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
-      evaluationTasks: Array<{ __typename?: 'EvaluationTaskType'; id: string }>
+      evaluationTasks: Array<{ __typename?: 'EvaluationTaskType'; id: string; name: string }>
     }>
   }
 }
@@ -1152,6 +1157,7 @@ export const GenerationTaskDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'category' } }
                           ]
@@ -1246,7 +1252,10 @@ export const GenerationTasksDocument = {
                         name: { kind: 'Name', value: 'evaluationTasks' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                          ]
                         }
                       }
                     ]

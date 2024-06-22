@@ -30,7 +30,7 @@
         />
         <div class="mt-2 p-error">{{ modelNameErrors.join(' ') }}</div>
 
-        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" />
+        <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" disabled />
         <div class="mt-2 p-error">{{ nameErrors.join(' ') }}</div>
 
         <InputText
@@ -162,7 +162,7 @@ const clickCreateGenerationTask = async () => {
 const { meta, values } = useForm({
   initialValues: {
     benchCode: 'jmt',
-    name: 'calm2-7b-chat@xxx.jmt.TGI',
+    name: 'calm2-7b-chat@TGI.jmt.xxx',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
     workerCount: 10,
@@ -187,7 +187,7 @@ watch([benchCode, framework, modelName], () => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
   const randomString = generateRandomString()
-  name.value = lastName + '@' + randomString + '.' + benchCode.value + '.' + framework.value
+  name.value = lastName + '@' + framework.value + '.' + benchCode.value + '.' + randomString
   if (benchCode.value.startsWith('jmt')) {
     if (framework.value == 'TGI') parameters.value = tgiMultiSet
     if (framework.value == 'vllm') parameters.value = vllmMultiSet

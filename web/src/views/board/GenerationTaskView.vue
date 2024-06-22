@@ -46,7 +46,9 @@
           <tbody>
             <tr v-for="answer in sortedAnswers" :key="answer.id">
               <td class="p-2">
-                {{ answer.question.questionNumber }}
+                <router-link :to="{ name: 'rates', params: { questionId: answer.question.id } }">
+                  {{ answer.question.questionNumber }}
+                </router-link>
               </td>
               <td class="p-2">
                 {{ answer.question.category }}

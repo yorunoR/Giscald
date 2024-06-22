@@ -400,7 +400,12 @@ export type GenerationTaskQuery = {
       usage: any
       processingTime: any
       turnNumber: number
-      question: { __typename?: 'QuestionType'; questionNumber: number; category: string }
+      question: {
+        __typename?: 'QuestionType'
+        id: string
+        questionNumber: number
+        category: string
+      }
     }>
     tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
   }
@@ -1152,6 +1157,7 @@ export const GenerationTaskDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'category' } }
                           ]

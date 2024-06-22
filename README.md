@@ -1,4 +1,4 @@
-# mt-bench-docker-front
+# benches-docker-front
 
 * docker を使用しています
 * 操作画面の認証に Firebase を使用しています（ https://firebase.google.com/ で登録してください ）
@@ -23,7 +23,8 @@ docker compose up -no-attach langfuse
 ```
 
 http://localhost:8000/ で操作画面が開きます  
-http://localhost:5000/admin で管理画面が開きます
+http://localhost:5000/admin で管理画面が開きます  
+http://localhost:3000/ で langfuse が開きます
 
 
 DBマイグレーション

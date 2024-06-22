@@ -35,8 +35,8 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
+              <th class="w-1.5">評価有無</th>
               <th>メモ</th>
-              <th class="w-1">評価数</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
@@ -64,11 +64,22 @@
               <td class="py-2">
                 {{ generationTask.status }}
               </td>
-              <td class="py-2">
-                {{ generationTask.description }}
+              <td class="py-1">
+                <div
+                  v-for="evaluationTask in generationTask.evaluationTasks"
+                  :key="evaluationTask.id"
+                  class="mt-1"
+                >
+                  <router-link
+                    class="pl-2"
+                    :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
+                  >
+                    {{ getEvaluator(evaluationTask) }}
+                  </router-link>
+                </div>
               </td>
               <td class="py-2">
-                {{ generationTask.evaluationTasks.length }}
+                {{ generationTask.description }}
               </td>
               <td>
                 <div class="p-1">
@@ -125,6 +136,7 @@
             class="flex-auto"
             autocomplete="off"
             placeholder="一意な名前"
+            disabled
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
@@ -367,6 +379,15 @@ const clickDeleteGenerationTask = async (id) => {
 
   if (value === 'ok') {
     await deleteGenerationTask({ id })
+  }
+}
+
+const getEvaluator = (evaluationTask) => {
+  if (evaluationTask.name.includes('/')) {
+    const array = evaluationTask.name.split('/')
+    return array[array.length - 1]
+  } else {
+    return evaluationTask.id
   }
 }
 </script>

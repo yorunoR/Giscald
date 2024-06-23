@@ -156,12 +156,20 @@
               <td class="p-2 text-left">
                 <span>- {{ evaluationTask.name }}</span>
                 <router-link
-                  class="pl-2"
+                  class="ml-2"
                   :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
                 >
                   >
                 </router-link>
-                <div class="mt-3">- {{ getPlotName(evaluationTask) }}</div>
+                <div class="mt-3">
+                  <span>- {{ getPlotName(evaluationTask) }}</span>
+                  <u
+                    v-if="evaluationTask.status === 'Completed'"
+                    class="ml-2 cursor-pointer"
+                    @click="() => openUpdateEvaluationTaskPlotName(evaluationTask)"
+                    >編集</u
+                  >
+                </div>
               </td>
               <td class="py-2">
                 <span>{{ evaluationTask.generationTask.bench.name }}</span>
@@ -230,6 +238,29 @@
       </div>
     </section>
   </main>
+  <section>
+    <Dialog v-model:visible="visible" modal header="編集" class="w-5">
+      <div class="flex align-items-center gap-3 mb-5">
+        <label for="plotName" class="font-semibold w-8rem">表示名</label>
+        <InputText
+          id="plotName"
+          v-model="plotName"
+          class="flex-auto"
+          autocomplete="off"
+          placeholder="表示名"
+        />
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+        <Button
+          type="button"
+          label="Save"
+          :disabled="!plotName"
+          @click="() => clickUpdateEvaluationTaskPlotName()"
+        ></Button>
+      </div>
+    </Dialog>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -254,6 +285,8 @@ const radarDataSources3 = ref([])
 const barDataSources1 = ref([])
 const barDataSources2 = ref([])
 const barDataSources3 = ref([])
+const visible = ref(false)
+const plotName = ref('')
 
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -512,6 +545,29 @@ const pointFormat = (point) => {
 
 const getPlotName = (evaluationTask) => {
   return evaluationTask.plotName || evaluationTask.name.split('@')[0]
+}
+
+let selectedEvaluationTaskId
+const openUpdateEvaluationTaskPlotName = (evaluationTask) => {
+  plotName.value = evaluationTask.plotName
+  selectedEvaluationTaskId = evaluationTask.id
+  visible.value = true
+}
+const clickUpdateEvaluationTaskPlotName = async () => {
+  try {
+    await updateEvaluationTask({
+      id: selectedEvaluationTaskId,
+      plotName: plotName.value
+    })
+  } finally {
+    radarDataSources1.value = []
+    radarDataSources2.value = []
+    radarDataSources3.value = []
+    barDataSources1.value = []
+    barDataSources2.value = []
+    barDataSources3.value = []
+    visible.value = false
+  }
 }
 </script>
 

@@ -1,6 +1,5 @@
 <template>
   <main style="max-width: 1280px; margin: auto">
-    <h1 class="mt-2">質問一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>

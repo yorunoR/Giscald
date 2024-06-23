@@ -23,7 +23,7 @@ const documents = {
     types.DeleteGenerationTaskDocument,
   '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n':
     types.SigninDocument,
-  '\n  mutation UpdateEvaluationTask($id: ID!) {\n    updateEvaluationTask(id: $id) {\n      id\n    }\n  }\n':
+  '\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n':
     types.UpdateEvaluationTaskDocument,
   '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n      }\n    }\n  }\n':
     types.BenchDocument,
@@ -93,8 +93,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation UpdateEvaluationTask($id: ID!) {\n    updateEvaluationTask(id: $id) {\n      id\n    }\n  }\n'
-): (typeof documents)['\n  mutation UpdateEvaluationTask($id: ID!) {\n    updateEvaluationTask(id: $id) {\n      id\n    }\n  }\n']
+  source: '\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

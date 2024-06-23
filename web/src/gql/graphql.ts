@@ -138,6 +138,7 @@ export type MutationDeleteGenerationTaskArgs = {
 
 export type MutationUpdateEvaluationTaskArgs = {
   id: Scalars['ID']['input']
+  plotName?: InputMaybe<Scalars['String']['input']>
 }
 
 export type Query = {
@@ -269,6 +270,7 @@ export type SigninMutation = {
 
 export type UpdateEvaluationTaskMutationVariables = Exact<{
   id: Scalars['ID']['input']
+  plotName?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type UpdateEvaluationTaskMutation = {
@@ -818,6 +820,11 @@ export const UpdateEvaluationTaskDocument = {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
           }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'plotName' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
         }
       ],
       selectionSet: {
@@ -831,6 +838,11 @@ export const UpdateEvaluationTaskDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'id' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'plotName' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'plotName' } }
               }
             ],
             selectionSet: {

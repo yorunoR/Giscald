@@ -4,6 +4,7 @@ const QUERY = /* GraphQL */ `
       evaluationTasks {
         id
         name
+        plotName
         status
         points
         processingTimes

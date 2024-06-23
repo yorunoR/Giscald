@@ -70,7 +70,7 @@
               </th>
               <th class="w-1 py-2">選択</th>
               <th class="cursor-pointer w-3" @click="setKey('name')">
-                <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
+                <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 / 図上の表示名</u>
               </th>
               <th class="cursor-pointer w-2 py-2" @click="setKey('benchName')">
                 <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
@@ -99,50 +99,69 @@
                 <div v-if="evaluationTask.points !== {}">
                   <Checkbox
                     v-model="radarDataSources1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData1 = setChartData(radarDataSources1))"
                   />
                   <Checkbox
                     v-model="radarDataSources2"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData2 = setChartData(radarDataSources2))"
                   />
                   <Checkbox
                     v-model="radarDataSources3"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData3 = setChartData(radarDataSources3))"
                   />
                 </div>
                 <div v-if="evaluationTask.processingTimes !== {}" class="mt-1">
                   <Checkbox
                     v-model="barDataSources1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData1 = setChartData(barDataSources1))"
                   />
                   <Checkbox
                     v-model="barDataSources2"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData2 = setChartData(barDataSources2))"
                   />
                   <Checkbox
                     v-model="barDataSources3"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData3 = setChartData(barDataSources3))"
                   />
                 </div>
               </th>
-              <td class="py-2">
-                <span>{{ evaluationTask.name }}</span>
+              <td class="p-2 text-left">
+                <span>- {{ evaluationTask.name }}</span>
                 <router-link
                   class="pl-2"
                   :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
                 >
                   >
                 </router-link>
+                <div class="mt-3">- {{ getPlotName(evaluationTask) }}</div>
               </td>
               <td class="py-2">
                 <span>{{ evaluationTask.generationTask.bench.name }}</span>
@@ -373,7 +392,7 @@ const setChartData = (dataSources) => {
     const datasets = dataSources.map((dataSource) => {
       const data = labels.map((label) => dataSource.values[label])
       return {
-        label: dataSource.name.split('@')[0],
+        label: dataSource.plotName,
         data
       }
     })
@@ -489,6 +508,10 @@ const pointFormat = (point) => {
   let num = point * 10
   num = Math.round(num)
   return num / 10
+}
+
+const getPlotName = (evaluationTask) => {
+  return evaluationTask.plotName || evaluationTask.name.split('@')[0]
 }
 </script>
 

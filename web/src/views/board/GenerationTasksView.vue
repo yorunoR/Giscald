@@ -130,12 +130,18 @@
       <div v-else>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evalName" class="font-semibold w-8rem">評価名</label>
+          <span>
+            {{ evalName }}
+          </span>
+        </div>
+        <div class="flex align-items-center gap-3 mb-5">
+          <label for="prefixEvalName" class="font-semibold w-8rem">評価名の接頭語</label>
           <InputText
-            id="evalName"
-            v-model="evalName"
+            id="prefixEvalName"
+            v-model="prefixEvalName"
             class="flex-auto"
             autocomplete="off"
-            placeholder="一意な名前"
+            placeholder="評価名の接頭語"
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
@@ -157,7 +163,7 @@
           <Button
             type="button"
             label="Run"
-            :disabled="!evalName"
+            :disabled="!prefixEvalName"
             @click="() => clickEvaluationTask()"
           ></Button>
         </div>
@@ -167,7 +173,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount, watchEffect } from 'vue'
+import { ref, computed, onBeforeUnmount, watch } from 'vue'
 import router from '@/router'
 import { useQuery, useMutation } from '@urql/vue'
 import { graphql } from '@/gql'
@@ -183,9 +189,10 @@ const toast = useToast()
 
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
-const selected = ref({})
+const selected = ref(null)
 const visible = ref(false)
 const visibleDetail = ref(false)
+const prefixEvalName = ref(null)
 const evalName = ref(null)
 const count = ref(0)
 const loading = ref(false)
@@ -279,8 +286,9 @@ const options = computed(() => {
   return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
 })
 
-watchEffect(() => {
-  evalName.value = selected.value.name + '/' + evaluator.value
+watch([prefixEvalName, evaluator], () => {
+  evalName.value =
+    prefixEvalName.value + '@' + selected.value.name.split('@')[1] + '/' + evaluator.value
 })
 
 const timeFormat = (time) => {
@@ -316,6 +324,7 @@ const openDetailEvaluationTask = (generationTask) => {
 }
 const openCreateEvaluationTask = (generationTask) => {
   selected.value = generationTask
+  prefixEvalName.value = generationTask.name.split('@')[0]
   evalName.value = generationTask.name + '/' + evaluator.value
   visible.value = true
 }

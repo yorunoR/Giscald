@@ -21,6 +21,7 @@ class EvaluationTaskStatusType(Enum):
 class EvaluationTaskType:
     id: auto
     name: auto
+    plot_name: auto
     points: auto
     processing_times: auto
     status: EvaluationTaskStatusType

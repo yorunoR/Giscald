@@ -1,6 +1,5 @@
 <template>
   <main style="max-width: 1280px; margin: auto">
-    <h1 class="mt-2">質問一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
@@ -30,12 +29,11 @@
           <tbody>
             <tr v-for="question in sortedQuestions" :key="question.id">
               <td class="p-2">
-                {{ question.questionNumber }}
                 <router-link
                   class="pl-1"
                   :to="{ name: 'rates', params: { questionId: question.id } }"
                 >
-                  >
+                  {{ question.questionNumber }}
                 </router-link>
               </td>
               <td class="p-2">

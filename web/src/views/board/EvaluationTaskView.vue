@@ -27,14 +27,11 @@
               <th class="cursor-pointer py-2" @click="setKey('point')">
                 <u :class="{ 'text-primary': sortKey === 'point' }"> 点数 </u>
               </th>
-              <th class="cursor-pointer py-2" @click="setKey('model')">
+              <th class="cursor-pointer py-2 w-1" @click="setKey('model')">
                 <u :class="{ 'text-primary': sortKey === 'model' }"> モデル </u>
               </th>
               <th class="cursor-pointer" @click="setKey('finishReason')">
                 <u :class="{ 'text-primary': sortKey === 'finishReason' }"> 終了理由 </u>
-              </th>
-              <th class="cursor-pointer" @click="setKey('usage')">
-                <u :class="{ 'text-primary': sortKey === 'usage' }"> 消費 </u>
               </th>
               <th class="cursor-pointer" @click="setKey('processingTime')">
                 <u :class="{ 'text-primary': sortKey === 'processingTime' }"> 処理時間 </u>
@@ -44,12 +41,11 @@
           <tbody>
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
-                <span>{{ rate.answers[0].question.questionNumber }}</span>
                 <router-link
-                  class="pl-2"
                   :to="{ name: 'rates', params: { questionId: rate.answers[0].question.id } }"
-                  >></router-link
                 >
+                  {{ rate.answers[0].question.questionNumber }}
+                </router-link>
               </td>
               <td class="p-2">
                 {{ rate.answers[0].question.category }}
@@ -68,9 +64,6 @@
               </td>
               <td class="p-2">
                 {{ rate.finishReason }}
-              </td>
-              <td class="p-2">
-                {{ rate.usage }}
               </td>
               <td class="p-2">
                 {{ rate.processingTime }}
@@ -158,7 +151,7 @@ const sortedRates = computed(() => {
       }
       if (a_column < b_column) return sortAsc.value ? -1 : 1
       if (a_column > b_column) return sortAsc.value ? 1 : -1
-      return a.id < b.id ? 1 : -1
+      return parseInt(a.id) < parseInt(b.id) ? 1 : -1
     })
   }
   return selectedRates

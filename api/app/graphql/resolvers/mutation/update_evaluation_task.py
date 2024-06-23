@@ -42,7 +42,7 @@ def avg_processing_times(evaluation_task):
     return convert_list_to_dict(category_processing_times_avg)
 
 
-async def resolve(info: Info, id: ID):
+async def resolve(info: Info, id: ID, plot_name: str | None = None):
     user = info.context.user
     evaluation_task = await EvaluationTask.objects.select_related("generation_task__bench").aget(
         id=id, user=user, status=EvaluationTaskStatus.COMPLETED
@@ -56,6 +56,9 @@ async def resolve(info: Info, id: ID):
 
     evaluation_task.points = points
     evaluation_task.processing_times = processing_times
+    if plot_name is not None:
+        evaluation_task.plot_name = plot_name
+
     await sync_to_async(lambda: evaluation_task.save())()
 
     return evaluation_task

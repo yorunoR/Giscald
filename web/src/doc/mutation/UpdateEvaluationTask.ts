@@ -1,6 +1,6 @@
 const MUTATION = /* GraphQL */ `
-  mutation UpdateEvaluationTask($id: ID!) {
-    updateEvaluationTask(id: $id) {
+  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {
+    updateEvaluationTask(id: $id, plotName: $plotName) {
       id
     }
   }

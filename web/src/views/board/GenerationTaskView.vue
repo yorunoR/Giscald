@@ -1,10 +1,10 @@
 <template>
   <main style="max-width: 1280px; margin: auto">
-    <h1 class="mt-2">回答一覧</h1>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
+        <h2 class="mt-2">{{ data.generationTask.name }}</h2>
         <div class="text-left">
           <Dropdown
             v-model="selectedCategory"
@@ -46,7 +46,9 @@
           <tbody>
             <tr v-for="answer in sortedAnswers" :key="answer.id">
               <td class="p-2">
-                {{ answer.question.questionNumber }}
+                <router-link :to="{ name: 'rates', params: { questionId: answer.question.id } }">
+                  {{ answer.question.questionNumber }}
+                </router-link>
               </td>
               <td class="p-2">
                 {{ answer.question.category }}
@@ -166,7 +168,7 @@ const sortedAnswers = computed(() => {
       }
       if (a_column < b_column) return sortAsc.value ? -1 : 1
       if (a_column > b_column) return sortAsc.value ? 1 : -1
-      return a.id < b.id ? 1 : -1
+      return parseInt(a.id) < parseInt(b.id) ? 1 : -1
     })
   }
   return selectedAnswers

@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1200px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <h1 class="mt-2">評価タスク一覧</h1>
     <section
       v-if="
@@ -65,11 +65,14 @@
         <table v-if="data" class="mt-2 w-full">
           <thead>
             <tr>
-              <th class="w-1 py-2">選択</th>
-              <th class="cursor-pointer w-2" @click="setKey('name')">
-                <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 </u>
+              <th class="cursor-pointer p-2" @click="setKey('id')">
+                <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
               </th>
-              <th class="cursor-pointer w-1 py-2" @click="setKey('benchName')">
+              <th class="w-1 py-2">選択</th>
+              <th class="cursor-pointer w-3" @click="setKey('name')">
+                <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 / 図上の表示名</u>
+              </th>
+              <th class="cursor-pointer w-2 py-2" @click="setKey('benchName')">
                 <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
               </th>
               <th class="cursor-pointer w-1" @click="setKey('createdAt')">
@@ -78,10 +81,10 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('points')">
+              <th class="cursor-pointer w-1.8" @click="setKey('points')">
                 <u :class="{ 'text-primary': sortKey === 'points' }"> 点数 </u>
               </th>
-              <th class="cursor-pointer w-1" @click="setKey('processingTimes')">
+              <th class="cursor-pointer w-1.8" @click="setKey('processingTimes')">
                 <u :class="{ 'text-primary': sortKey === 'processingTimes' }"> 処理時間 </u>
               </th>
               <th class="w-1">操作</th>
@@ -89,53 +92,84 @@
           </thead>
           <tbody>
             <tr v-for="evaluationTask in sortedEvaluationTasks" :key="evaluationTask.id">
+              <td class="py-2">
+                <span>{{ evaluationTask.id }}</span>
+              </td>
               <th class="py-2">
                 <div v-if="evaluationTask.points !== {}">
                   <Checkbox
                     v-model="radarDataSources1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData1 = setChartData(radarDataSources1))"
                   />
                   <Checkbox
                     v-model="radarDataSources2"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData2 = setChartData(radarDataSources2))"
                   />
                   <Checkbox
                     v-model="radarDataSources3"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.points }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
                     @change="() => (chartData3 = setChartData(radarDataSources3))"
                   />
                 </div>
                 <div v-if="evaluationTask.processingTimes !== {}" class="mt-1">
                   <Checkbox
                     v-model="barDataSources1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData1 = setChartData(barDataSources1))"
                   />
                   <Checkbox
                     v-model="barDataSources2"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData2 = setChartData(barDataSources2))"
                   />
                   <Checkbox
                     v-model="barDataSources3"
                     class="ml-1"
-                    :value="{ name: evaluationTask.name, values: evaluationTask.processingTimes }"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
                     @change="() => (barChartData3 = setChartData(barDataSources3))"
                   />
                 </div>
               </th>
-              <td class="py-2">
-                <span>{{ evaluationTask.name }}</span>
+              <td class="p-2 text-left">
+                <span>- {{ evaluationTask.name }}</span>
                 <router-link
-                  class="pl-2"
+                  class="ml-2"
                   :to="{ name: 'evaluationTask', params: { id: evaluationTask.id } }"
-                  >></router-link
                 >
+                  >
+                </router-link>
+                <div class="mt-3">
+                  <span>- {{ getPlotName(evaluationTask) }}</span>
+                  <u
+                    v-if="evaluationTask.status === 'Completed'"
+                    class="ml-2 cursor-pointer"
+                    @click="() => openUpdateEvaluationTaskPlotName(evaluationTask)"
+                    >編集</u
+                  >
+                </div>
               </td>
               <td class="py-2">
                 <span>{{ evaluationTask.generationTask.bench.name }}</span>
@@ -151,27 +185,33 @@
               <td class="py-2">
                 {{ evaluationTask.status }}
               </td>
-              <td class="py-2 text-left">
-                <div
-                  v-for="point in objToList(evaluationTask.points)"
-                  :key="point.key"
-                  class="px-2 flex justify-content-between"
-                >
-                  <div>{{ point.key }}:</div>
-                  <div>{{ pointFormat(point.value) }}</div>
+              <td class="text-left">
+                <div class="px-3 mt-3 pb-2 container">
+                  <div
+                    v-for="point in objToList(evaluationTask.points)"
+                    :key="point.key"
+                    class="flex justify-content-between"
+                  >
+                    <div>{{ point.key }}:</div>
+                    <div>{{ pointFormat(point.value) }}</div>
+                  </div>
                 </div>
-                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.points) }}</div>
+                <hr class="mx-3" />
+                <div class="px-3 pt-2 pb-3">AVG: {{ avg(evaluationTask.points) }}</div>
               </td>
-              <td class="py-2 text-left">
-                <div
-                  v-for="processingTime in objToList(evaluationTask.processingTimes)"
-                  :key="processingTime.key"
-                  class="px-2 flex justify-content-between"
-                >
-                  <div>{{ processingTime.key }}:</div>
-                  <div>{{ pointFormat(processingTime.value) }}</div>
+              <td class="text-left">
+                <div class="px-3 mt-3 pb-2 container">
+                  <div
+                    v-for="processingTime in objToList(evaluationTask.processingTimes)"
+                    :key="processingTime.key"
+                    class="flex justify-content-between"
+                  >
+                    <div>{{ processingTime.key }}:</div>
+                    <div>{{ pointFormat(processingTime.value) }}</div>
+                  </div>
                 </div>
-                <div class="mt-2 px-2">AVG: {{ avg(evaluationTask.processingTimes) }}</div>
+                <hr class="mx-3" />
+                <div class="px-3 pt-2 pb-3">AVG: {{ avg(evaluationTask.processingTimes) }}</div>
               </td>
               <td>
                 <div v-if="evaluationTask.status === 'Completed'" class="p-1">
@@ -198,6 +238,29 @@
       </div>
     </section>
   </main>
+  <section>
+    <Dialog v-model:visible="visible" modal header="編集" class="w-5">
+      <div class="flex align-items-center gap-3 mb-5">
+        <label for="plotName" class="font-semibold w-8rem">表示名</label>
+        <InputText
+          id="plotName"
+          v-model="plotName"
+          class="flex-auto"
+          autocomplete="off"
+          placeholder="表示名"
+        />
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+        <Button
+          type="button"
+          label="Save"
+          :disabled="!plotName"
+          @click="() => clickUpdateEvaluationTaskPlotName()"
+        ></Button>
+      </div>
+    </Dialog>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -222,6 +285,8 @@ const radarDataSources3 = ref([])
 const barDataSources1 = ref([])
 const barDataSources2 = ref([])
 const barDataSources3 = ref([])
+const visible = ref(false)
+const plotName = ref('')
 
 const query = graphql(EvaluationTasks)
 const { fetching, error, data, executeQuery } = useQuery({ query, requestPolicy: 'network-only' })
@@ -285,13 +350,16 @@ const sortedEvaluationTasks = computed(() => {
       } else if (column === 'benchName') {
         a_column = a.generationTask.bench.name
         b_column = b.generationTask.bench.name
+      } else if (column === 'id') {
+        a_column = parseInt(a[column])
+        b_column = parseInt(b[column])
       } else {
         a_column = a[column]
         b_column = b[column]
       }
       if (a_column < b_column) return sortAsc.value ? -1 : 1
       if (a_column > b_column) return sortAsc.value ? 1 : -1
-      return a.id < b.id ? 1 : -1
+      return parseInt(a.id) < parseInt(b.id) ? 1 : -1
     })
   }
   return selectedEvaluationTasks
@@ -357,7 +425,7 @@ const setChartData = (dataSources) => {
     const datasets = dataSources.map((dataSource) => {
       const data = labels.map((label) => dataSource.values[label])
       return {
-        label: dataSource.name.split('@')[0],
+        label: dataSource.plotName,
         data
       }
     })
@@ -474,6 +542,33 @@ const pointFormat = (point) => {
   num = Math.round(num)
   return num / 10
 }
+
+const getPlotName = (evaluationTask) => {
+  return evaluationTask.plotName || evaluationTask.name.split('@')[0]
+}
+
+let selectedEvaluationTaskId
+const openUpdateEvaluationTaskPlotName = (evaluationTask) => {
+  plotName.value = evaluationTask.plotName
+  selectedEvaluationTaskId = evaluationTask.id
+  visible.value = true
+}
+const clickUpdateEvaluationTaskPlotName = async () => {
+  try {
+    await updateEvaluationTask({
+      id: selectedEvaluationTaskId,
+      plotName: plotName.value
+    })
+  } finally {
+    radarDataSources1.value = []
+    radarDataSources2.value = []
+    radarDataSources3.value = []
+    barDataSources1.value = []
+    barDataSources2.value = []
+    barDataSources3.value = []
+    visible.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -483,5 +578,18 @@ table {
 td,
 th {
   border: 1px solid;
+}
+.container {
+  /*
+  max-height: 200px;
+  overflow-y: scroll;
+  */
+}
+.container::-webkit-scrollbar {
+  width: 1px;
+}
+.container::-webkit-scrollbar-thumb {
+  background-color: #888888;
+  border-radius: 8px;
 }
 </style>

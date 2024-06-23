@@ -7,5 +7,6 @@ from libs.models import Rate
 
 @require_authentication
 def resolve(info: Info, question_id: ID):
-    rates = Rate.objects.filter(answers__question_id=question_id).order_by("id").reverse().distinct()
+    user = info.context.user
+    rates = Rate.objects.filter(answers__question_id=question_id, user=user).order_by("id").reverse().distinct()
     return rates

@@ -97,7 +97,7 @@ const sortedBenches = computed(() => {
     benches.sort((a, b) => {
       if (a[column] < b[column]) return sortAsc.value ? -1 : 1
       if (a[column] > b[column]) return sortAsc.value ? 1 : -1
-      return a.id < b.id ? 1 : -1
+      return parseInt(a.id) < parseInt(b.id) ? 1 : -1
     })
   }
   return benches

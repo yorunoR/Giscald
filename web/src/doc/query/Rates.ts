@@ -26,6 +26,7 @@ const QUERY = /* GraphQL */ `
       turns
       bench {
         id
+        name
       }
     }
   }

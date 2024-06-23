@@ -98,7 +98,13 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
         id=generation_task_id, user=user, status=GenerationTaskStatus.COMPLETED
     )
     evaluation_task = await EvaluationTask.objects.acreate(
-        user=user, generation_task=generation_task, name=eval_name, points={}, processing_times={}, status=EvaluationTaskStatus.STARTED
+        user=user,
+        generation_task=generation_task,
+        name=eval_name,
+        plot_name=eval_name.split("@")[0],
+        points={},
+        processing_times={},
+        status=EvaluationTaskStatus.STARTED,
     )
 
     if generation_task.bench.code == "aiw":

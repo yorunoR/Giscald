@@ -33,9 +33,6 @@
               <th class="cursor-pointer" @click="setKey('finishReason')">
                 <u :class="{ 'text-primary': sortKey === 'finishReason' }"> 終了理由 </u>
               </th>
-              <th class="cursor-pointer" @click="setKey('usage')">
-                <u :class="{ 'text-primary': sortKey === 'usage' }"> 消費 </u>
-              </th>
               <th class="cursor-pointer" @click="setKey('processingTime')">
                 <u :class="{ 'text-primary': sortKey === 'processingTime' }"> 処理時間 </u>
               </th>
@@ -67,9 +64,6 @@
               </td>
               <td class="p-2">
                 {{ rate.finishReason }}
-              </td>
-              <td class="p-2">
-                {{ rate.usage }}
               </td>
               <td class="p-2">
                 {{ rate.processingTime }}

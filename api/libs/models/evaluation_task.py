@@ -19,6 +19,7 @@ class EvaluationTask(BaseModel):
     points = models.JSONField()
     processing_times = models.JSONField()
     status = models.IntegerField(choices=Status.choices, default=Status.CREATED)
+    plot_name = models.CharField(max_length=128, null=True, blank=True)
 
     class Meta:
         db_table = "evaluation_tasks"

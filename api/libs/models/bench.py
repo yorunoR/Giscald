@@ -10,6 +10,9 @@ class Bench(BaseModel):
     code = models.CharField(max_length=128, null=False, unique=True)
     system_template = models.TextField(max_length=4096, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "benches"
         verbose_name = "評価ベンチ"

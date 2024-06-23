@@ -62,6 +62,7 @@ export type EvaluationTaskType = {
   generationTask: GenerationTaskType
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
+  plotName?: Maybe<Scalars['String']['output']>
   points: Scalars['JSON']['output']
   processingTimes: Scalars['JSON']['output']
   rates: Array<RateType>
@@ -137,6 +138,7 @@ export type MutationDeleteGenerationTaskArgs = {
 
 export type MutationUpdateEvaluationTaskArgs = {
   id: Scalars['ID']['input']
+  plotName?: InputMaybe<Scalars['String']['input']>
 }
 
 export type Query = {
@@ -268,6 +270,7 @@ export type SigninMutation = {
 
 export type UpdateEvaluationTaskMutationVariables = Exact<{
   id: Scalars['ID']['input']
+  plotName?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type UpdateEvaluationTaskMutation = {
@@ -365,6 +368,7 @@ export type EvaluationTasksQuery = {
       __typename?: 'EvaluationTaskType'
       id: string
       name: string
+      plotName?: string | null
       status: EvaluationTaskStatusType
       points: any
       processingTimes: any
@@ -816,6 +820,11 @@ export const UpdateEvaluationTaskDocument = {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
           }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'plotName' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
         }
       ],
       selectionSet: {
@@ -829,6 +838,11 @@ export const UpdateEvaluationTaskDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'id' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'plotName' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'plotName' } }
               }
             ],
             selectionSet: {
@@ -1063,6 +1077,7 @@ export const EvaluationTasksDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'plotName' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },

@@ -136,7 +136,6 @@
             class="flex-auto"
             autocomplete="off"
             placeholder="一意な名前"
-            disabled
           />
         </div>
         <div class="flex align-items-center gap-3 mb-5">

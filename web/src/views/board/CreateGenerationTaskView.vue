@@ -28,6 +28,14 @@
           class="mt-4 w-6"
           placeholder="モデル名: openai/cyberagent/calm2-7b-chat"
         />
+        <div class="flex justify-content-center">
+          <div class="w-6 mt-1 px-2 text-left text-xs">
+            <b
+              >※ litellm の OpenAI-Compatible Endpoints
+              を呼び出す時のモデル指定の書式にしたがってください</b
+            >
+          </div>
+        </div>
         <div class="mt-2 p-error">{{ modelNameErrors.join(' ') }}</div>
 
         <InputText v-model="name" class="mt-4 w-6" placeholder="名前: 一意な識別子" disabled />

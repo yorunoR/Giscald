@@ -477,7 +477,7 @@ export type RatesQuery = {
     questionNumber: number
     category: string
     turns: Array<string>
-    bench: { __typename?: 'BenchType'; id: string }
+    bench: { __typename?: 'BenchType'; id: string; name: string }
   }
 }
 
@@ -1394,7 +1394,10 @@ export const RatesDocument = {
                   name: { kind: 'Name', value: 'bench' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } }
+                    ]
                   }
                 }
               ]

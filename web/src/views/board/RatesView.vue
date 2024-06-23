@@ -7,7 +7,7 @@
       <div v-else>
         <div class="text-left">
           <router-link :to="{ name: 'bench', params: { id: data.question.bench.id } }">
-            <span class="py-2 text-2xl">質問一覧</span>
+            <span class="py-2 text-2xl">{{ data.question.bench.name }}</span>
           </router-link>
         </div>
         <p class="text-left my-4">

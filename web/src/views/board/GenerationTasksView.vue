@@ -35,7 +35,7 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="w-1.5">評価有無</th>
+              <th class="w-2">評価有無</th>
               <th>メモ</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>

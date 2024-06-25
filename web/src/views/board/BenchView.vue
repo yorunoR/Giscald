@@ -40,10 +40,18 @@
                 {{ question.category }}
               </td>
               <td class="p-2 text-left">
-                <div v-for="turn in question.turns" :key="turn">- {{ turn }}</div>
+                <div v-for="turn in question.turns" :key="turn" style="max-width: 800px">
+                  - {{ turn }}
+                </div>
               </td>
               <td class="p-2 text-left">
-                <div v-for="answer in question.correctAnswers" :key="answer">- {{ answer }}</div>
+                <div
+                  v-for="answer in question.correctAnswers"
+                  :key="answer"
+                  style="max-width: 400px"
+                >
+                  - {{ answer }}
+                </div>
               </td>
             </tr>
           </tbody>

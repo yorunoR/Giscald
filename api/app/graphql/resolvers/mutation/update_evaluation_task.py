@@ -48,7 +48,7 @@ async def resolve(info: Info, id: ID, plot_name: str | None = None):
         id=id, user=user, status=EvaluationTaskStatus.COMPLETED
     )
 
-    if evaluation_task.generation_task.bench.code == "aiw":
+    if evaluation_task.generation_task.bench.code == "aiw" or evaluation_task.generation_task.bench.code == "tengu":
         points = await sync_to_async(avg_points_with_zero)(evaluation_task)
     else:
         points = await sync_to_async(avg_points)(evaluation_task)

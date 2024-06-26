@@ -1,14 +1,16 @@
 <template>
   <main style="max-width: 1400px; margin: auto">
-    <h1 class="mt-2">評価タスク一覧</h1>
-    <section
-      v-if="
-        radarDataSources1.length > 0 || radarDataSources2.length > 0 || radarDataSources3.length > 0
-      "
-      class="mt-6"
-    >
-      <h2>点数</h2>
-      <div class="flex">
+    <h2 class="my-0">評価タスク一覧</h2>
+    <section class="mt-2">
+      <h3>点数</h3>
+      <div
+        v-if="
+          radarDataSources1.length > 0 ||
+          radarDataSources2.length > 0 ||
+          radarDataSources3.length > 0
+        "
+        class="flex w-12"
+      >
         <Chart
           v-if="chartData1.labels?.length === 1"
           type="bar"
@@ -34,16 +36,33 @@
         />
         <Chart v-else type="radar" :data="chartData3" :options="chartOptions" class="w-4" />
       </div>
+      <div v-if="radarDataSources4.length > 0" class="flex w-12">
+        <Chart
+          v-if="chartData4.labels?.length === 1"
+          type="bar"
+          :data="chartData4"
+          :options="barChartOptions"
+          class="w-4"
+        />
+        <Chart v-else type="radar" :data="chartData4" :options="chartOptions" class="w-4" />
+      </div>
     </section>
     <section
-      v-if="barDataSources1.length > 0 || barDataSources2.length > 0 || barDataSources3.length > 0"
-      class="mt-6"
+      v-if="
+        barDataSources1.length > 0 ||
+        barDataSources2.length > 0 ||
+        barDataSources3.length > 0 ||
+        barDataSources4.length > 0
+      "
+      class="mt-2"
     >
-      <h2>応答時間（秒）</h2>
+      <h3>応答時間（秒）</h3>
       <div class="flex">
-        <Chart type="bar" :data="barChartData1" :options="barChartOptions" class="w-4 h-30rem" />
-        <Chart type="bar" :data="barChartData2" :options="barChartOptions" class="w-4 h-30rem" />
-        <Chart type="bar" :data="barChartData3" :options="barChartOptions" class="w-4 h-30rem" />
+        <Chart type="bar" :data="barChartData1" :options="barChartOptions" class="w-3 h-30rem" />
+        <Chart type="bar" :data="barChartData2" :options="barChartOptions" class="w-3 h-30rem" />
+        <Chart type="bar" :data="barChartData3" :options="barChartOptions" class="w-3 h-30rem" />
+        <br />
+        <Chart type="bar" :data="barChartData4" :options="barChartOptions" class="w-3 h-30rem" />
       </div>
     </section>
     <section class="mt-4">
@@ -123,7 +142,17 @@
                     }"
                     @change="() => (chartData3 = setChartData(radarDataSources3))"
                   />
+                  <Checkbox
+                    v-model="radarDataSources4"
+                    class="ml-1"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.points
+                    }"
+                    @change="() => (chartData4 = setChartData(radarDataSources4))"
+                  />
                 </div>
+                <hr class="mx-2" />
                 <div v-if="evaluationTask.processingTimes !== {}" class="mt-1">
                   <Checkbox
                     v-model="barDataSources1"
@@ -150,6 +179,15 @@
                       values: evaluationTask.processingTimes
                     }"
                     @change="() => (barChartData3 = setChartData(barDataSources3))"
+                  />
+                  <Checkbox
+                    v-model="barDataSources4"
+                    class="ml-1"
+                    :value="{
+                      plotName: getPlotName(evaluationTask),
+                      values: evaluationTask.processingTimes
+                    }"
+                    @change="() => (barChartData4 = setChartData(barDataSources4))"
                   />
                 </div>
               </th>
@@ -282,9 +320,11 @@ const benchNameSearch = ref('')
 const radarDataSources1 = ref([])
 const radarDataSources2 = ref([])
 const radarDataSources3 = ref([])
+const radarDataSources4 = ref([])
 const barDataSources1 = ref([])
 const barDataSources2 = ref([])
 const barDataSources3 = ref([])
+const barDataSources4 = ref([])
 const visible = ref(false)
 const plotName = ref('')
 
@@ -413,9 +453,11 @@ onMounted(() => {
 const chartData1 = ref({})
 const chartData2 = ref({})
 const chartData3 = ref({})
+const chartData4 = ref({})
 const barChartData1 = ref()
 const barChartData2 = ref()
 const barChartData3 = ref()
+const barChartData4 = ref()
 const chartOptions = ref()
 const barChartOptions = ref()
 
@@ -563,9 +605,19 @@ const clickUpdateEvaluationTaskPlotName = async () => {
     radarDataSources1.value = []
     radarDataSources2.value = []
     radarDataSources3.value = []
+    radarDataSources4.value = []
     barDataSources1.value = []
     barDataSources2.value = []
     barDataSources3.value = []
+    barDataSources4.value = []
+    chartData1.value = {}
+    chartData2.value = {}
+    chartData3.value = {}
+    chartData4.value = {}
+    barChartData1.value = {}
+    barChartData2.value = {}
+    barChartData3.value = {}
+    barChartData4.value = {}
     visible.value = false
   }
 }

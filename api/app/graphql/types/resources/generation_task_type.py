@@ -33,7 +33,7 @@ class GenerationTaskType:
     status: GenerationTaskStatusType
     created_at: auto
     answers: list[AnswerType]
-    generation_setting: GenerationSettingType
+    generation_setting: GenerationSettingType | None
     bench: BenchType
     tags: list[TagType]
     evaluation_tasks: list[Annotated["EvaluationTaskType", strawberry.lazy(".evaluation_task_type")]]

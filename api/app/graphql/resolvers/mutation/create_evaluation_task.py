@@ -117,7 +117,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 value = extract_and_convert_to_int_or_null(match.group(1))
             if str(correct_answer) == str(value):
                 point = 1
-            await Rate.objects.acreate(
+            rate = await Rate.objects.acreate(
                 user=user,
                 evaluation_task=evaluation_task,
                 answer=answer,
@@ -128,6 +128,7 @@ async def resolve(info: Info, generation_task_id: ID, eval_name: str, model: str
                 point=point,
                 model="",
             )
+            await RateAnswer.objects.acreate(rate=rate, answer=answer)
         evaluation_task.status = EvaluationTaskStatus.COMPLETED
         await sync_to_async(lambda: evaluation_task.save())()
         return evaluation_task

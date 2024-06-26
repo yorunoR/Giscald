@@ -146,7 +146,11 @@
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evaluator" class="font-semibold w-8rem">評価者</label>
-          <Dropdown v-model="evaluator" :options="evaluatorOptions" />
+          <Dropdown
+            v-model="evaluator"
+            :options="evaluatorOptions"
+            :disabled="selected && selected.bench.code === 'aiw'"
+          />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
@@ -284,6 +288,12 @@ const sortedGenerationTasks = computed(() => {
 const options = computed(() => {
   if (!benchesData.value) return []
   return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
+})
+
+watch([selected], () => {
+  if (selected.value.bench.code === 'aiw') {
+    evaluator.value = 'none'
+  }
 })
 
 watch([prefixEvalName, evaluator], () => {

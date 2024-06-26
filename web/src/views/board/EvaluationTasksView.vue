@@ -374,7 +374,7 @@ const sortedEvaluationTasks = computed(() => {
       if (benchNameSearch.value !== evaluationTask.generationTask.bench.code) return false
     }
     if (nameSearch.value) {
-      const substrings = nameSearch.value.split(/\s+/)
+      const substrings = nameSearch.value.toLowerCase().split(/\s+/)
       return containsAll(evaluationTask.name.toLowerCase(), substrings)
     } else {
       return true

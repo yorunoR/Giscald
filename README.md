@@ -12,6 +12,9 @@ TGI や vllm で、OpenAI 互換の LLM サーバーを起動してください
 
 `.env.local.sample` と `web/.env.development.sample` を参考に環境変数の設定ファイルを作成してください
 
+### LiveBench
+評価時にソース元のコードを使用しているので、  
+[livebench ディレクトリ](https://github.com/LiveBench/LiveBench/tree/main/livebench) を api/ ディレクトリ直下にコピーしてください
 
 ### 各種コマンド
 起動

@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1280px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
@@ -57,14 +57,14 @@
                 {{ answer.turnNumber }}
               </td>
               <td class="p-2">
-                <div class="text-left" style="max-width: 720px; white-space: pre-wrap">
+                <div class="text-left" style="max-width: 480px; white-space: pre-wrap">
                   <div v-for="message in answer.messages" :key="message.content">
                     {{ '<' + message.role + '> ' + message.content }}
                   </div>
                 </div>
               </td>
               <td class="p-2">
-                <div class="text-left" style="max-width: 720px">
+                <div class="text-left" style="max-width: 480px">
                   {{ answer.text }}
                 </div>
               </td>

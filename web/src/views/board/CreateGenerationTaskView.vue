@@ -170,7 +170,7 @@ const clickCreateGenerationTask = async () => {
 const { meta, values } = useForm({
   initialValues: {
     benchCode: 'jmt',
-    name: 'calm2-7b-chat@TGI.jmt.xxx',
+    name: 'calm2-7b-chat@jmt.TGI.xxx',
     modelName: 'openai/cyberagent/calm2-7b-chat',
     host: 'http://host.docker.internal:4000/v1',
     workerCount: 10,
@@ -195,7 +195,7 @@ watch([benchCode, framework, modelName], () => {
   const parts = modelName.value.split('/')
   const lastName = parts[parts.length - 1]
   const randomString = generateRandomString()
-  name.value = lastName + '@' + framework.value + '.' + benchCode.value + '.' + randomString
+  name.value = lastName + '@' + benchCode.value + '.' + framework.value + '.' + randomString
   if (benchCode.value.startsWith('jmt')) {
     if (framework.value == 'TGI') parameters.value = tgiMultiSet
     if (framework.value == 'vllm') parameters.value = vllmMultiSet

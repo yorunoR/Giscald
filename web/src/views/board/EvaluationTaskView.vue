@@ -50,7 +50,7 @@
               <td class="p-2">
                 {{ rate.answers[0].question.category }}
               </td>
-              <td class="p-2">
+              <td class="p-2" style="max-width: 1200px">
                 <div v-for="answer in rate.answers" :key="answer.id">- {{ answer.text }}</div>
               </td>
               <td class="p-2">

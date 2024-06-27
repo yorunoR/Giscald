@@ -13,7 +13,10 @@ async def chat(messages, model, host, api_key, metadata, strategy, params):
     print(params)
 
     try:
-        response = await litellm.acompletion(messages=messages, model=model, api_base=host, api_key=api_key, metadata=metadata, **params)
+        timeout = 60
+        response = await litellm.acompletion(
+            messages=messages, model=model, api_base=host, api_key=api_key, timeout=timeout, metadata=metadata, **params
+        )
         if strategy == "self-reflection":
             content = response.choices[0].message.content
             new_messages = messages + [

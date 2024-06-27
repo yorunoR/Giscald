@@ -92,7 +92,7 @@ export type GenerationTaskType = {
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   evaluationTasks: Array<EvaluationTaskType>
-  generationSetting: GenerationSettingType
+  generationSetting?: Maybe<GenerationSettingType>
   id: Scalars['ID']['output']
   modelName: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -429,12 +429,12 @@ export type GenerationTasksQuery = {
       description?: string | null
       status: GenerationTaskStatusType
       createdAt: string
-      generationSetting: {
+      generationSetting?: {
         __typename?: 'GenerationSettingType'
         host: string
         workerCount: number
         parameters: any
-      }
+      } | null
       bench: { __typename?: 'BenchType'; id: string; code: string }
       tags: Array<{ __typename?: 'TagType'; id: string; name: string }>
       evaluationTasks: Array<{ __typename?: 'EvaluationTaskType'; id: string; name: string }>

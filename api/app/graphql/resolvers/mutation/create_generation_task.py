@@ -11,6 +11,8 @@ from libs.models import Answer, Bench, GenerationSetting, GenerationTask, Genera
 from libs.models.generation_task import Status as GenerationTaskStatus
 from libs.services.gen_answer import chat_with_job_info
 
+API_MAX_RETRY = 5
+
 
 def parse_params_str(param_str):
     try:
@@ -120,11 +122,15 @@ async def resolve(
                     )
                 )
                 if len(jobs) == worker_count:
-                    results = await asyncio.gather(*(asyncio.wait_for(job, timeout=240) for job in jobs), return_exceptions=True)
-                    jobs = []
+                    for i in range(API_MAX_RETRY):
+                        results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
+                        if any(isinstance(result, (RuntimeError, TimeoutError, asyncio.CancelledError)) for result in results):
+                            print(i)
+                        else:
+                            break
                     for result in results:
                         try:
-                            if isinstance(result, asyncio.exceptions.CancelledError):
+                            if isinstance(result, (RuntimeError, TimeoutError, asyncio.CancelledError)):
                                 raise Exception("Timeout")
                             await Answer.objects.acreate(
                                 user=user,
@@ -140,6 +146,7 @@ async def resolve(
                         except Exception as e:
                             print(result)
                             raise e
+                    jobs = []
 
         if latest_generation_task.status != GenerationTaskStatus.ABORTED:
             generation_task.status = GenerationTaskStatus.COMPLETED

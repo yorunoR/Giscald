@@ -1,6 +1,6 @@
 <template>
   <main style="max-width: 1400px; margin: auto">
-    <h1 class="mt-2">回答生成タスク一覧</h1>
+    <h2 class="my-0">回答生成タスク一覧</h2>
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
@@ -35,7 +35,7 @@
               <th class="cursor-pointer w-1" @click="setKey('status')">
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
-              <th class="w-1.5">評価有無</th>
+              <th class="w-2">評価有無</th>
               <th>メモ</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
@@ -146,7 +146,11 @@
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="evaluator" class="font-semibold w-8rem">評価者</label>
-          <Dropdown v-model="evaluator" :options="evaluatorOptions" />
+          <Dropdown
+            v-model="evaluator"
+            :options="evaluatorOptions"
+            :disabled="selected && selected.bench.code === 'aiw'"
+          />
         </div>
         <div class="flex align-items-center gap-3 mb-5">
           <label for="workerCount" class="font-semibold w-8rem">同時リクエスト数</label>
@@ -284,6 +288,12 @@ const sortedGenerationTasks = computed(() => {
 const options = computed(() => {
   if (!benchesData.value) return []
   return benchesData.value.benches.slice().sort((a, b) => a.id - b.id)
+})
+
+watch([selected], () => {
+  if (selected.value.bench.code === 'aiw') {
+    evaluator.value = 'none'
+  }
 })
 
 watch([prefixEvalName, evaluator], () => {

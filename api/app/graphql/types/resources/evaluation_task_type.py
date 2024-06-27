@@ -22,6 +22,7 @@ class EvaluationTaskType:
     id: auto
     name: auto
     plot_name: auto
+    active: auto
     points: auto
     processing_times: auto
     status: EvaluationTaskStatusType

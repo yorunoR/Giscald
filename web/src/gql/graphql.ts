@@ -58,6 +58,7 @@ export enum EvaluationTaskStatusType {
 
 export type EvaluationTaskType = {
   __typename?: 'EvaluationTaskType'
+  active: Scalars['Boolean']['output']
   createdAt: Scalars['DateTime']['output']
   generationTask: GenerationTaskType
   id: Scalars['ID']['output']
@@ -369,6 +370,7 @@ export type EvaluationTasksQuery = {
       id: string
       name: string
       plotName?: string | null
+      active: boolean
       status: EvaluationTaskStatusType
       points: any
       processingTimes: any
@@ -1078,6 +1080,7 @@ export const EvaluationTasksDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'plotName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'active' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'points' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'processingTimes' } },

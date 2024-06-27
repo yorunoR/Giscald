@@ -37,6 +37,8 @@ class Command(BaseCommand):
             setup_aiw_tasks()
         elif mode == "bfcl":
             setup_bfcl_tasks()
+        elif mode == "live":
+            setup_live_tasks()
         elif mode == "all":
             setup_jmt_bench()
             setup_jmt_multi_bench()
@@ -45,6 +47,7 @@ class Command(BaseCommand):
             setup_tengu_tasks()
             setup_aiw_tasks()
             setup_bfcl_tasks()
+            setup_live_tasks()
 
 
 def setup_jmt_bench():
@@ -244,3 +247,54 @@ def setup_bfcl_tasks():
     except Exception as e:
         print(e)
         bench.delete()
+
+
+def setup_live_tasks():
+    bench = Bench.objects.create(name="LiveBench origin", code="live")
+    bench.template = ""
+    bench.save()
+    directory = os.path.join(settings.BASE_DIR, "data", "livebench", "20240621")
+    files = list_files(directory)
+    try:
+        index = 1
+        for path in files:
+            df = pd.read_parquet(path)
+            for _i, row in df.iterrows():
+                category = row["category"]
+                task = row["task"]
+                turns = list(row["turns"])
+                if "ground_truth" in df.columns:
+                    correct_answers = [row["ground_truth"]]
+                else:
+                    correct_answers = []
+                if "task" in df.columns:
+                    task = row["task"]
+                else:
+                    task = None
+                if "subtask" in df.columns:
+                    subtask = row["subtask"]
+                else:
+                    subtask = None
+
+                Question.objects.create(
+                    bench=bench,
+                    question_number=index,
+                    category=f"{category}-{task}",
+                    turns=turns,
+                    correct_answers=correct_answers,
+                    eval_aspects=[],
+                    task=task,
+                    subtask=subtask,
+                )
+                index = index + 1
+    except Exception as e:
+        print(e)
+        bench.delete()
+
+
+def list_files(directory):
+    file_list = []
+    for root, _dirs, files in os.walk(directory):
+        for file in files:
+            file_list.append(os.path.join(root, file))
+    return file_list

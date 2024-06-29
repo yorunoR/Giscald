@@ -5,6 +5,7 @@ const QUERY = /* GraphQL */ `
         id
         name
         plotName
+        active
         status
         points
         processingTimes

@@ -83,9 +83,9 @@ async def resolve(
                 params = settings.get("params")
 
                 if generation_task.bench.code == "aiw":
+                    content = question.turns[index] + "\n" + answer_format
                     messages = [
-                        {"role": "user", "content": question.turns[index]},
-                        {"role": "user", "content": answer_format},
+                        {"role": "user", "content": content},
                     ]
                 elif generation_task.bench.code == "bfcl":
                     system_template = Template(bench.system_template)

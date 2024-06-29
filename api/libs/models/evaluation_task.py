@@ -5,6 +5,11 @@ from libs.models import GenerationTask, User
 from .base import BaseModel
 
 
+class CustomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
+
 class Status(models.IntegerChoices):
     CREATED = 0, "Created"
     STARTED = 10, "Started"
@@ -13,6 +18,8 @@ class Status(models.IntegerChoices):
 
 
 class EvaluationTask(BaseModel):
+    objects = CustomManager()
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="evaluation_tasks")
     generation_task = models.ForeignKey(GenerationTask, on_delete=models.CASCADE, related_name="evaluation_tasks")
     name = models.CharField(max_length=512)
@@ -20,6 +27,7 @@ class EvaluationTask(BaseModel):
     processing_times = models.JSONField()
     status = models.IntegerField(choices=Status.choices, default=Status.CREATED)
     plot_name = models.CharField(max_length=128, null=True, blank=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         db_table = "evaluation_tasks"

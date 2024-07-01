@@ -123,7 +123,7 @@ async def resolve(
                 )
                 if len(jobs) == worker_count:
                     for i in range(API_MAX_RETRY):
-                        results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
+                        results = await asyncio.gather(*(asyncio.wait_for(job, timeout=240) for job in jobs), return_exceptions=True)
                         if any(isinstance(result, (RuntimeError, TimeoutError, asyncio.CancelledError)) for result in results):
                             print(i)
                         else:

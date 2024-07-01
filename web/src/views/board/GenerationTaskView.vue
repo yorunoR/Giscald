@@ -46,8 +46,14 @@
           <tbody>
             <tr v-for="answer in sortedAnswers" :key="answer.id">
               <td class="p-2">
-                <router-link :to="{ name: 'rates', params: { questionId: answer.question.id } }">
+                <span>
                   {{ answer.question.questionNumber }}
+                </span>
+                <router-link
+                  class="ml-1"
+                  :to="{ name: 'rates', params: { questionId: answer.question.id } }"
+                >
+                  >
                 </router-link>
               </td>
               <td class="p-2">

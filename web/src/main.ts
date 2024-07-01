@@ -27,6 +27,7 @@ import RadioButton from 'primevue/radiobutton'
 import Sidebar from 'primevue/sidebar'
 import Textarea from 'primevue/textarea'
 import Toast from 'primevue/toast'
+import Tooltip from 'primevue/tooltip'
 
 const app = createApp(App)
 
@@ -52,4 +53,5 @@ app
   .component('Sidebar', Sidebar)
   .component('Textarea', Textarea)
   .component('Toast', Toast)
+  .directive('tooltip', Tooltip)
   .mount('#app')

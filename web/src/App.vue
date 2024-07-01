@@ -17,7 +17,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #5a5a72;
-  background-color: #eff1f4;
+  background-color: white;
   min-height: 100%;
 }
 

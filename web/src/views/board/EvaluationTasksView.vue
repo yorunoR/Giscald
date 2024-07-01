@@ -558,7 +558,7 @@ const avg = (obj) => {
   const len = Object.keys(obj).length
   if (len < 1) return 0
   const avg_val = Object.values(obj).reduce((sum, element) => sum + element, 0) / len
-  return pointFormat(avg_val)
+  return pointFormat(avg_val, 2)
 }
 
 const clickDeleteEvaluationTask = async (id) => {
@@ -584,10 +584,10 @@ const objToList = (obj) => {
   })
 }
 
-const pointFormat = (point) => {
-  let num = point * 10
+const pointFormat = (point, power = 1) => {
+  let num = point * 10 ** power
   num = Math.round(num)
-  return num / 10
+  return num / 10 ** power
 }
 
 const getPlotName = (evaluationTask) => {

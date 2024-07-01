@@ -92,7 +92,12 @@
               <th class="cursor-pointer p-2" @click="setKey('id')">
                 <u :class="{ 'text-primary': sortKey === 'id' }"> ID </u>
               </th>
-              <th class="w-1 py-2">選択</th>
+              <th class="w-1 py-2">
+                <div class="flex justify-content-center align-items-center">
+                  <span>選択</span>
+                  <Button text label="x" size="small" @click="() => clearCharts()" />
+                </div>
+              </th>
               <th class="cursor-pointer w-3" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 / 図上の表示名</u>
               </th>
@@ -607,24 +612,28 @@ const clickUpdateEvaluationTaskPlotName = async () => {
       plotName: plotName.value
     })
   } finally {
-    radarDataSources1.value = []
-    radarDataSources2.value = []
-    radarDataSources3.value = []
-    radarDataSources4.value = []
-    barDataSources1.value = []
-    barDataSources2.value = []
-    barDataSources3.value = []
-    barDataSources4.value = []
-    chartData1.value = {}
-    chartData2.value = {}
-    chartData3.value = {}
-    chartData4.value = {}
-    barChartData1.value = {}
-    barChartData2.value = {}
-    barChartData3.value = {}
-    barChartData4.value = {}
+    clearCharts()
     visible.value = false
   }
+}
+
+const clearCharts = () => {
+  radarDataSources1.value = []
+  radarDataSources2.value = []
+  radarDataSources3.value = []
+  radarDataSources4.value = []
+  barDataSources1.value = []
+  barDataSources2.value = []
+  barDataSources3.value = []
+  barDataSources4.value = []
+  chartData1.value = {}
+  chartData2.value = {}
+  chartData3.value = {}
+  chartData4.value = {}
+  barChartData1.value = {}
+  barChartData2.value = {}
+  barChartData3.value = {}
+  barChartData4.value = {}
 }
 </script>
 

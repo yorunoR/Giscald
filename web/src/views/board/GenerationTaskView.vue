@@ -35,7 +35,7 @@
               <th class="cursor-pointer" @click="setKey('finishReason')">
                 <u :class="{ 'text-primary': sortKey === 'finishReason' }"> 終了理由 </u>
               </th>
-              <th class="cursor-pointer" @click="setKey('usage')">
+              <th class="w-1 cursor-pointer" @click="setKey('usage')">
                 <u :class="{ 'text-primary': sortKey === 'usage' }"> 消費 </u>
               </th>
               <th class="cursor-pointer" @click="setKey('processingTime')">
@@ -63,14 +63,15 @@
                 {{ answer.turnNumber }}
               </td>
               <td class="p-2">
-                <div class="text-left" style="max-width: 480px; white-space: pre-wrap">
-                  <div v-for="message in answer.messages" :key="message.content">
-                    {{ '<' + message.role + '> ' + message.content }}
+                <div class="text-left" style="max-width: 600px; white-space: pre-wrap">
+                  <div v-for="message in answer.messages" :key="message.content" class="mb-3">
+                    <span style="color: red">{{ '[[' + message.role + ']]' }}</span>
+                    {{ message.content }}
                   </div>
                 </div>
               </td>
               <td class="p-2">
-                <div class="text-left" style="max-width: 480px">
+                <div class="text-left" style="max-width: 400px; white-space: pre-wrap">
                   {{ answer.text }}
                 </div>
               </td>

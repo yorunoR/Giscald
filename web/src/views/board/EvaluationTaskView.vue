@@ -41,10 +41,17 @@
           <tbody>
             <tr v-for="rate in sortedRates" :key="rate.id">
               <td class="p-2">
-                <router-link
-                  :to="{ name: 'rates', params: { questionId: rate.answers[0].question.id } }"
+                <span
+                  v-tooltip.left="rate.answers[0].question.turns.join(',')"
+                  class="cursor-pointer"
                 >
                   {{ rate.answers[0].question.questionNumber }}
+                </span>
+                <router-link
+                  class="ml-1"
+                  :to="{ name: 'rates', params: { questionId: rate.answers[0].question.id } }"
+                >
+                  >
                 </router-link>
               </td>
               <td class="p-2">

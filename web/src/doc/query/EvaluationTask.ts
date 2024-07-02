@@ -20,6 +20,7 @@ const QUERY = /* GraphQL */ `
             id
             questionNumber
             category
+            turns
           }
         }
       }

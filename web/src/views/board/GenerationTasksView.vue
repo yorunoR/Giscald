@@ -7,15 +7,20 @@
       <div v-else>
         <div class="text-left">
           <InputText v-model="nameSearch" placeholder="名前検索" />
-          <Dropdown
-            v-model="benchNameSearch"
-            show-clear
-            class="ml-2"
-            placeholder="Select bench"
-            :options="options"
-            option-label="name"
-            option-value="code"
-          />
+          <ButtonGroup class="ml-2">
+            <Button
+              :severity="benchNameSearch == '' ? 'primary' : 'secondary'"
+              label="ALL"
+              @click="() => (benchNameSearch = '')"
+            />
+            <Button
+              v-for="option in options"
+              :key="option.code"
+              :severity="benchNameSearch == option.code ? 'primary' : 'secondary'"
+              :label="option.code"
+              @click="() => (benchNameSearch = option.code)"
+            />
+          </ButtonGroup>
         </div>
         <table v-if="data" class="w-full mt-2">
           <thead>

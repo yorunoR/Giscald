@@ -41,7 +41,7 @@
                 <u :class="{ 'text-primary': sortKey === 'status' }"> ステータス </u>
               </th>
               <th class="w-2">評価有無</th>
-              <th>メモ</th>
+              <th style="min-width: 50px">メモ</th>
               <th class="w-1">詳細</th>
               <th class="w-1">操作</th>
             </tr>
@@ -83,7 +83,7 @@
                   </router-link>
                 </div>
               </td>
-              <td class="py-2">
+              <td class="p-2">
                 {{ generationTask.description }}
               </td>
               <td>

@@ -13,6 +13,7 @@ import 'primevue/resources/primevue.css'
 import 'primevue/resources/themes/aura-light-green/theme.css'
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
+import ButtonGroup from 'primevue/buttongroup'
 import Chart from 'primevue/chart'
 import Checkbox from 'primevue/checkbox'
 import Chip from 'primevue/chip'
@@ -27,6 +28,7 @@ import RadioButton from 'primevue/radiobutton'
 import Sidebar from 'primevue/sidebar'
 import Textarea from 'primevue/textarea'
 import Toast from 'primevue/toast'
+import Tooltip from 'primevue/tooltip'
 
 const app = createApp(App)
 
@@ -38,6 +40,7 @@ app
   .use(ToastService)
   .component('Avatar', Avatar)
   .component('Button', Button)
+  .component('ButtonGroup', ButtonGroup)
   .component('Chart', Chart)
   .component('Checkbox', Checkbox)
   .component('Chip', Chip)
@@ -52,4 +55,5 @@ app
   .component('Sidebar', Sidebar)
   .component('Textarea', Textarea)
   .component('Toast', Toast)
+  .directive('tooltip', Tooltip)
   .mount('#app')

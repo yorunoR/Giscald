@@ -353,6 +353,7 @@ export type EvaluationTaskQuery = {
           id: string
           questionNumber: number
           category: string
+          turns: Array<string>
         }
       }>
     }>
@@ -1037,7 +1038,8 @@ export const EvaluationTaskDocument = {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'questionNumber' }
                                   },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'category' } }
+                                  { kind: 'Field', name: { kind: 'Name', value: 'category' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'turns' } }
                                 ]
                               }
                             }

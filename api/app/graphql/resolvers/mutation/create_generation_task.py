@@ -21,7 +21,7 @@ def parse_params_str(param_str):
         return {}
 
 
-answer_format = "回答の最後に、必ず、結果:[[数値]]の形式で最終結果を追加してください。"
+answer_format = "回答の最後に、必ず、結果:[[数値]]の形式で最終結果を追加してください。[[と]]で囲った値を最終結果として抜き出します。"
 
 
 async def resolve(
@@ -123,7 +123,7 @@ async def resolve(
                 )
                 if len(jobs) == worker_count:
                     for i in range(API_MAX_RETRY):
-                        results = await asyncio.gather(*(asyncio.wait_for(job, timeout=180) for job in jobs), return_exceptions=True)
+                        results = await asyncio.gather(*(asyncio.wait_for(job, timeout=240) for job in jobs), return_exceptions=True)
                         if any(isinstance(result, (RuntimeError, TimeoutError, asyncio.CancelledError)) for result in results):
                             print(i)
                         else:

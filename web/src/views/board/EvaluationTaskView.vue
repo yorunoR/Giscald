@@ -1,5 +1,5 @@
 <template>
-  <main style="max-width: 1280px; margin: auto">
+  <main style="max-width: 1400px; margin: auto">
     <section class="mt-4">
       <div v-if="fetching">Loading...</div>
       <div v-else-if="error">Oh no... {{ error }}</div>
@@ -30,10 +30,10 @@
               <th class="cursor-pointer py-2 w-1" @click="setKey('model')">
                 <u :class="{ 'text-primary': sortKey === 'model' }"> モデル </u>
               </th>
-              <th class="cursor-pointer" @click="setKey('finishReason')">
+              <th class="px-2 cursor-pointer" @click="setKey('finishReason')">
                 <u :class="{ 'text-primary': sortKey === 'finishReason' }"> 終了理由 </u>
               </th>
-              <th class="cursor-pointer" @click="setKey('processingTime')">
+              <th class="px-2 cursor-pointer" @click="setKey('processingTime')">
                 <u :class="{ 'text-primary': sortKey === 'processingTime' }"> 処理時間 </u>
               </th>
             </tr>
@@ -60,7 +60,7 @@
               <td class="p-2" style="max-width: 1200px">
                 <div v-for="answer in rate.answers" :key="answer.id">- {{ answer.text }}</div>
               </td>
-              <td class="p-2">
+              <td class="p-2" style="max-width: 1200px">
                 {{ rate.text }}
               </td>
               <td class="p-2">

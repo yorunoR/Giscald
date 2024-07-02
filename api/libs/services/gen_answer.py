@@ -14,6 +14,7 @@ async def chat(messages, model, host, api_key, metadata, strategy, params):
 
     try:
         timeout = 60
+        new_messages = None
         response = await litellm.acompletion(
             messages=messages, model=model, api_base=host, api_key=api_key, timeout=timeout, metadata=metadata, **params
         )
@@ -21,7 +22,7 @@ async def chat(messages, model, host, api_key, metadata, strategy, params):
             content = response.choices[0].message.content
             new_messages = messages + [
                 {"role": "assistant", "content": content},
-                {"role": "user", "content": "最初の回答を参考に、より良い回答をして下さい。"},
+                {"role": "user", "content": "より深く考え、上の回答を修正し、提出する最終回答を書いて下さい。\n最終回答:\n"},
             ]
             max_tokens = params.get("max_tokens", 1000)
             new_params = dict(**params)
@@ -35,14 +36,14 @@ async def chat(messages, model, host, api_key, metadata, strategy, params):
             "answer": "[[0]]",
             "finish_reason": "evaluator",
             "usage": {"total_tokens": 0, "prompt_tokens": 0, "completion_tokens": 0},
-            "question": messages,
+            "question": new_messages or messages,
         }
 
     return {
         "answer": response.choices[0].message.content,
         "finish_reason": response.choices[0].finish_reason,
         "usage": response.usage.dict(),
-        "question": messages,
+        "question": new_messages or messages,
     }
 
 

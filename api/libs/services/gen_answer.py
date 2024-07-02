@@ -13,7 +13,7 @@ async def chat(messages, model, host, api_key, metadata, strategy, params):
     print(params)
 
     try:
-        timeout = 60
+        timeout = 80
         new_messages = None
         response = await litellm.acompletion(
             messages=messages, model=model, api_base=host, api_key=api_key, timeout=timeout, metadata=metadata, **params

@@ -5,6 +5,9 @@
       <div v-else-if="error">Oh no... {{ error }}</div>
       <div v-else>
         <h2>{{ data.bench.name }}</h2>
+        <div v-if="!data.bench.locked" class="text-right">
+          <Button label="New Queston" />
+        </div>
         <div class="text-left">
           <Dropdown
             v-model="selectedCategory"

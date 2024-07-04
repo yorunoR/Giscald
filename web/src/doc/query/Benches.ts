@@ -7,6 +7,7 @@ const QUERY = /* GraphQL */ `
       description
       template
       systemTemplate
+      locked
       createdAt
       updatedAt
     }

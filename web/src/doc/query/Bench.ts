@@ -4,6 +4,7 @@ const QUERY = /* GraphQL */ `
       id
       name
       description
+      locked
       questions {
         id
         questionNumber

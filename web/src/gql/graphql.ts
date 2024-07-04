@@ -44,6 +44,7 @@ export type BenchType = {
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
+  locked: Scalars['Boolean']['output']
   name: Scalars['String']['output']
   questions: Array<QuestionType>
   systemTemplate?: Maybe<Scalars['String']['output']>
@@ -293,6 +294,7 @@ export type BenchQuery = {
     id: string
     name: string
     description?: string | null
+    locked: boolean
     questions: Array<{
       __typename?: 'QuestionType'
       id: string
@@ -317,6 +319,7 @@ export type BenchesQuery = {
     description?: string | null
     template?: string | null
     systemTemplate?: string | null
+    locked: boolean
     createdAt: string
     updatedAt: string
   }>
@@ -900,6 +903,7 @@ export const BenchDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'locked' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'questions' },
@@ -945,6 +949,7 @@ export const BenchesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'template' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'systemTemplate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'locked' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
               ]

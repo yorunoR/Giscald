@@ -24,6 +24,7 @@
               </th>
               <th class="">質問</th>
               <th class="">正解</th>
+              <th class="">評価基準</th>
             </tr>
           </thead>
           <tbody>
@@ -51,6 +52,15 @@
                   style="max-width: 400px"
                 >
                   - {{ answer }}
+                </div>
+              </td>
+              <td class="p-2 text-left">
+                <div
+                  v-for="evalAspect in question.evalAspects"
+                  :key="evalAspect"
+                  style="max-width: 200px"
+                >
+                  {{ evalAspect }}
                 </div>
               </td>
             </tr>

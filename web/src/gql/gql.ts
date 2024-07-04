@@ -23,10 +23,14 @@ const documents = {
     types.DeleteEvaluationTaskDocument,
   '\n  mutation DeleteGenerationTask($id: ID!) {\n    deleteGenerationTask(id: $id) {\n      id\n    }\n  }\n':
     types.DeleteGenerationTaskDocument,
+  '\n  mutation DeleteQuestion($id: ID!) {\n    deleteQuestion(id: $id) {\n      id\n    }\n  }\n':
+    types.DeleteQuestionDocument,
   '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n':
     types.SigninDocument,
   '\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n':
     types.UpdateEvaluationTaskDocument,
+  '\n  mutation UpdateQuestion(\n    $id: ID!\n    $questionNumber: Int!\n    $category: String!\n    $turn: String!\n    $correctAnswer: String\n    $evalAspect: String\n  ) {\n    updateQuestion(\n      id: $id\n      questionNumber: $questionNumber\n      category: $category\n      turn: $turn\n      correctAnswer: $correctAnswer\n      evalAspect: $evalAspect\n    ) {\n      id\n    }\n  }\n':
+    types.UpdateQuestionDocument,
   '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      locked\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n        evalAspects\n      }\n    }\n  }\n':
     types.BenchDocument,
   '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      template\n      systemTemplate\n      locked\n      createdAt\n      updatedAt\n    }\n  }\n':
@@ -95,6 +99,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n  mutation DeleteQuestion($id: ID!) {\n    deleteQuestion(id: $id) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation DeleteQuestion($id: ID!) {\n    deleteQuestion(id: $id) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n'
 ): (typeof documents)['\n  mutation Signin {\n    signin {\n      id\n      name\n      email\n    }\n  }\n']
 /**
@@ -103,6 +113,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n'
 ): (typeof documents)['\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation UpdateQuestion(\n    $id: ID!\n    $questionNumber: Int!\n    $category: String!\n    $turn: String!\n    $correctAnswer: String\n    $evalAspect: String\n  ) {\n    updateQuestion(\n      id: $id\n      questionNumber: $questionNumber\n      category: $category\n      turn: $turn\n      correctAnswer: $correctAnswer\n      evalAspect: $evalAspect\n    ) {\n      id\n    }\n  }\n'
+): (typeof documents)['\n  mutation UpdateQuestion(\n    $id: ID!\n    $questionNumber: Int!\n    $category: String!\n    $turn: String!\n    $correctAnswer: String\n    $evalAspect: String\n  ) {\n    updateQuestion(\n      id: $id\n      questionNumber: $questionNumber\n      category: $category\n      turn: $turn\n      correctAnswer: $correctAnswer\n      evalAspect: $evalAspect\n    ) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

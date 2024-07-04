@@ -19,6 +19,7 @@
               </th>
               <th class="w-1">コード</th>
               <th>メモ</th>
+              <th class="w-1">ロック</th>
               <th class="w-2">操作</th>
             </tr>
           </thead>
@@ -41,6 +42,9 @@
               </td>
               <td class="py-2">
                 {{ bench.description }}
+              </td>
+              <td class="py-2">
+                {{ bench.locked }}
               </td>
               <td>
                 <div class="px-2">

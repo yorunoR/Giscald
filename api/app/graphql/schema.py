@@ -6,8 +6,10 @@ from app.graphql.resolvers.mutation.create_generation_task import resolve as cre
 from app.graphql.resolvers.mutation.create_question import resolve as create_question
 from app.graphql.resolvers.mutation.delete_evaluation_task import resolve as delete_evaluation_task
 from app.graphql.resolvers.mutation.delete_generation_task import resolve as delete_generation_task
+from app.graphql.resolvers.mutation.delete_question import resolve as delete_question
 from app.graphql.resolvers.mutation.signin import resolve as signin
 from app.graphql.resolvers.mutation.update_evaluation_task import resolve as update_evaluation_task
+from app.graphql.resolvers.mutation.update_question import resolve as update_question
 from app.graphql.resolvers.query.bench import resolve as bench
 from app.graphql.resolvers.query.benches import resolve as benches
 from app.graphql.resolvers.query.current_user import resolve as current_user
@@ -48,6 +50,8 @@ class Mutation:
     deleteGenerationTask: GenerationTaskType = strawberry.field(resolver=delete_generation_task)
     deleteEvaluationTask: EvaluationTaskType = strawberry.field(resolver=delete_evaluation_task)
     createQuestion: QuestionType = strawberry.field(resolver=create_question)
+    updateQuestion: QuestionType = strawberry.field(resolver=update_question)
+    deleteQuestion: QuestionType = strawberry.field(resolver=delete_question)
 
 
 schema = strawberry.Schema(

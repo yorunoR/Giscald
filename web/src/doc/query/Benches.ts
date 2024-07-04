@@ -5,6 +5,8 @@ const QUERY = /* GraphQL */ `
       name
       code
       description
+      template
+      systemTemplate
       createdAt
       updatedAt
     }

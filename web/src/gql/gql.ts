@@ -27,7 +27,7 @@ const documents = {
     types.UpdateEvaluationTaskDocument,
   '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n        evalAspects\n      }\n    }\n  }\n':
     types.BenchDocument,
-  '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n':
+  '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      template\n      systemTemplate\n      createdAt\n      updatedAt\n    }\n  }\n':
     types.BenchesDocument,
   '\n  query CurrentUser {\n    currentUser {\n      email\n    }\n  }\n':
     types.CurrentUserDocument,
@@ -105,8 +105,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n'
-): (typeof documents)['\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n']
+  source: '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      template\n      systemTemplate\n      createdAt\n      updatedAt\n    }\n  }\n'
+): (typeof documents)['\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      template\n      systemTemplate\n      createdAt\n      updatedAt\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

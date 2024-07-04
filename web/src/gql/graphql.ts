@@ -46,6 +46,8 @@ export type BenchType = {
   id: Scalars['ID']['output']
   name: Scalars['String']['output']
   questions: Array<QuestionType>
+  systemTemplate?: Maybe<Scalars['String']['output']>
+  template?: Maybe<Scalars['String']['output']>
   updatedAt: Scalars['DateTime']['output']
 }
 
@@ -313,6 +315,8 @@ export type BenchesQuery = {
     name: string
     code: string
     description?: string | null
+    template?: string | null
+    systemTemplate?: string | null
     createdAt: string
     updatedAt: string
   }>
@@ -939,6 +943,8 @@ export const BenchesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'code' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'template' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'systemTemplate' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
               ]

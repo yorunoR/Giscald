@@ -180,6 +180,7 @@ export type QuestionType = {
   bench: BenchType
   category: Scalars['String']['output']
   correctAnswers: Array<Maybe<Scalars['String']['output']>>
+  evalAspects: Array<Maybe<Scalars['String']['output']>>
   id: Scalars['ID']['output']
   questionNumber: Scalars['Int']['output']
   turns: Array<Scalars['String']['output']>
@@ -297,6 +298,7 @@ export type BenchQuery = {
       category: string
       turns: Array<string>
       correctAnswers: Array<string | null>
+      evalAspects: Array<string | null>
     }>
   }
 }
@@ -904,7 +906,8 @@ export const BenchDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'category' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'turns' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'correctAnswers' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'correctAnswers' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'evalAspects' } }
                     ]
                   }
                 }

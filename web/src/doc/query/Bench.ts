@@ -10,6 +10,7 @@ const QUERY = /* GraphQL */ `
         category
         turns
         correctAnswers
+        evalAspects
       }
     }
   }

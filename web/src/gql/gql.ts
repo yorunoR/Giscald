@@ -25,7 +25,7 @@ const documents = {
     types.SigninDocument,
   '\n  mutation UpdateEvaluationTask($id: ID!, $plotName: String) {\n    updateEvaluationTask(id: $id, plotName: $plotName) {\n      id\n    }\n  }\n':
     types.UpdateEvaluationTaskDocument,
-  '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n      }\n    }\n  }\n':
+  '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n        evalAspects\n      }\n    }\n  }\n':
     types.BenchDocument,
   '\n  query Benches {\n    benches {\n      id\n      name\n      code\n      description\n      createdAt\n      updatedAt\n    }\n  }\n':
     types.BenchesDocument,
@@ -99,8 +99,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n      }\n    }\n  }\n'
-): (typeof documents)['\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n      }\n    }\n  }\n']
+  source: '\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n        evalAspects\n      }\n    }\n  }\n'
+): (typeof documents)['\n  query Bench($id: ID!) {\n    bench(id: $id) {\n      id\n      name\n      description\n      questions {\n        id\n        questionNumber\n        category\n        turns\n        correctAnswers\n        evalAspects\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

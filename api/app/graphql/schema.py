@@ -3,6 +3,7 @@ from strawberry_django.optimizer import DjangoOptimizerExtension
 
 from app.graphql.resolvers.mutation.create_evaluation_task import resolve as create_evaluation_task
 from app.graphql.resolvers.mutation.create_generation_task import resolve as create_generation_task
+from app.graphql.resolvers.mutation.create_question import resolve as create_question
 from app.graphql.resolvers.mutation.delete_evaluation_task import resolve as delete_evaluation_task
 from app.graphql.resolvers.mutation.delete_generation_task import resolve as delete_generation_task
 from app.graphql.resolvers.mutation.signin import resolve as signin
@@ -46,6 +47,7 @@ class Mutation:
     updateEvaluationTask: EvaluationTaskType = strawberry.field(resolver=update_evaluation_task)
     deleteGenerationTask: GenerationTaskType = strawberry.field(resolver=delete_generation_task)
     deleteEvaluationTask: EvaluationTaskType = strawberry.field(resolver=delete_evaluation_task)
+    createQuestion: QuestionType = strawberry.field(resolver=create_question)
 
 
 schema = strawberry.Schema(

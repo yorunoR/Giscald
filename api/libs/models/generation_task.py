@@ -21,8 +21,12 @@ class GenerationTask(BaseModel):
     description = models.TextField(max_length=1024, null=True, blank=True)
     status = models.IntegerField(choices=Status.choices, default=Status.CREATED)
     tags = models.ManyToManyField("Tag", through="GenerationTaskTag")
+    active = models.BooleanField(default=True)
 
     class Meta:
         db_table = "generation_tasks"
         verbose_name = "生成タスク"
         verbose_name_plural = "生成タスク"
+        indexes = [
+            models.Index(fields=["active"]),
+        ]

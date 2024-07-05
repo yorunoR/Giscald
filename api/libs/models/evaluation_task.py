@@ -37,3 +37,6 @@ class EvaluationTask(BaseModel):
         constraints = [
             models.UniqueConstraint(fields=["generation_task", "name"], name="evaluation_task_unique"),
         ]
+        indexes = [
+            models.Index(fields=["active"]),
+        ]

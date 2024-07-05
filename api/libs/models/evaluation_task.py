@@ -19,6 +19,7 @@ class Status(models.IntegerChoices):
 
 class EvaluationTask(BaseModel):
     objects = CustomManager()
+    all_objects = models.Manager()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="evaluation_tasks")
     generation_task = models.ForeignKey(GenerationTask, on_delete=models.CASCADE, related_name="evaluation_tasks")

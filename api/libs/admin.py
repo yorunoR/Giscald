@@ -104,8 +104,11 @@ class AnswerAdmin(admin.ModelAdmin):
 
 @admin.register(EvaluationTask)
 class EvaluationTaskAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "active", "created_at"]
     readonly_fields = DEFAULT_READONLY_FIELDS
+
+    def get_queryset(self, request):
+        return self.model.all_objects.all()
 
 
 @admin.register(Rate)

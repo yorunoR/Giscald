@@ -233,7 +233,7 @@ const sortedQuestions = computed(() => {
       }
       if (a_column < b_column) return sortAsc.value ? -1 : 1
       if (a_column > b_column) return sortAsc.value ? 1 : -1
-      return parseInt(a.id) < parseInt(b.id) ? 1 : -1
+      return parseInt(a.questionNumber) < parseInt(b.questionNumber) ? 1 : -1
     })
   }
   return selectedQuestions

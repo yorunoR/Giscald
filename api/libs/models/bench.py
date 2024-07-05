@@ -9,6 +9,7 @@ class Bench(BaseModel):
     template = models.TextField(max_length=4096, null=True, blank=True)
     code = models.CharField(max_length=128, null=False, unique=True)
     system_template = models.TextField(max_length=4096, null=True, blank=True)
+    locked = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

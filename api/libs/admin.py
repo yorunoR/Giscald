@@ -1,3 +1,4 @@
+from csvexport.actions import csvexport
 from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
 from django.forms import Textarea
@@ -129,6 +130,7 @@ class QuestionAdmin(admin.ModelAdmin):
     formfield_overrides = {
         ArrayField: {"widget": Textarea(attrs={"rows": 4, "cols": 80})},
     }
+    actions = [csvexport]
 
 
 @admin.register(Tag)

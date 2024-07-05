@@ -16,4 +16,5 @@ class QuestionType:
     category: auto
     turns: list[str]
     correct_answers: list[Union[str, None]]
+    eval_aspects: list[Union[str, None]]
     bench: Annotated["BenchType", strawberry.lazy(".bench_type")]

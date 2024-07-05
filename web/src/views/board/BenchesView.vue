@@ -19,7 +19,8 @@
               </th>
               <th class="w-1">コード</th>
               <th>メモ</th>
-              <th class="w-1">操作</th>
+              <th class="w-1">ロック</th>
+              <th class="w-2">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -42,15 +43,15 @@
               <td class="py-2">
                 {{ bench.description }}
               </td>
+              <td class="py-2">
+                {{ bench.locked }}
+              </td>
               <td>
-                <!--div class="p-1">
-                  <u
-                    class="cursor-pointer"
-                    @click="() => clickDeleteBench(bench.id)"
-                  >
-                    削除
+                <div class="px-2">
+                  <u class="cursor-pointer" @click="() => clickShowTemplate(bench)">
+                    テンプレート
                   </u>
-                </div-->
+                </div>
               </td>
             </tr>
           </tbody>
@@ -58,6 +59,18 @@
       </div>
     </section>
   </main>
+  <section>
+    <Dialog v-model:visible="visibleTemplate" modal header="テンプレート" class="w-8">
+      <div>
+        <h3>ユーザー</h3>
+        <p style="white-space: pre-wrap">{{ selected.template || 'なし' }}</p>
+      </div>
+      <div class="mt-6">
+        <h3>システム</h3>
+        <p style="white-space: pre-wrap">{{ selected.systemTemplate || 'なし' }}</p>
+      </div>
+    </Dialog>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -71,6 +84,8 @@ import dayjs from 'dayjs'
 
 const sortKey = ref('createdAt')
 const sortAsc = ref(false)
+const selected = ref(null)
+const visibleTemplate = ref(false)
 
 const query = graphql(Benches)
 const { fetching, error, data } = useQuery({ query, requestPolicy: 'network-only' })
@@ -105,6 +120,11 @@ const sortedBenches = computed(() => {
 
 const timeFormat = (time) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+}
+
+const clickShowTemplate = (bench) => {
+  selected.value = bench
+  visibleTemplate.value = true
 }
 
 // const clickDeleteBench = async (id) => {

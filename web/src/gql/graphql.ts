@@ -44,8 +44,11 @@ export type BenchType = {
   createdAt: Scalars['DateTime']['output']
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
+  locked: Scalars['Boolean']['output']
   name: Scalars['String']['output']
   questions: Array<QuestionType>
+  systemTemplate?: Maybe<Scalars['String']['output']>
+  template?: Maybe<Scalars['String']['output']>
   updatedAt: Scalars['DateTime']['output']
 }
 
@@ -105,10 +108,13 @@ export type Mutation = {
   __typename?: 'Mutation'
   createEvaluationTask: EvaluationTaskType
   createGenerationTask: GenerationTaskType
+  createQuestion: QuestionType
   deleteEvaluationTask: EvaluationTaskType
   deleteGenerationTask: GenerationTaskType
+  deleteQuestion: QuestionType
   signin: UserType
   updateEvaluationTask: EvaluationTaskType
+  updateQuestion: QuestionType
 }
 
 export type MutationCreateEvaluationTaskArgs = {
@@ -129,6 +135,15 @@ export type MutationCreateGenerationTaskArgs = {
   workerCount: Scalars['Int']['input']
 }
 
+export type MutationCreateQuestionArgs = {
+  benchId: Scalars['ID']['input']
+  category: Scalars['String']['input']
+  correctAnswer?: InputMaybe<Scalars['String']['input']>
+  evalAspect?: InputMaybe<Scalars['String']['input']>
+  questionNumber: Scalars['Int']['input']
+  turn: Scalars['String']['input']
+}
+
 export type MutationDeleteEvaluationTaskArgs = {
   id: Scalars['ID']['input']
 }
@@ -137,9 +152,22 @@ export type MutationDeleteGenerationTaskArgs = {
   id: Scalars['ID']['input']
 }
 
+export type MutationDeleteQuestionArgs = {
+  id: Scalars['ID']['input']
+}
+
 export type MutationUpdateEvaluationTaskArgs = {
   id: Scalars['ID']['input']
   plotName?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MutationUpdateQuestionArgs = {
+  category: Scalars['String']['input']
+  correctAnswer?: InputMaybe<Scalars['String']['input']>
+  evalAspect?: InputMaybe<Scalars['String']['input']>
+  id: Scalars['ID']['input']
+  questionNumber: Scalars['Int']['input']
+  turn: Scalars['String']['input']
 }
 
 export type Query = {
@@ -180,6 +208,7 @@ export type QuestionType = {
   bench: BenchType
   category: Scalars['String']['output']
   correctAnswers: Array<Maybe<Scalars['String']['output']>>
+  evalAspects: Array<Maybe<Scalars['String']['output']>>
   id: Scalars['ID']['output']
   questionNumber: Scalars['Int']['output']
   turns: Array<Scalars['String']['output']>
@@ -244,6 +273,20 @@ export type CreateGenerationTaskMutation = {
   createGenerationTask: { __typename?: 'GenerationTaskType'; id: string }
 }
 
+export type CreateQuestionMutationVariables = Exact<{
+  benchId: Scalars['ID']['input']
+  questionNumber: Scalars['Int']['input']
+  category: Scalars['String']['input']
+  turn: Scalars['String']['input']
+  correctAnswer?: InputMaybe<Scalars['String']['input']>
+  evalAspect?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type CreateQuestionMutation = {
+  __typename?: 'Mutation'
+  createQuestion: { __typename?: 'QuestionType'; id: string }
+}
+
 export type DeleteEvaluationTaskMutationVariables = Exact<{
   id: Scalars['ID']['input']
 }>
@@ -260,6 +303,15 @@ export type DeleteGenerationTaskMutationVariables = Exact<{
 export type DeleteGenerationTaskMutation = {
   __typename?: 'Mutation'
   deleteGenerationTask: { __typename?: 'GenerationTaskType'; id: string }
+}
+
+export type DeleteQuestionMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type DeleteQuestionMutation = {
+  __typename?: 'Mutation'
+  deleteQuestion: { __typename?: 'QuestionType'; id: string }
 }
 
 export type SigninMutationVariables = Exact<{ [key: string]: never }>
@@ -279,6 +331,20 @@ export type UpdateEvaluationTaskMutation = {
   updateEvaluationTask: { __typename?: 'EvaluationTaskType'; id: string }
 }
 
+export type UpdateQuestionMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  questionNumber: Scalars['Int']['input']
+  category: Scalars['String']['input']
+  turn: Scalars['String']['input']
+  correctAnswer?: InputMaybe<Scalars['String']['input']>
+  evalAspect?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type UpdateQuestionMutation = {
+  __typename?: 'Mutation'
+  updateQuestion: { __typename?: 'QuestionType'; id: string }
+}
+
 export type BenchQueryVariables = Exact<{
   id: Scalars['ID']['input']
 }>
@@ -290,6 +356,7 @@ export type BenchQuery = {
     id: string
     name: string
     description?: string | null
+    locked: boolean
     questions: Array<{
       __typename?: 'QuestionType'
       id: string
@@ -297,6 +364,7 @@ export type BenchQuery = {
       category: string
       turns: Array<string>
       correctAnswers: Array<string | null>
+      evalAspects: Array<string | null>
     }>
   }
 }
@@ -311,6 +379,9 @@ export type BenchesQuery = {
     name: string
     code: string
     description?: string | null
+    template?: string | null
+    systemTemplate?: string | null
+    locked: boolean
     createdAt: string
     updatedAt: string
   }>
@@ -701,6 +772,105 @@ export const CreateGenerationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<CreateGenerationTaskMutation, CreateGenerationTaskMutationVariables>
+export const CreateQuestionDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateQuestion' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'benchId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'questionNumber' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'category' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'turn' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'correctAnswer' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'evalAspect' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createQuestion' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'benchId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'benchId' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'questionNumber' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionNumber' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'category' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'category' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'turn' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'turn' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'correctAnswer' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'correctAnswer' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'evalAspect' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'evalAspect' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CreateQuestionMutation, CreateQuestionMutationVariables>
 export const DeleteEvaluationTaskDocument = {
   kind: 'Document',
   definitions: [
@@ -781,6 +951,46 @@ export const DeleteGenerationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<DeleteGenerationTaskMutation, DeleteGenerationTaskMutationVariables>
+export const DeleteQuestionDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteQuestion' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteQuestion' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DeleteQuestionMutation, DeleteQuestionMutationVariables>
 export const SigninDocument = {
   kind: 'Document',
   definitions: [
@@ -858,6 +1068,105 @@ export const UpdateEvaluationTaskDocument = {
     }
   ]
 } as unknown as DocumentNode<UpdateEvaluationTaskMutation, UpdateEvaluationTaskMutationVariables>
+export const UpdateQuestionDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateQuestion' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'questionNumber' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'category' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'turn' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'correctAnswer' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'evalAspect' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateQuestion' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'questionNumber' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'questionNumber' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'category' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'category' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'turn' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'turn' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'correctAnswer' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'correctAnswer' } }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'evalAspect' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'evalAspect' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateQuestionMutation, UpdateQuestionMutationVariables>
 export const BenchDocument = {
   kind: 'Document',
   definitions: [
@@ -894,6 +1203,7 @@ export const BenchDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'locked' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'questions' },
@@ -904,7 +1214,8 @@ export const BenchDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'questionNumber' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'category' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'turns' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'correctAnswers' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'correctAnswers' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'evalAspects' } }
                     ]
                   }
                 }
@@ -936,6 +1247,9 @@ export const BenchesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'code' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'template' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'systemTemplate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'locked' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } }
               ]

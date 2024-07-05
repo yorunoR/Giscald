@@ -3,7 +3,9 @@
     <h1 style="mt-2">Generate Answers</h1>
     <div v-if="loading">
       <h2 class="p-2">running...</h2>
-      <h1 class="p-2">{{ Math.floor(count / 60) }}:{{ ('00' + (count % 60)).slice(-2) }}</h1>
+      <h1 class="p-2">
+        {{ Math.floor(elapsedTime / 60) }}:{{ ('00' + (elapsedTime % 60)).slice(-2) }}
+      </h1>
     </div>
     <div v-else>
       <section>
@@ -120,8 +122,8 @@ const toast = useToast()
 
 const loading = ref(false)
 const parameters = ref(tgiMultiSet)
-const count = ref(0)
 const framework = ref('TGI')
+const elapsedTime = ref(0)
 
 const query = graphql(Benches)
 const { data } = useQuery({ query })
@@ -143,9 +145,8 @@ const clickCreateGenerationTask = async () => {
   }
 
   loading.value = true
-  count.value = 0
+  startStopwatch()
 
-  await countDisplay()
   const paramStr = JSON.stringify(parameters.value)
   try {
     const result = await createGenerationTask({ ...values, paramStr })
@@ -163,7 +164,7 @@ const clickCreateGenerationTask = async () => {
     }
   } finally {
     loading.value = false
-    clearInterval(timeoutId)
+    worker.terminate()
   }
 }
 
@@ -217,15 +218,19 @@ const clickTag = (tag) => {
   }
 }
 
-let timeoutId
-const countDisplay = async () => {
-  timeoutId = setInterval(() => {
-    ++count.value
-  }, 1000)
+let worker = null
+const startStopwatch = () => {
+  worker = new Worker(new URL('@/services/stopwatchWorker.js', import.meta.url))
+  worker.onmessage = (e) => {
+    elapsedTime.value = e.data.elapsedTime
+  }
+  worker.postMessage({})
 }
 
 onBeforeUnmount(() => {
-  clearInterval(timeoutId)
+  if (worker) {
+    worker.terminate()
+  }
 })
 
 const generateRandomString = () => {

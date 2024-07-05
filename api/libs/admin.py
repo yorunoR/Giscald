@@ -1,3 +1,4 @@
+from csvexport.actions import csvexport
 from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
 from django.forms import Textarea
@@ -103,8 +104,11 @@ class AnswerAdmin(admin.ModelAdmin):
 
 @admin.register(EvaluationTask)
 class EvaluationTaskAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "active", "created_at"]
     readonly_fields = DEFAULT_READONLY_FIELDS
+
+    def get_queryset(self, request):
+        return self.model.all_objects.all()
 
 
 @admin.register(Rate)
@@ -129,6 +133,7 @@ class QuestionAdmin(admin.ModelAdmin):
     formfield_overrides = {
         ArrayField: {"widget": Textarea(attrs={"rows": 4, "cols": 80})},
     }
+    actions = [csvexport]
 
 
 @admin.register(Tag)

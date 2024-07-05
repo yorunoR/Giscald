@@ -19,6 +19,7 @@ class Status(models.IntegerChoices):
 
 class EvaluationTask(BaseModel):
     objects = CustomManager()
+    all_objects = models.Manager()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="evaluation_tasks")
     generation_task = models.ForeignKey(GenerationTask, on_delete=models.CASCADE, related_name="evaluation_tasks")
@@ -35,4 +36,7 @@ class EvaluationTask(BaseModel):
         verbose_name_plural = "評価タスク"
         constraints = [
             models.UniqueConstraint(fields=["generation_task", "name"], name="evaluation_task_unique"),
+        ]
+        indexes = [
+            models.Index(fields=["active"]),
         ]

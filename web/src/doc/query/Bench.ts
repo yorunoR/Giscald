@@ -4,12 +4,14 @@ const QUERY = /* GraphQL */ `
       id
       name
       description
+      locked
       questions {
         id
         questionNumber
         category
         turns
         correctAnswers
+        evalAspects
       }
     }
   }

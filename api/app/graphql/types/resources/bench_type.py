@@ -12,6 +12,9 @@ class BenchType:
     name: auto
     code: auto
     description: auto
+    template: auto
+    system_template: auto
+    locked: auto
     created_at: auto
     updated_at: auto
     questions: list[QuestionType]

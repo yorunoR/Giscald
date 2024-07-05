@@ -130,7 +130,9 @@
     <Dialog v-model:visible="visible" modal header="評価" class="w-5">
       <div v-if="loading">
         <h2 class="p-2">running...</h2>
-        <h1 class="p-2">{{ Math.floor(count / 60) }}:{{ ('00' + (count % 60)).slice(-2) }}</h1>
+        <h1 class="p-2">
+          {{ Math.floor(elapsedTime / 60) }}:{{ ('00' + (elapsedTime % 60)).slice(-2) }}
+        </h1>
       </div>
       <div v-else>
         <div class="flex align-items-center gap-3 mb-5">
@@ -203,7 +205,7 @@ const visible = ref(false)
 const visibleDetail = ref(false)
 const prefixEvalName = ref(null)
 const evalName = ref(null)
-const count = ref(0)
+const elapsedTime = ref(0)
 const loading = ref(false)
 const evaluator = ref('gpt-4-0125-preview')
 const evaluatorOptions = ref([
@@ -330,7 +332,9 @@ timeoutId = setTimeout(executeAndDoubleInterval, interval)
 
 onBeforeUnmount(() => {
   clearInterval(timeoutId)
-  clearInterval(countId)
+  if (worker) {
+    worker.terminate()
+  }
 })
 
 const openDetailEvaluationTask = (generationTask) => {
@@ -353,9 +357,8 @@ const checkEvaluatorLimit = (evaluator) => {
 }
 const clickEvaluationTask = async () => {
   loading.value = true
-  count.value = 0
+  startStopwatch()
 
-  await countDisplay()
   const workerCount = checkEvaluatorLimit(evaluator.value) ? 1 : 10
   try {
     const result = await createEvaluationTask({
@@ -378,15 +381,17 @@ const clickEvaluationTask = async () => {
     }
   } finally {
     loading.value = false
-    clearInterval(countId)
+    worker.terminate()
   }
 }
 
-let countId
-const countDisplay = async () => {
-  countId = setInterval(() => {
-    ++count.value
-  }, 1000)
+let worker = null
+const startStopwatch = () => {
+  worker = new Worker(new URL('@/services/stopwatchWorker.js', import.meta.url))
+  worker.onmessage = (e) => {
+    elapsedTime.value = e.data.elapsedTime
+  }
+  worker.postMessage({})
 }
 
 const clickDeleteGenerationTask = async (id) => {

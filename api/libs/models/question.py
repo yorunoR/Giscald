@@ -11,8 +11,8 @@ class Question(BaseModel):
     question_number = models.IntegerField()
     category = models.CharField(max_length=256)
     turns = ArrayField(models.CharField(max_length=4096))
-    correct_answers = ArrayField(models.CharField(max_length=4096))
-    eval_aspects = ArrayField(models.CharField(max_length=4096))
+    correct_answers = ArrayField(models.CharField(max_length=4096), blank=True)
+    eval_aspects = ArrayField(models.CharField(max_length=4096), blank=True)
     function = models.JSONField(null=True, blank=True)
 
     def __str__(self):

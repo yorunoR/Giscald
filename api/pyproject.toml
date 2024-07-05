@@ -20,6 +20,7 @@ google-generativeai = "^0.4.1"
 pandas = "^2.2.2"
 pyarrow = "^16.1.0"
 langfuse = "^2.36.2"
+django-admin-csvexport = "^2.2"
 
 
 [build-system]

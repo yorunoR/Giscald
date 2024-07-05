@@ -62,11 +62,11 @@
   <section>
     <Dialog v-model:visible="visibleTemplate" modal header="テンプレート" class="w-8">
       <div>
-        <h3>ユーザー</h3>
+        <h3>評価時のユーザープロンプト</h3>
         <p style="white-space: pre-wrap">{{ selected.template || 'なし' }}</p>
       </div>
       <div class="mt-6">
-        <h3>システム</h3>
+        <h3>回答生成時のシステムプロンプト</h3>
         <p style="white-space: pre-wrap">{{ selected.systemTemplate || 'なし' }}</p>
       </div>
     </Dialog>

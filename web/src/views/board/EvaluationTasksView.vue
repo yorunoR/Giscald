@@ -101,9 +101,10 @@
               <th class="cursor-pointer w-3" @click="setKey('name')">
                 <u :class="{ 'text-primary': sortKey === 'name' }"> 名前 / 図上の表示名</u>
               </th>
-              <th class="cursor-pointer w-2 py-2" @click="setKey('benchName')">
+              <th class="cursor-pointer w-1 py-2" @click="setKey('benchName')">
                 <u :class="{ 'text-primary': sortKey === 'benchName' }"> 評価ベンチ </u>
               </th>
+              <th class="w-1">タグ</th>
               <th class="cursor-pointer w-1" @click="setKey('createdAt')">
                 <u :class="{ 'text-primary': sortKey === 'createdAt' }"> 作成日時 </u>
               </th>
@@ -228,6 +229,15 @@
                 >
               </td>
               <td class="py-2">
+                <Chip
+                  v-for="tag in evaluationTask.generationTask.tags"
+                  :key="tag.id"
+                  class="text-sm mt-1"
+                >
+                  {{ tag.name }}
+                </Chip>
+              </td>
+              <td class="py-2">
                 {{ timeFormat(evaluationTask.createdAt) }}
               </td>
               <td class="py-2">
@@ -278,6 +288,18 @@
                   >
                     削除
                   </u>
+                </div>
+                <div class="py-1">
+                  <router-link
+                    class="text-sm"
+                    target="_blank"
+                    :to="{
+                      name: 'generationTask',
+                      params: { id: evaluationTask.generationTask.id }
+                    }"
+                  >
+                    回答生成タスク
+                  </router-link>
                 </div>
               </td>
             </tr>

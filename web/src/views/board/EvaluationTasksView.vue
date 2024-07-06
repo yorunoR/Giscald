@@ -289,6 +289,18 @@
                     削除
                   </u>
                 </div>
+                <div class="py-1">
+                  <router-link
+                    class="text-sm"
+                    target="_blank"
+                    :to="{
+                      name: 'generationTask',
+                      params: { id: evaluationTask.generationTask.id }
+                    }"
+                  >
+                    回答生成タスク
+                  </router-link>
+                </div>
               </td>
             </tr>
           </tbody>

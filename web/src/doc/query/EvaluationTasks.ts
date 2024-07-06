@@ -11,10 +11,15 @@ const QUERY = /* GraphQL */ `
         processingTimes
         createdAt
         generationTask {
+          id
           bench {
             id
             name
             code
+          }
+          tags {
+            id
+            name
           }
         }
       }

@@ -12,7 +12,7 @@
         <Dropdown
           v-model="framework"
           class="mt-4 w-6 text-left"
-          :options="['TGI', 'vllm', 'other']"
+          :options="['TGI', 'vllm', 'SGLang', 'other']"
         />
       </section>
       <section>
@@ -115,8 +115,8 @@ import { useField, useForm } from 'vee-validate'
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 import { useToast } from 'primevue/usetoast'
-import { tgiMultiSet, vllmMultiSet, otherMultiSet } from '@/data/presets/jmt'
-import { tgiSet, vllmSet, otherSet } from '@/data/presets'
+import { tgiMultiSet, vllmMultiSet, sglMultiSet, otherMultiSet } from '@/data/presets/jmt'
+import { tgiSet, vllmSet, sglSet, otherSet } from '@/data/presets'
 
 const toast = useToast()
 
@@ -200,10 +200,12 @@ watch([benchCode, framework, modelName], () => {
   if (benchCode.value.startsWith('jmt')) {
     if (framework.value == 'TGI') parameters.value = tgiMultiSet
     if (framework.value == 'vllm') parameters.value = vllmMultiSet
+    if (framework.value == 'SGLang') parameters.value = sglMultiSet
     if (framework.value == 'other') parameters.value = otherMultiSet
   } else {
     if (framework.value == 'TGI') parameters.value = tgiSet
     if (framework.value == 'vllm') parameters.value = vllmSet
+    if (framework.value == 'SGLang') parameters.value = sglSet
     if (framework.value == 'other') parameters.value = otherSet
   }
 })
